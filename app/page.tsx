@@ -1,11 +1,10 @@
-import Image from "next/image";
-
 export default function Home() {
   return (
-    <div>
-      <main>
-        <p>I'm the page</p>
-      </main>
-    </div>
+    <main>
+      <h1>Card Hobby</h1>
+      <section>
+        <p>Dashboard coming soon.</p>
+      </section>
+    </main>
   );
 }

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "@/styles/styles.scss";
+import "@/styles/temporary.scss";
 
 export const metadata: Metadata = {
   title: "Hobby Helpers",
