@@ -1,0 +1,14 @@
+@use "../utilities/all" as *;
+
+:root {
+  @include media-query(medium-up) {
+  }
+  @include media-query(medium-up) {
+  }
+}
+
+.theme--light {
+}
+
+.theme--dark {
+}

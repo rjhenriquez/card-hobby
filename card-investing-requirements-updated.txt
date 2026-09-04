@@ -1,0 +1,62 @@
+CARD INVESTING — REQUIREMENTS
+
+1. Card Inventory
+- Maintain a central record for every card.
+- Track card details, purchase information, grading information, sale information, profit, and ROI/percentage.
+- Support filtering, sorting, searching, and different views of the card data.
+- Card status should reflect its current lifecycle stage and may be derived from multiple factors rather than always entered manually.
+
+2. Card Lifecycle
+- Track cards from purchase through their lifecycle, including stages such as in transit, received, grading/submission, returned, listed, and sold.
+- Cards can share/inherit a grouped status while being prepared for grading and while they are part of an active PSA submission.
+- Once grading is completed, each card's status must be independently and manually controllable because post-grading workflows can vary greatly from card to card.
+- A completed PSA submission remains part of the card's history but no longer controls the card's current status.
+- Detailed status rules will be defined later.
+
+3. PSA Submissions
+- PSA submissions are separate records from cards.
+- Allow multiple cards to be selected and added to a PSA submission.
+- A submission can contain many cards.
+- Submission-level status/stage changes should automatically be reflected by all cards belonging to that submission.
+- Individual grading results remain associated with each card.
+
+4. PSA Grading / Gem Rate
+- Provide a separate view/table for completed PSA submissions.
+- Automatically calculate grading statistics from the cards in each completed submission.
+- Statistics should include total cards, PSA 10, PSA 9, PSA 8.5, PSA 8, PSA 7 or lower, no grade, Gem Rate, and percentage graded PSA 9 or better.
+- Support grading analytics across submissions and, eventually, other dimensions such as player, set, year, and category.
+
+5. Personal Collection
+- Track personal-collection cards separately from investment inventory in the UI while using the same underlying card format/data model.
+- Collection views can expose a different subset of card fields appropriate for collection tracking.
+- Track collection cost separately from investment totals.
+
+6. Moving Cards Between Investment and Collection
+- Allow cards to move from Investment to Personal Collection and back without creating duplicate card records.
+- Moving an investment card to the collection removes its cost from investment totals and adds it to collection costs.
+- Preserve the card's original purchase/cost information when it moves.
+- If a collection card later moves back to investments and is sold, calculate profit/ROI using its original cost basis.
+- Preserve enough history to know that a card moved between investment and collection if needed.
+
+7. Financial Tracking
+- Track purchase/cost basis for investment cards.
+- Track sale price/date and calculate profit and percentage/ROI.
+- Investment totals should include only cards currently considered investments as appropriate to the reporting rules.
+- Collection costs should be tracked separately from investment totals.
+
+8. Data Entry / Autocomplete
+- Speed up card entry by suggesting values from previously entered records.
+- For example, after "Lionel Messi" has been entered once, typing part of the name on a future card should offer "Lionel Messi" as an autocomplete option.
+- Autocomplete may also be used for other repeatable fields such as set, category, purchased from, and eBay seller where appropriate.
+- Users must still be able to enter new values that do not already exist.
+
+9. Reporting / Views
+- Provide separate views for investment cards, personal collection, PSA submissions, and completed-submission grading/Gem Rate results.
+- Eventually support dashboards, filters, and graphs based on the same underlying data.
+- Avoid maintaining duplicate information across separate tables/files when values can be derived from existing card or submission data.
+
+10. Existing Numbers Data
+- Existing Numbers files will provide the initial data for cards, PSA submissions/Gem Rate history, and personal collection.
+- The goal is to consolidate these into one connected system rather than continuing to maintain separate Numbers files.
+
+This is a working requirements document and should be revised as workflows and rules are defined.

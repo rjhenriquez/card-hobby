@@ -1,0 +1,32 @@
+@use "../utilities/all" as *;
+
+html,
+body {
+  // cursor: none;
+}
+
+html {
+  scrollbar-gutter: stable;
+}
+
+@media (pointer: fine) {
+  *,
+  *::before,
+  *::after {
+  }
+}
+
+body {
+}
+
+::selection {
+  // TODO: Make this theme friendly
+  //   background-color: var(--black);
+  //   color: var(--white);
+}
+
+.theme--light {
+}
+
+.theme--dark {
+}

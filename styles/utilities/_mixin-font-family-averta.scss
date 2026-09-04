@@ -1,0 +1,90 @@
+$fonts-path: "/fonts/averta";
+
+@use "sass:map";
+
+@use "sass:list";
+
+@use "sass:string";
+
+@each $font-name,
+	$map
+		in (
+			AvertaLight: (
+					filehandle: averta-light,
+				),
+			AvertaRegular: (
+					filehandle: averta-regular,
+				),
+			AvertaSemiBold: (
+					filehandle: averta-semibold,
+				),
+			AvertaBold: (
+					filehandle: averta-bold,
+				),
+			AvertaBlack: (
+					filehandle: averta-black,
+				),
+			AvertaRegularItalic: (
+					filehandle: averta-regularitalic,
+				)
+		)
+{
+	$f: map.get($map, filehandle);
+
+	@font-face {
+		font-display: swap;
+		font-family: "#{$font-name}";
+		font-style: normal;
+		font-weight: normal;
+		src:
+			local("#{$font-name}"),
+			url("#{$fonts-path}/#{$f}-webfont.woff2") format("woff2");
+
+		@each $attr, $value in map.remove($map, filehandle) {
+			#{$attr}: $value;
+		}
+	}
+}
+
+@mixin font-weight($family-shorthand) {
+	$weight-stacks: (
+		light: ("AvertaLight"),
+		regular: ("AvertaRegular"),
+		semibold: ("AvertaSemiBold"),
+		bold: ("AvertaBold"),
+		black: ("AvertaBlack"),
+		regularitalic: ("AvertaRegularItalic"),
+	);
+	$fallback-stack: (
+		"HelveticaNeue",
+		"Helvetica Neue",
+		helvetica,
+		arial,
+		roboto,
+		sans-serif
+	);
+
+	@if map.has-key($weight-stacks, $family-shorthand) {
+		font-family: list.join(
+			map.get($weight-stacks, $family-shorthand),
+			$fallback-stack
+		);
+	} @else {
+		@error 'Unable to find a breakpoint with name `#{$family-shorthand}`. Expected one of: (#{map-keys($weight-stacks)})';
+	}
+}
+
+@mixin color-dark-on-light($color, $important: "") {
+	color: $color string.unquote($important);
+	-webkit-font-smoothing: subpixel-antialiased;
+	-moz-osx-font-smoothing: auto;
+	text-rendering: optimizelegibility;
+}
+
+@mixin color-light-on-dark($color, $important: "") {
+	color: $color string.unquote($important);
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	text-rendering: optimizelegibility;
+	text-shadow: 1px 1px 1px rgb(0 0 0 / 0.4%);
+}
