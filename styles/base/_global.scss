@@ -2,27 +2,27 @@
 
 html,
 body {
-  // cursor: none;
+	// cursor: none;
 }
 
 html {
-  scrollbar-gutter: stable;
+	scrollbar-gutter: stable;
 }
 
 @media (pointer: fine) {
-  *,
-  *::before,
-  *::after {
-  }
+	*,
+	*::before,
+	*::after {
+	}
 }
 
 body {
 }
 
 ::selection {
-  // TODO: Make this theme friendly
-  //   background-color: var(--black);
-  //   color: var(--white);
+	// TODO: Make this theme friendly
+	//   background-color: var(--black);
+	//   color: var(--white);
 }
 
 .theme--light {

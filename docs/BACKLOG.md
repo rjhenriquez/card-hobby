@@ -1,167 +1,227 @@
-# Card Hobby — Backlog
+# Card Hobby --- Backlog
 
 ## Purpose
 
-This document captures features, workflow improvements, and ideas discovered while building and using Card Hobby.
+This document captures future features and unresolved workflow
+improvements. Implemented behavior belongs in the requirements,
+architecture, database, and progress documents rather than remaining
+here.
 
-Items in this document are intended features or problems to solve, but their exact implementation has not necessarily been finalized.
+## Portfolio Financial Summaries
 
-Once a feature's behavior is clearly defined, its requirements should be moved or expanded into `REQUIREMENTS.md`.
+Define and implement portfolio-level financial reporting after the exact
+accounting semantics are agreed upon.
 
-Architecture and database documentation should only be updated once the implementation approach has been decided.
+Potential Investment metrics:
 
----
+-   Total Invested
+-   Current Inventory Cost
+-   Total Sales
+-   Realized Profit
+-   Realized ROI
 
-# PSA Submission Improvements
+Open definitions include:
 
-## Remove Card From PSA Submission
+-   Whether Total Invested means all historical spending or only capital
+    currently tied up.
+-   Whether Total Sales and Realized Profit include only payments
+    actually received.
+-   How unknown-cost pulled cards affect aggregate profit and ROI.
+-   Whether active PSA costs appear in a separate pending-cost metric.
+-   Separate Collection cost summary.
 
-There is currently no way to remove a card from a PSA submission after it has been added.
+Realized ROI should be an aggregate calculation, not an average of
+individual card ROI percentages.
 
-A card should be removable from an active PSA submission when it was added by mistake.
+## Historical Investment Tables
 
-Potential workflow:
+The Investment page should eventually separate current/unpaid inventory
+from historical paid/Sold cards.
 
-- Open PSA submission detail page.
-- Remove a card from the submission.
-- Require confirmation before removal.
-- Remove the corresponding `psa_submission_cards` relationship.
-- Preserve the underlying card record.
-- The card should immediately stop receiving PSA-derived status from that submission.
-- The card should become eligible to be added to another active PSA submission.
+Planned direction:
 
-Removal from an active submission should be treated differently from deleting historical grading information.
+-   Current table contains investment cards whose sale proceeds have not
+    yet been received, including Pending Payment.
+-   Paid/Sold cards move into historical year-based tables.
+-   Historical year grouping should use `soldDate`.
 
-Once a submission has been completed and contains grading history, removing the relationship should likely be restricted or require a separate correction workflow.
-
-Exact rules still need to be defined.
-
----
+This is deferred until imported test data and current workflows are
+stable.
 
 ## PSA Resubmission / Crack and Resubmit
 
-A card that has completed one PSA submission may later be submitted again.
+A completed card may later participate in another PSA submission. Each
+attempt creates a new `psa_submission_cards` relationship and preserves
+all previous grading history.
 
-Examples:
+Future work is primarily UX/presentation of multiple grading attempts.
 
-- Crack and resubmit
-- Review
-- Regrading
+## PSA Data Import
 
-This should create a new `psa_submission_cards` relationship for the new submission.
+The first CSV card importer intentionally imported ordinary card data
+only.
 
-The previous submission relationship and grading result must remain intact as historical grading data.
+A separate PSA importer should eventually reconstruct:
 
-A resubmission should therefore not "move" the old PSA relationship to the new submission.
+-   PSA submissions
+-   Submission/card relationships
+-   Grades/results
+-   Relevant historical submission information
 
-Conceptually:
+Do not infer active PSA state merely from old spreadsheet columns
+without defining the migration mapping.
 
-`Card → PSA Submission #1 → completed grade`
+## Collection Shared / Posted State
 
-then later:
+Collection cards should eventually support a persistent `isShared`-style
+property for tracking whether a card has been posted/shared publicly.
 
-`Card → PSA Submission #2 → new grading attempt`
+This remains deferred until current financial/package workflows are
+complete.
 
-Both grading attempts remain in the card's history.
+## Packages and Shipment Tracking
 
----
+The `/packages` route is now the umbrella UI for package tracking.
 
-# Shipment Tracking
+Current purchase-package support includes:
 
-## Shipment Tracking Page
+-   Multiple selected cards
+-   Shared subtotal, tax, and shipping
+-   Per-card hammer price
+-   Carrier
+-   Tracking number
+-   ETA
+-   Received/delivered state
 
-Add a dedicated page for tracking cards and PSA shipments that are currently in transit.
+Future package/shipment work should extend the generic page to include
+PSA-related shipments and other package types.
 
-The goal is to replace the small external shipment-tracking table currently used to keep track of incoming purchases.
+Potential future sources:
 
-Possible route:
+-   Incoming marketplace purchases
+-   PSA outbound shipment
+-   PSA return shipment
+-   Other incoming/outgoing card packages
 
-`/shipments`
+The generic shipment architecture should avoid assuming one package
+equals one card.
 
-The same shipment view should support multiple shipment sources and purposes.
+### Automated Carrier Tracking
 
-Examples include:
+Future integration may retrieve carrier status and ETA automatically
+from external carrier/tracking APIs.
 
-- Card purchased on eBay and being shipped to me.
-- Card purchased from another marketplace or seller.
-- PSA submission being returned from PSA.
-- Potentially a PSA submission being shipped from me to PSA.
-- Other card-related shipments in the future.
+Until then:
 
----
+-   Carrier is entered explicitly.
+-   Tracking number is stored.
+-   ETA is entered manually.
+-   Delivery/receipt is marked manually.
 
-## Purchase Shipment Example
+Quick carrier tracking links can be added before full API integration.
 
-Typical workflow:
+## Purchase Package Integrity
 
-1. Buy a card on eBay.
-2. Add the card to Card Hobby.
-3. Card appears in the Investment portfolio.
-4. Seller ships the card.
-5. Add shipment/tracking information.
-6. Shipment appears on the Shipments page.
-7. Track the card until delivery.
-8. Once delivered, the shipment can be marked completed/delivered while the card remains in the normal card inventory.
+Consider stronger enforcement that a card cannot belong to more than one
+purchase package.
 
-Potential shipment information includes:
+The current relationship uniqueness prevents duplicate membership within
+the same package but may still allow the same card to be attached to
+different purchase packages.
 
-- Carrier
-- Tracking number
-- Tracking URL
-- Shipment source
-- Ship date
-- Expected delivery date
-- Delivered date
-- Shipment status
-- Notes
-- Associated card or cards
+Define the desired correction/migration behavior before adding a
+stricter constraint.
 
-Exact fields still need to be decided.
+## Purchase Package Validation
 
----
+Consider requiring `itemsSubtotal > 0` when package tax allocation is
+used. The current derived-price query safely avoids division by zero,
+but the desired business validation should be explicit.
 
-## PSA Return Shipment Example
+## Unpaid eBay Purchases
 
-When PSA completes a submission and ships the graded cards back, the return shipment should appear in the same Shipments page used for incoming card purchases.
+The old spreadsheet contained `UNPAID` rows representing cards purchased
+on eBay but intentionally awaiting payment while accumulating purchases.
 
-Example:
+This is a distinct workflow and should not be mapped to `In Transit`.
 
-`PSA Submission #15288930`
+Define this acquisition/payment-before-shipment workflow separately when
+needed.
 
-could have a return shipment containing:
+## Autocomplete
 
-- Carrier
-- Tracking number
-- Tracking URL
-- Ship date
-- Expected delivery date
-- Delivered date
-- Current shipment status
+Suggest previously used values while allowing new values.
 
-The shipment should be associated with the PSA submission so the application knows which cards are included.
+Candidates:
 
-A PSA return shipment may contain multiple cards.
+-   Player
+-   Category
+-   Set
+-   Purchased From
+-   eBay Seller
+-   Sold Via
 
-This means shipment tracking should not assume that every shipment belongs to exactly one card.
+## Table Improvements
 
----
+Sorting is now implemented.
 
-## Unified Shipment Model
+Remaining table improvements may include:
 
-Shipment tracking should eventually use one general shipment concept rather than separate systems for:
+-   Filtering
+-   Search
+-   Faceted filters
+-   Column visibility
+-   Specialized portfolio filters
+-   Pagination if data volume requires it
 
-- eBay purchases
-- PSA returns
-- other purchases
-- future outbound shipments
+## Investment Analytics
 
-The Shipments page should provide one place to answer:
+Potential future analytics:
 
-- What cards are currently coming to me?
-- What PSA orders are currently coming back?
-- What is the tracking number?
-- When should the package arrive?
-- Has it been delivered?
-- What cards are inside that shipment?
+-   Total invested
+-   Active inventory cost
+-   Collection cost
+-   Total sales
+-   Profit over time
+-   ROI by player
+-   ROI by set
+-   Amount invested over time
+-   Average holding time
 
-The exact database model should be designed when this feature is implemented.
+## PSA Analytics
+
+Potential analytics beyond individual submissions:
+
+-   Overall Gem Rate
+-   Gem Rate by player
+-   Gem Rate by year
+-   Gem Rate by set
+-   Gem Rate by category
+-   Gem Rate over time
+-   Grade distribution
+-   Average grade
+
+## Sealed Products / Pulled Cards
+
+Future sealed-product tracking may record boxes, packs, breaks, purchase
+price/source/date, and cards pulled.
+
+Do not automatically allocate sealed-product cost to individual pulled
+cards until an explicit method is defined.
+
+## Portfolio Movement History
+
+A future history model could record Investment ↔ Collection moves with
+previous portfolio, new portfolio, date, and optional reason.
+
+## PSA Grade Metadata
+
+Future support may include full PSA grade names/abbreviations and
+qualifiers while keeping numeric grade separate.
+
+## Explicit PSA Reopen Workflow
+
+Completed submissions can currently be temporarily edited for
+corrections. If a true lifecycle-level "reopen" operation becomes
+necessary, define it separately rather than treating ordinary historical
+corrections as reopening.

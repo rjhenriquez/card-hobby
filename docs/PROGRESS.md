@@ -1,165 +1,308 @@
+# Card Hobby --- Progress
+
 ## Current State
 
-The initial PostgreSQL schema is deployed to Neon and the application can create, retrieve, update, and move card records through Drizzle ORM.
+The primary card lifecycle is functional across card creation/editing,
+Investment/Collection movement, PSA grading, finalized cost basis,
+sale/payment tracking, CSV test-data import, sorting, and multi-card
+purchase packages.
 
-Separate Investment and Collection views are working, with cards created directly into the appropriate portfolio. Cards can be moved between Investment and Collection without recreating the card or losing their original acquisition data or cost basis.
+Card editing has moved away from inline table editing. Add and Edit use
+the same right-side card drawer/form. Delete Card lives inside the Edit
+drawer and uses the reusable confirmation Modal.
 
-Card records are displayed using TanStack Table v9. Existing cards can be edited inline directly within their table row, including player, category, year, set, info, status, and purchase price.
+Sale information also lives in the Edit Card drawer as a separate Sale
+section with its own server action. The old standalone SellCard
+modal/component workflow has been removed.
 
-Table rows support multi-selection using TanStack Table row selection keyed by database card ID. Selected cards expose portfolio-level bulk actions.
+The sale lifecycle now distinguishes a sale from receipt of payment:
 
-A reusable right-side Drawer is used for creating new cards. A reusable Modal component is used for focused workflows such as portfolio movement and PSA submission actions.
+`Active/manual status → sale entered → Pending Payment → Payment Received → Sold`
 
-Selected cards can be added to a new PSA submission or an existing PSA submission. Creating a submission also creates the corresponding `psa_submission_cards` relationships.
+The `isPaid` field records whether proceeds have actually arrived.
+Payment receipt can be corrected later in either direction.
 
-PSA submissions have individual detail pages using the human-readable submission number in the URL:
+The card read model now derives Price, finalized Grading Cost, Total
+Cost, Profit, and ROI.
 
-`/psa-submissions/[submissionNumber]`
+A controlled CSV import successfully loaded 47 ordinary test cards.
 
-Each submission detail page displays its cards and allows submission metadata, grading costs, and individual grading results to be managed.
+TanStack Table v9 sorting is implemented.
 
-PSA submission metadata can be edited, including stage, sent date, received date, completed date, shipping cost, insurance cost, and total amount charged.
+Multi-row selection now supports both PSA submission workflows and
+purchase-package creation.
 
-Individual cards within a PSA submission can have a base grading fee, grading adjustment/upcharge, and grading result. Shared submission costs are allocated equally across the cards in the submission.
+Purchase packages are implemented for multiple cards purchased together.
+Shared tax and shipping are allocated into each card's effective Price,
+while each relationship stores its hammer price.
 
-Submission statistics are derived from individual grading results, including grade distribution, Gem Rate, and percentage graded PSA 9 or better.
-
-Cards may have multiple historical PSA submissions over their lifetime, but a card may belong to only one active PSA submission at a time.
-
-An active PSA submission controls the card's displayed status without replacing its stored manual status. For example, a card in a submission at the Assembly stage displays `PSA Grading - Assembly`.
-
-When the PSA submission is completed, it stops controlling the card's current displayed status and the card returns to its independently managed manual status.
-
-The card table displays the active PSA submission number and links directly to the corresponding submission detail page.
-
-Shared application types have begun moving into `types/types.ts` to avoid duplicating domain interfaces such as `Card` across components.
-
-Temporary development styles remain in `app/dev.scss` while core workflows are being built and tested.
+A generic `/packages` page now lists purchase packages and is being
+refined around a reusable `PackageModal`.
 
 ## Completed
 
-- Added PSA submission detail pages.
-- Changed PSA submission detail routes to use the human-readable submission number rather than the internal database ID.
-- Added `getPsaSubmissionByNumber()` database query.
-- Added retrieval of all cards belonging to an individual PSA submission.
-- Added reusable `PsaSubmissionForm` component.
-- Added editing of PSA submission stage.
-- Added editing of PSA sent date.
-- Added editing of PSA received date.
-- Added editing of PSA completed date.
-- Added editing of submission shipping cost.
-- Added editing of submission insurance cost.
-- Added editing of total amount charged by PSA.
-- Added reusable `PsaSubmissionCardRow` component.
-- Added per-card base grading fee.
-- Added per-card grading adjustment/upcharge.
-- Added equal allocation of shared shipping and insurance costs across submission cards.
-- Added derived total grading cost for each card.
-- Added individual PSA grading-result editing.
-- Added grading-result states:
-  - Pending
-  - Graded
-  - No Grade
-- Numeric grades are cleared when a grading result is changed to Pending or No Grade.
-- Fixed PSA grading-result forms so saved grading state remains synchronized in the UI without requiring a manual page refresh.
-- Added reusable `PsaSubmissionStats` component.
-- Added derived PSA grade buckets:
-  - PSA 10
-  - PSA 9
-  - PSA 8.5
-  - PSA 8
-  - PSA 7.5 or Less
-  - No Grade
-- Added derived completed-card count for PSA statistics.
-- Added derived Gem Rate.
-- Added derived percentage graded PSA 9 or better.
-- Defined No Grade as a completed negative grading outcome that counts in the denominator for Gem Rate and PSA 9-or-better calculations.
-- Pending cards are excluded from grading-statistic denominators until resolved.
-- Added validation preventing a card from belonging to more than one active PSA submission at the same time.
-- Added active-submission validation when creating a new PSA submission.
-- Added active-submission validation when adding cards to an existing PSA submission.
-- Preserved support for the same card appearing in multiple historical PSA submissions over its lifetime.
-- Defined an active PSA submission as a submission whose `completedDate` is null.
-- Added derived card `effectiveStatus`.
-- Active PSA submissions override the displayed card status without modifying the stored manual card status.
-- Active PSA stage is included in the derived status when available, for example `PSA Grading - Assembly`.
-- Completed PSA submissions stop controlling the card's displayed status.
-- Updated CardTable to display `effectiveStatus` rather than the underlying manual status.
-- Prevented manual status editing while an active PSA submission is controlling the card's displayed status.
-- Fixed the Collection page so it correctly queries and operates on Collection cards rather than Investment cards.
-- Added active PSA submission information to card queries.
-- Added `activePsaSubmissionNumber` to the card application model.
-- Added a PSA Submission column to CardTable.
-- Active PSA submission numbers link directly to `/psa-submissions/[submissionNumber]`.
-- Added a shared root-level `types/types.ts` file.
-- Moved the shared `Card` interface into `types/types.ts`.
-- Removed duplicated Card interfaces from `CardTable` and `CardPortfolio`.
-- Updated TanStack Table column typing to use the shared `Card` interface.
-- TypeScript validation passes cleanly after the shared Card type refactor.
+### Application Foundation
 
-## Current Work
+-   Neon/PostgreSQL + Drizzle deployed.
+-   Investment and Collection views.
+-   Shared card model.
+-   Add Card.
+-   Edit Card through reusable drawer.
+-   Delete Card from Edit drawer with confirmation Modal.
+-   Explicit Investment ↔ Collection movement.
+-   Sidebar navigation.
+-   Shared domain types.
+-   SCSS Modules per component.
+-   Temporary styling centralized in `styles/temporary.scss`.
+-   Prettier configuration and format-on-save established.
 
-Finishing integration of active PSA submission information into the main Investment and Collection card tables.
+### TanStack Table
 
-The card table now displays both the PSA-derived effective status and the active PSA submission number, with the submission number linking directly to its PSA submission detail page.
+-   TanStack Table v9.
+-   Database-ID row selection.
+-   Controlled selection owned by `CardPortfolio`.
+-   Client-side sorting using `rowSortingFeature`.
+-   `createSortedRowModel()` configured.
+-   Selection modes support different bulk workflows.
 
-The remaining workflow should be tested end-to-end before moving on to additional features.
+### PSA Submission Workflow
+
+-   Create PSA submission from selected cards.
+-   Add selected cards to existing submission.
+-   One active submission per card validation.
+-   Historical multiple submissions supported.
+-   Human-readable submission-number routes.
+-   Submission detail pages.
+-   Submission metadata/cost editing.
+-   Per-card grading fee/upcharge/result editing.
+-   Active relationship removal.
+-   Finished relationship protection.
+-   Finish Submission workflow.
+-   Finished submission read-only mode with explicit Edit Submission.
+-   Derived Total Submission Cost.
+-   Derived PSA grading statistics.
+-   Active PSA status override without overwriting manual status.
+-   Historical PSA submission links on cards.
+-   Finished PSA costs included in card financials; active costs
+    excluded.
+
+### Card Financial Read Model
+
+Derived fields now include:
+
+-   `gradingCost`
+-   `price`
+-   `totalCost`
+-   `profit`
+-   `roi`
+
+For standalone purchased cards, Price uses `purchasePrice`.
+
+For purchase-package cards, Price is derived from hammer price plus
+allocated tax and shipping.
+
+For pulled cards, Price and Total Cost remain unknown.
+
+`Total Cost = Price + finalized PSA Grading Cost`
+
+`Profit = Sold Price - Total Cost`
+
+`ROI = Profit ÷ Total Cost × 100`
+
+### Sale and Payment Workflow
+
+-   Sale fields are edited inside the Card drawer.
+-   Normal card metadata and sale data use separate actions/forms.
+-   `sellCard()` owns sale fields.
+-   Collection cards cannot be sold directly.
+-   Sale does not change portfolio.
+-   `isPaid` added.
+-   `Pending Payment` status added.
+-   Sale without received payment → Pending Payment.
+-   Payment received → Sold.
+-   Payment Received checkbox can be reversed for corrections.
+-   `soldDate` remains the actual sale date.
+-   No paid-date field.
+-   Pending Payment and Sold are excluded from normal manual status
+    choices.
+-   Profit and ROI remain derived.
+
+### CSV Test Import
+
+-   Built initial CSV card importer.
+-   Dry run successfully validated 47 card records.
+-   Imported all 47 test cards.
+-   Initial importer intentionally excludes PSA relationship
+    reconstruction.
+-   Duplicate protection is not yet implemented; do not blindly rerun
+    the same import.
+-   Old spreadsheet `UNPAID` concept was intentionally not mapped to In
+    Transit.
+
+### Purchase Packages
+
+Implemented database entities:
+
+-   `purchase_packages`
+-   `purchase_package_cards`
+
+Package fields include:
+
+-   Items Subtotal
+-   Shipping Total
+-   Taxes Total
+-   Carrier
+-   Tracking Number
+-   Estimated Delivery Date
+-   Received/Delivered boolean
+
+Per-card relationship stores:
+
+-   Hammer Price
+
+There is no Number of Items field. Package card count is derived from
+selected relationships.
+
+### Purchase Package Creation
+
+`CardPortfolio` selection mode now supports:
+
+-   PSA submission
+-   Purchase package
+
+The purchase-package creation workflow:
+
+1.  Select exactly the cards in the package.
+2.  Enter package subtotal, shipping, tax, logistics information.
+3.  Enter hammer price for each selected card.
+4.  Save package and relationships.
+5.  Clear selection.
+6.  Revalidate Investment/Collection so derived Price updates.
+
+The package formula is:
+
+`Price = hammerPrice + (hammerPrice × taxesTotal ÷ itemsSubtotal) + (shippingTotal ÷ packageCardCount)`
+
+Tax is proportional; shipping is equal.
+
+The package-derived amount is the card's visible **Price**, not a second
+"Acquisition Cost" field.
+
+`cards.purchasePrice` remains the standalone underlying purchase value
+and is not overwritten by package calculations.
+
+### Packages Page
+
+Added generic route:
+
+`/packages`
+
+Current purchase-package list includes package logistics/status and the
+cards inside each package.
+
+Desired collapsed package presentation:
+
+-   Package \#
+-   Total Value
+-   Carrier
+-   Tracking
+-   ETA
+-   Status
+-   Cards inside package
+
+Cards remain visible while collapsed using identifying card information:
+
+-   Player
+-   Category
+-   Year
+-   Set
+-   Info
+
+Hammer prices and detailed financial breakdown belong to the expanded
+state.
+
+### Package Editing / PackageModal
+
+A reusable `PackageModal` is being introduced so package
+editing/creation behavior and styling are not duplicated.
+
+The modal accepts context/location so behavior can differ by where it is
+opened.
+
+Planned/current direction:
+
+-   Investment/Collection context can expose full package information.
+-   Packages-page Edit initially exposes tracking/logistics/status
+    fields.
+-   An Expand button inside the modal reveals financial fields and
+    per-card hammer prices for corrections.
+-   Package cards remain visible even before expansion.
+
+The Packages page itself also supports an Expand/Collapse presentation
+for detailed financial information.
+
+## Current Lifecycle
+
+``` text
+Create/import card
+→ Investment or Collection
+→ Move between portfolios when needed
+→ Optional purchase package allocation
+→ Add to PSA Submission
+→ PSA-controlled displayed status
+→ Enter PSA costs/results
+→ Finish Submission
+→ Finalized grading cost enters card financials
+→ Optional sale entered
+→ Pending Payment
+→ Payment Received
+→ Sold
+→ Profit/ROI derived
+→ Preserve card, sale, package, and PSA history
+```
 
 ## Important Recent Decisions
 
-- A card may have unlimited historical PSA submissions over its lifetime.
-- A card may belong to only one active PSA submission at a time.
-- A PSA submission is considered active while `completedDate` is null.
-- Completing a PSA submission releases its cards from submission-controlled status.
-- PSA submission stage is not copied into the card's stored status.
-- `status` represents the card's stored/manual status.
-- `effectiveStatus` represents the status currently displayed by the application.
-- When a card belongs to an active PSA submission, `effectiveStatus` is derived from that submission.
-- PSA-derived status should include the current submission stage when available, such as `PSA Grading - Assembly`.
-- Manual card status remains preserved while PSA controls the displayed status.
-- Cards controlled by an active PSA submission should not expose manual status editing until the submission is completed.
-- The active PSA submission number should be visible directly from the card table and link to the submission detail page.
-- PSA submission URLs use the human-readable submission number rather than the internal database ID.
-- PSA grading results distinguish between Pending, Graded, and No Grade.
-- PSA 8.5 is tracked as its own grade bucket.
-- Grades of PSA 7.5 or lower are grouped into the `7.5 or Less` bucket for current submission statistics.
-- No Grade counts as a completed grading outcome.
-- No Grade counts in the denominator when calculating Gem Rate.
-- No Grade counts in the denominator when calculating percentage PSA 9 or better.
-- Pending cards do not count in grading-statistic denominators.
-- Gem Rate is calculated as:
-
-  `PSA 10 / completed grading outcomes`
-
-- Percentage PSA 9 or better is calculated as:
-
-  `(PSA 10 + PSA 9) / completed grading outcomes`
-
-- Shared PSA shipping and insurance costs are divided equally among cards in the submission.
-- Per-card grading cost is calculated as:
-
-  `base grading fee + allocated shared submission cost + grading adjustment`
-
-- `total_amount_charged` remains stored at the PSA submission level for reconciliation.
-- Shared domain interfaces should live in `types/types.ts` rather than being duplicated across components.
+-   Card editing is drawer-based, not inline.
+-   Sale fields live in the same Edit Card drawer but use a separate
+    sale action.
+-   Delete Card lives in Edit drawer with reusable confirmation Modal.
+-   Sold is not merely "sale exists"; payment receipt controls
+    transition to Sold.
+-   `isPaid` is the factual payment-received flag.
+-   Pending Payment and Sold are workflow-controlled statuses.
+-   Payment receipt is reversible for correction.
+-   No `paidDate`.
+-   Current/historical Investment tables are deferred until test data is
+    stable.
+-   Sorting is implemented.
+-   Bulk selection has explicit workflow modes.
+-   Purchase-package item count is derived from selected cards.
+-   Package-derived Price replaces standalone purchase price in the read
+    model when a package relationship exists.
+-   Package Price does not overwrite `cards.purchasePrice`.
+-   Total Cost continues to mean Price + finalized PSA grading cost.
+-   `/packages` is a generic UI route even though current
+    DB/query/action entities remain purchase-specific.
+-   Carrier, tracking, ETA, and received state are manual for now.
+-   No shipped/delivered date fields are required yet.
+-   Package cards should always be visible on the package page; hammer
+    prices/details require expansion.
+-   Reusable `PackageModal` should centralize package workflow/styling
+    and adapt by location.
+-   Portfolio-level financial summaries remain intentionally paused
+    until metric definitions are agreed upon.
 
 ## Next Step
 
-Test the complete PSA workflow end-to-end:
+Continue the package UI refinement, especially the reusable
+`PackageModal` and Packages-page editing behavior.
 
-1. Create cards.
-2. Select multiple cards.
-3. Create a new PSA submission from the selected cards.
-4. Confirm those cards display the PSA-derived status.
-5. Confirm the active PSA submission number appears in the card table.
-6. Confirm the submission number links to the correct PSA submission detail page.
-7. Update the PSA submission through multiple grading stages.
-8. Confirm card `effectiveStatus` follows the current submission stage.
-9. Enter individual grading costs and adjustments.
-10. Enter individual grading results, including graded and No Grade outcomes.
-11. Verify grade buckets, Gem Rate, and PSA 9-or-better calculations.
-12. Complete the PSA submission.
-13. Confirm the submission no longer controls the cards' displayed statuses.
-14. Confirm the cards retain their original manual statuses.
-15. Confirm the completed PSA submission remains available as grading history.
-16. Confirm those cards can later be added to another PSA submission.
+After package UI is stable, likely next work includes either:
+
+-   defining portfolio-level financial summaries, or
+-   extending package/shipment tracking toward PSA outbound/return
+    shipments.
+
+Historical year-based paid/Sold Investment tables remain planned but
+deferred until the imported data and lifecycle behavior are stable.

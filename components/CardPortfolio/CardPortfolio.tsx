@@ -6,161 +6,286 @@ import { CardTable } from "@/components/CardTable/CardTable";
 import { Modal } from "@/components/Modal/Modal";
 import { moveCardToPortfolio } from "@/app/actions/cards";
 import {
-  addCardsToPsaSubmission,
-  createPsaSubmission,
+	addCardsToPsaSubmission,
+	createPsaSubmission,
 } from "@/app/actions/psaSubmissions";
+import { createPurchasePackage } from "@/app/actions/purchasePackages";
+import { AddCard } from "@/components/AddCard/AddCard";
+import { PackageModal } from "@/components/PackageModal/PackageModal";
 import type { Card } from "@/types/types";
 
 import styles from "./CardPortfolio.module.scss";
 
 interface CardStatus {
-  id: number;
-  name: string;
+	id: number;
+	name: string;
 }
 
 interface PsaSubmission {
-  id: number;
-  submissionNumber: string;
-  stage: string | null;
-  sentDate: string | null;
-  receivedDate: string | null;
-  completedDate: string | null;
+	id: number;
+	submissionNumber: string;
+	stage: string | null;
+	sentDate: string | null;
+	receivedDate: string | null;
+	completedDate: string | null;
 }
 
 interface CardPortfolioProps {
-  cards: Card[];
-  statuses: CardStatus[];
-  psaSubmissions: PsaSubmission[];
-  portfolio: "investment" | "collection";
+	cards: Card[];
+	statuses: CardStatus[];
+	psaSubmissions: PsaSubmission[];
+	portfolio: "investment" | "collection";
 }
 
+type SelectionMode = "submission" | "purchase-package" | null;
+
 export function CardPortfolio({
-  cards,
-  statuses,
-  psaSubmissions,
-  portfolio,
+	cards,
+	statuses,
+	psaSubmissions,
+	portfolio,
 }: CardPortfolioProps) {
-  const [cardToMove, setCardToMove] = useState<Card | null>(null);
-  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
-  const [isPsaModalOpen, setIsPsaModalOpen] = useState(false);
-  const destination = portfolio === "investment" ? "collection" : "investment";
+	const [cardToMove, setCardToMove] = useState<Card | null>(null);
+	const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+	const [selectionMode, setSelectionMode] = useState<SelectionMode>(null);
+	const [isPsaModalOpen, setIsPsaModalOpen] = useState(false);
+	const [isPurchasePackageModalOpen, setIsPurchasePackageModalOpen] =
+		useState(false);
+	const [psaError, setPsaError] = useState<string | null>(null);
+	const [purchasePackageError, setPurchasePackageError] = useState<
+		string | null
+	>(null);
+	const [isSavingPurchasePackage, setIsSavingPurchasePackage] = useState(false);
+	const [editingCard, setEditingCard] = useState<Card | null>(null);
 
-  async function handleMove() {
-    if (!cardToMove) {
-      return;
-    }
+	const destination = portfolio === "investment" ? "collection" : "investment";
 
-    await moveCardToPortfolio(cardToMove.id, destination);
+	const selectedCardIds = Object.keys(rowSelection)
+		.filter((id) => rowSelection[id])
+		.map(Number);
 
-    setCardToMove(null);
-  }
-  function getSelectedCardIds() {
-    return Object.keys(rowSelection)
-      .filter((id) => rowSelection[id])
-      .map(Number);
-  }
-  async function handleCreatePsaSubmission(formData: FormData) {
-    const submissionNumber = formData.get("submissionNumber");
+	const selectedCards = cards.filter((card) =>
+		selectedCardIds.includes(card.id),
+	);
 
-    if (typeof submissionNumber !== "string") {
-      return;
-    }
+	async function handleMove() {
+		if (!cardToMove) {
+			return;
+		}
 
-    await createPsaSubmission(submissionNumber, getSelectedCardIds());
+		await moveCardToPortfolio(cardToMove.id, destination);
 
-    setIsPsaModalOpen(false);
-    setRowSelection({});
-  }
-  async function handleAddToPsaSubmission(submissionId: number) {
-    await addCardsToPsaSubmission(submissionId, getSelectedCardIds());
+		setCardToMove(null);
+	}
 
-    setIsPsaModalOpen(false);
-    setRowSelection({});
-  }
+	function getSelectedCardIds() {
+		return Object.keys(rowSelection)
+			.filter((id) => rowSelection[id])
+			.map(Number);
+	}
 
-  return (
-    <div className={styles.CardPortfolio}>
-      {Object.keys(rowSelection).length > 0 && (
-        <div className="DevBulkActions">
-          <strong>{Object.keys(rowSelection).length} selected</strong>
-          <button type="button" onClick={() => setIsPsaModalOpen(true)}>
-            Add to PSA Submission
-          </button>
-        </div>
-      )}
-      <CardTable
-        cards={cards}
-        statuses={statuses}
-        portfolio={portfolio}
-        rowSelection={rowSelection}
-        onRowSelectionChange={setRowSelection}
-        onMoveCard={setCardToMove}
-      />
+	function clearSelection() {
+		setRowSelection({});
+		setSelectionMode(null);
+	}
 
-      <Modal
-        isOpen={cardToMove !== null}
-        title={`Move to ${
-          destination === "investment" ? "Investment" : "Collection"
-        }`}
-        onClose={() => setCardToMove(null)}
-      >
-        <p>
-          Are you sure you want to move <strong>{cardToMove?.player}</strong> to{" "}
-          {destination === "investment" ? "Investment" : "Collection"}?
-        </p>
+	async function handleCreatePsaSubmission(formData: FormData) {
+		const submissionNumber = formData.get("submissionNumber");
 
-        <div>
-          <button type="button" onClick={() => setCardToMove(null)}>
-            Cancel
-          </button>
+		if (typeof submissionNumber !== "string") {
+			return;
+		}
 
-          <button type="button" onClick={handleMove}>
-            Move
-          </button>
-        </div>
-      </Modal>
-      <Modal
-        isOpen={isPsaModalOpen}
-        title="Add to PSA Submission"
-        onClose={() => setIsPsaModalOpen(false)}
-      >
-        <p>
-          {Object.keys(rowSelection).length} card
-          {Object.keys(rowSelection).length === 1 ? "" : "s"} selected.
-        </p>
+		setPsaError(null);
 
-        {psaSubmissions.length === 0 ? (
-          <p>No PSA submissions yet.</p>
-        ) : (
-          <ul>
-            {psaSubmissions.map((submission) => (
-              <li key={submission.id}>
-                <strong>{submission.submissionNumber}</strong>
-                {submission.stage && <> — {submission.stage}</>}{" "}
-                <button
-                  type="button"
-                  onClick={() => handleAddToPsaSubmission(submission.id)}
-                >
-                  Add
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
+		try {
+			await createPsaSubmission(submissionNumber, getSelectedCardIds());
 
-        <form action={handleCreatePsaSubmission}>
-          <label>
-            Submission Number
-            <input type="text" name="submissionNumber" required />
-          </label>
+			setIsPsaModalOpen(false);
+			clearSelection();
+		} catch (error) {
+			setPsaError(
+				error instanceof Error
+					? error.message
+					: "Unable to create PSA submission.",
+			);
+		}
+	}
 
-          <button type="submit">Create New Submission</button>
-        </form>
+	async function handleAddToPsaSubmission(submissionId: number) {
+		setPsaError(null);
 
-        <button type="button" onClick={() => setIsPsaModalOpen(false)}>
-          Cancel
-        </button>
-      </Modal>
-    </div>
-  );
+		try {
+			await addCardsToPsaSubmission(submissionId, getSelectedCardIds());
+
+			setIsPsaModalOpen(false);
+			clearSelection();
+		} catch (error) {
+			setPsaError(
+				error instanceof Error
+					? error.message
+					: "Unable to add cards to PSA submission.",
+			);
+		}
+	}
+
+	async function handleCreatePurchasePackage(formData: FormData) {
+		setPurchasePackageError(null);
+		setIsSavingPurchasePackage(true);
+
+		try {
+			await createPurchasePackage({
+				itemsSubtotal: String(formData.get("itemsSubtotal") ?? ""),
+				shippingTotal: String(formData.get("shippingTotal") ?? ""),
+				taxesTotal: String(formData.get("taxesTotal") ?? ""),
+				carrier: getOptionalFormValue(formData, "carrier"),
+				trackingNumber: getOptionalFormValue(formData, "trackingNumber"),
+				estimatedDeliveryDate: getOptionalFormValue(
+					formData,
+					"estimatedDeliveryDate",
+				),
+				cards: selectedCards.map((card) => ({
+					cardId: card.id,
+					hammerPrice: String(formData.get(`hammerPrice-${card.id}`) ?? ""),
+				})),
+			});
+
+			setIsPurchasePackageModalOpen(false);
+			clearSelection();
+		} catch (error) {
+			setPurchasePackageError(
+				error instanceof Error
+					? error.message
+					: "Unable to create purchase package.",
+			);
+		} finally {
+			setIsSavingPurchasePackage(false);
+		}
+	}
+
+	function getOptionalFormValue(formData: FormData, name: string) {
+		const value = formData.get(name);
+
+		if (typeof value !== "string") {
+			return null;
+		}
+
+		const trimmedValue = value.trim();
+
+		return trimmedValue === "" ? null : trimmedValue;
+	}
+
+	function handleClosePsaModal() {
+		setIsPsaModalOpen(false);
+		setPsaError(null);
+	}
+
+	function handleClosePurchasePackageModal() {
+		setIsPurchasePackageModalOpen(false);
+		setPurchasePackageError(null);
+	}
+
+	return (
+		<div className={styles.CardPortfolio}>
+			<CardTable
+				cards={cards}
+				portfolio={portfolio}
+				rowSelection={rowSelection}
+				selectionMode={selectionMode}
+				onRowSelectionChange={setRowSelection}
+				onSelectionModeChange={setSelectionMode}
+				onCreateSubmission={() => setIsPsaModalOpen(true)}
+				onCreatePurchasePackage={() => setIsPurchasePackageModalOpen(true)}
+				onMoveCard={setCardToMove}
+				onEditCard={setEditingCard}
+			/>
+
+			<AddCard
+				statuses={statuses}
+				portfolio={portfolio}
+				card={editingCard}
+				onCloseEdit={() => setEditingCard(null)}
+				editOnly
+			/>
+
+			<Modal
+				isOpen={cardToMove !== null}
+				title={`Move to ${
+					destination === "investment" ? "Investment" : "Collection"
+				}`}
+				onClose={() => setCardToMove(null)}
+			>
+				<p>
+					Are you sure you want to move <strong>{cardToMove?.player}</strong> to{" "}
+					{destination === "investment" ? "Investment" : "Collection"}?
+				</p>
+
+				<div>
+					<button type='button' onClick={() => setCardToMove(null)}>
+						Cancel
+					</button>
+
+					<button type='button' onClick={handleMove}>
+						Move
+					</button>
+				</div>
+			</Modal>
+
+			<Modal
+				isOpen={isPsaModalOpen}
+				title='Add to PSA Submission'
+				onClose={handleClosePsaModal}
+			>
+				<p>
+					{selectedCardIds.length} card
+					{selectedCardIds.length === 1 ? "" : "s"} selected.
+				</p>
+
+				{psaError && <p role='alert'>{psaError}</p>}
+
+				{psaSubmissions.length === 0 ? (
+					<p>No PSA submissions yet.</p>
+				) : (
+					<ul>
+						{psaSubmissions.map((submission) => (
+							<li key={submission.id}>
+								<strong>{submission.submissionNumber}</strong>
+								{submission.stage && <> — {submission.stage}</>}{" "}
+								<button
+									type='button'
+									onClick={() => handleAddToPsaSubmission(submission.id)}
+								>
+									Add
+								</button>
+							</li>
+						))}
+					</ul>
+				)}
+
+				<form action={handleCreatePsaSubmission}>
+					<label>
+						Submission Number
+						<input type='text' name='submissionNumber' required />
+					</label>
+
+					<button type='submit'>Create New Submission</button>
+				</form>
+
+				<button type='button' onClick={handleClosePsaModal}>
+					Cancel
+				</button>
+			</Modal>
+
+			<PackageModal
+				isOpen={isPurchasePackageModalOpen}
+				mode='create'
+				location={portfolio}
+				selectedCards={selectedCards}
+				isSaving={isSavingPurchasePackage}
+				error={purchasePackageError}
+				onClose={handleClosePurchasePackageModal}
+				onSubmit={handleCreatePurchasePackage}
+			/>
+		</div>
+	);
 }

@@ -1,57 +1,65 @@
 "use client";
 
-import { ReactNode, useEffect } from "react";
+import { ReactNode, useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import styles from "./Modal.module.scss";
 
 interface ModalProps {
-  isOpen: boolean;
-  title: string;
-  children: ReactNode;
-  onClose: () => void;
+	isOpen: boolean;
+	title: string;
+	children: ReactNode;
+	onClose: () => void;
 }
 
 export function Modal({ isOpen, title, children, onClose }: ModalProps) {
-  useEffect(() => {
-    if (!isOpen) {
-      return;
-    }
+	const [isMounted, setIsMounted] = useState(false);
 
-    function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape") {
-        onClose();
-      }
-    }
+	useEffect(() => {
+		setIsMounted(true);
+	}, []);
 
-    document.addEventListener("keydown", handleKeyDown);
+	useEffect(() => {
+		if (!isOpen) {
+			return;
+		}
 
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [isOpen, onClose]);
+		function handleKeyDown(event: KeyboardEvent) {
+			if (event.key === "Escape") {
+				onClose();
+			}
+		}
 
-  if (!isOpen) {
-    return null;
-  }
+		document.addEventListener("keydown", handleKeyDown);
 
-  return (
-    <div className={`${styles.Modal} DevModal`} onClick={onClose}>
-      <div
-        className="DevModal__dialog"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="modal-title"
-        onClick={(event) => event.stopPropagation()}
-      >
-        <header className="DevModal__header">
-          <h2 id="modal-title">{title}</h2>
+		return () => {
+			document.removeEventListener("keydown", handleKeyDown);
+		};
+	}, [isOpen, onClose]);
 
-          <button type="button" aria-label="Close" onClick={onClose}>
-            ×
-          </button>
-        </header>
+	if (!isMounted || !isOpen) {
+		return null;
+	}
 
-        {children}
-      </div>
-    </div>
-  );
+	return createPortal(
+		<div className={`${styles.Modal} DevModal`} onClick={onClose}>
+			<div
+				className='DevModal__dialog'
+				role='dialog'
+				aria-modal='true'
+				aria-labelledby='modal-title'
+				onClick={(event) => event.stopPropagation()}
+			>
+				<header className='DevModal__header'>
+					<h2 id='modal-title'>{title}</h2>
+
+					<button type='button' aria-label='Close' onClick={onClose}>
+						×
+					</button>
+				</header>
+
+				{children}
+			</div>
+		</div>,
+		document.body,
+	);
 }

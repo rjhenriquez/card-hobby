@@ -1,546 +1,476 @@
-# Card Hobby — Requirements
+# Card Hobby --- Requirements
 
 ## Purpose
 
-Build a personal application for managing sports-card investments, PSA grading submissions, grading performance, sales, and a personal card collection.
+Build a personal application for managing sports-card investments,
+personal collection cards, PSA grading submissions, grading performance,
+sales/payment receipt, purchase packages, cost basis, and future
+analytics.
 
-The application will eventually replace several separate Apple Numbers files with one connected system.
+The application replaces disconnected spreadsheet workflows with one
+connected source of truth.
 
-Existing Numbers data will **not** be imported during initial development. The application will first be built and tested using records created manually through the application. Existing data will be imported later after the workflows and data model are stable.
-
----
+Initial development began with manually created records. A controlled
+CSV test import has now successfully loaded ordinary card data; PSA
+historical migration remains separate/deferred.
 
 ## 1. Cards
 
-Cards are the central records in the application.
+Cards are the central records and are shared between Investment and
+Collection.
 
-Investment cards and personal collection cards should use the same underlying card model rather than being completely separate types of records.
+Typical information includes:
 
-### Typical card information
+-   Player
+-   Category
+-   Year
+-   Set
+-   Info
+-   Notes
+-   Acquisition type
+-   Purchase Date
+-   Purchased From
+-   eBay Seller
+-   Standalone Purchase Price
+-   Effective Price
+-   Current/effective Status
+-   PSA history
+-   Sale/payment information
 
-- Player
-- Category
-- Year
-- Set
-- Info
-- Notes
-- Purchase Date
-- Purchased From
-- eBay Seller
-- Purchase Price / Cost
-- Current Status
-- Grading information
-- Sale information
+## 2. Portfolios
 
-### Existing Investment Spreadsheet
+A card belongs to either Investment or Collection and must move between
+them without duplication or loss of history/cost basis.
 
-The existing investment spreadsheet currently contains:
+Investment → Collection removes it from active investment totals and
+makes it part of Collection.
 
-- Player
-- Category
-- Status
-- Year
-- Set
-- Info
-- Notes
-- Purchase Date
-- Purchased From
-- eBay Seller
-- Price
-- Grading
-- PSA Sub #
-- Grading Result
-- Total
-- Sold
-- Sold Date
-- Profit
-- Percentage
+Collection → Investment restores it to Investment while preserving
+original financial/history data.
 
-These existing columns are reference material only. The new application's data model does not need to match the spreadsheet exactly.
+Collection cards cannot be sold directly. They must first move to
+Investment.
 
----
+## 3. Card Status
 
-## 2. Card Portfolios
+Statuses are extensible database records, not a fixed enum.
 
-A card can primarily belong to one of two areas:
+Known examples include:
 
-- Investment
-- Collection
+-   In Transit
+-   Lost In Transit
+-   Raw Pile
+-   DCSports Submission
+-   Pending Payment
+-   Sold
 
-Investment and Collection are different views/usages of the same underlying card records.
+Pending Payment and Sold are workflow-controlled sale/payment states and
+should not be manually selected through ordinary card editing.
 
-Cards must be movable between Investment and Collection without creating a duplicate card or losing the card's existing information/history.
+Active PSA submissions can temporarily override displayed status without
+overwriting the stored manual status.
 
----
+## 4. Card Creation, Editing, and Deletion
 
-## 3. Investment → Collection
+Cards must support Add, Edit, Delete, status changes, portfolio
+movement, PSA workflows, purchase-package workflows, and sale entry.
 
-If an investment card is moved into the personal collection:
+Add/Edit Card uses the same reusable drawer/form workflow.
 
-- The card's original purchase information is preserved.
-- Its cost is removed from investment totals.
-- Its cost becomes part of collection costs.
-- It is no longer counted as active investment inventory.
+Delete Card is available from Edit Card and requires reusable Modal
+confirmation.
 
----
+Ordinary card editing must not silently change portfolio or sale
+lifecycle state.
 
-## 4. Collection → Investment
+## 5. PSA Submissions
 
-A collection card can later be moved back into Investments.
+PSA submissions are separate records containing multiple cards.
 
-Its original cost basis should remain available.
+Requirements include:
 
-### Example
+-   Select multiple cards.
+-   Create a new submission.
+-   Add to an existing active submission.
+-   View submission detail.
+-   Edit submission metadata/costs/results.
+-   Remove accidentally added cards from active submissions.
+-   Finish a submission.
+-   Preserve completed relationships/history.
+-   Allow multiple historical grading attempts.
+-   Allow only one active submission per card.
 
-A card is originally purchased for **$300**.
+An active submission has no Completed Date.
 
-The card moves:
+## 6. PSA Status
 
-`Investment → Collection`
+While a submission is active, its stage controls the cards' displayed
+PSA status:
 
-Three years later it moves:
+`PSA Grading - {stage}`
 
-`Collection → Investment`
+The PSA stage is not copied into each card's stored status.
 
-The card then sells for **$800**.
+When the submission finishes, each card returns to its independently
+controlled manual/workflow status.
 
-The original **$300 cost basis** should still be used when calculating the eventual investment profit/ROI, along with any other applicable expenses.
+## 7. PSA Results and Analytics
 
----
+Relationship-level grade statuses:
 
-## 5. Personal Collection
+-   Pending
+-   Graded
+-   No Grade
 
-The current Collection Numbers file contains:
+Statistical buckets:
 
-- Player
-- Year
-- Set
-- Info
-- Notes
-- State
-- Purchase Date
-- Cost
+-   PSA 10
+-   PSA 9
+-   PSA 8.5
+-   PSA 8
+-   PSA 7.5 or lower
+-   No Grade
 
-The new Collection view does not need to preserve these exact columns.
+Completed outcomes include Graded and No Grade. Pending is excluded.
 
-Collection cards should use the shared Card model, and the Collection table can simply display the fields that are relevant to collection management.
+`Gem Rate = PSA 10s ÷ Completed Outcomes`
 
----
+`9 or Better = (PSA 10s + PSA 9s) ÷ Completed Outcomes`
 
-## 6. Card Status
+No Grade counts in both denominators.
 
-Card status represents where an individual card currently is in its lifecycle.
+## 8. PSA Costs
 
-Existing examples include:
+Submission shared costs:
 
-- In Transit
-- Lost In Transit
-- Raw Pile
-- DCSports Submission
-- Sold
+-   Outbound Shipping
+-   Insured Return Shipping
 
-These are examples, **not a permanent fixed list**.
+Per-card costs:
 
-The application should not be designed around a restrictive list of statuses because additional statuses/workflows may be needed later.
+-   Base Grading Fee
+-   Grading Adjustment / Upcharge
 
-Before grading, individual card statuses are generally manually controlled.
+Shared cost allocation is equal across all cards in the submission.
 
----
+`Shared Cost Per Card = (Outbound Shipping + Insured Return Shipping) ÷ N`
 
-## 7. Status vs. Sale Method
+`Card Submission Grading Cost = Base Fee + Adjustment + Shared Cost`
 
-Card status and how/where a card was sold are separate concepts.
+`Total Submission Cost = Sum Base Fees + Sum Adjustments + Outbound Shipping + Insured Return Shipping`
 
-For example, `Dallas Card Show` should **not** be the card status.
+Total Submission Cost is derived, not stored.
 
-Instead:
+Only finished PSA submissions contribute to card financial totals.
 
-- **Status:** Sold
-- **Sold Via:** Dallas Card Show
+## 9. Finished PSA Submissions
 
-Other examples:
+Finish Submission automatically assigns completion date.
 
-- **Status:** Sold
-- **Sold Via:** eBay
+Finishing:
 
-or:
+-   Ends active status control.
+-   Preserves relationships/history.
+-   Makes costs eligible for card financial totals.
+-   Allows cards to enter future submissions.
 
-- **Status:** Sold
-- **Sold Via:** DC Sports
+Finished submissions are read-only by default but can be explicitly
+unlocked for corrections.
 
-Sale-related information should therefore be stored separately from card status.
+Completed relationships are not normally removable.
 
-Expected sale information includes things such as:
+## 10. Purchase Packages
 
-- Sold status
-- Sold Via / Sale Channel
-- Sold Date
-- Sold Price
+The application must support multiple cards purchased together in one
+package, initially targeting eBay-style combined purchases.
 
-Profit and ROI/percentage should be calculated from the underlying financial information rather than manually maintained values whenever possible.
+A package is created by selecting exactly the cards that belong to it.
 
----
+Package information includes:
 
-## 8. PSA Submissions
+-   Items Subtotal
+-   Shipping Total
+-   Taxes Total
+-   Carrier
+-   Tracking Number
+-   Estimated Delivery Date
+-   Received/Delivered state
 
-PSA submissions are separate records from cards.
+Each selected card has its own Hammer Price.
 
-A PSA submission contains multiple cards.
+There is no manually entered/stored Number of Items. Item count is
+derived from attached cards.
 
-The workflow should allow:
+## 11. Package Price Allocation
 
-- Selecting multiple cards.
-- Adding the selected cards to an existing PSA submission.
-- Creating a new PSA submission from selected cards.
-- Viewing all cards belonging to a submission.
-- Updating the submission as it moves through PSA.
+For a package containing `N` cards:
 
-A card's PSA submission should remain part of its grading history after the submission is completed.
+`Allocated Tax = Hammer Price × Taxes Total ÷ Items Subtotal`
 
----
+`Allocated Shipping = Shipping Total ÷ N`
 
-## 9. Multiple PSA Submissions / Grading History
+`Price = Hammer Price + Allocated Tax + Allocated Shipping`
 
-The data model should allow a card to potentially participate in more than one PSA submission during its lifetime.
+Tax is proportional to hammer price. Shipping is equal per card.
 
-This allows future workflows such as:
+The derived package amount is the card's **Price**.
 
-- Crack and resubmit
-- Regrading
-- Review
-- Other future grading scenarios
+Do not introduce a separate visible "Acquisition Cost" concept for this
+calculation.
 
-A new submission should not destroy the card's previous grading history.
+For standalone purchased cards, Price comes from the card's standalone
+Purchase Price.
 
----
+For package cards, package-derived Price takes precedence in the read
+model without overwriting the stored standalone `purchase_price`.
 
-## 10. PSA Grouped Status
+For pulled cards, Price remains unknown.
 
-Cards behave differently while they are being prepared for grading or are actively being graded.
+## 12. Packages Page
 
-During this part of the lifecycle, cards can share/inherit status information from their PSA submission.
+The application has a generic:
 
-Instead of manually changing every card in a submission, the submission should be updated once and all cards belonging to the active submission should reflect that change.
+`/packages`
 
-### Example
+route.
 
-A submission has:
+Although current persistence is purchase-package-specific, the route
+should eventually support all relevant incoming/outgoing packages,
+including PSA logistics.
 
-**PSA Stage:** Assembly
+For each purchase package, the default/collapsed view should show:
 
-Cards in that submission could display:
+-   Package identifier
+-   Total package value
+-   Carrier
+-   Tracking number
+-   ETA
+-   Current received/in-transit state
+-   Cards inside the package
 
-**PSA Grading - Assembly**
+Cards must remain visible even when the package is not expanded.
 
-If the submission later changes to another PSA stage, all cards in that active submission should automatically reflect the new stage.
+Collapsed card information should include:
 
-The exact PSA stages will be defined later.
+-   Player
+-   Category
+-   Year
+-   Set
+-   Info
 
-The important requirement is that the **PSA submission controls the shared grading status while the submission is active**.
+Hammer prices and detailed financial breakdown should be hidden until
+expanded.
 
-The application should not need to copy the PSA stage into every individual card record.
+## 13. Package Editing
 
----
+Package workflows should use a reusable `PackageModal` so behavior and
+styling are centralized.
 
-## 11. Status After PSA Grading
+The modal must accept context/location.
 
-Once grading is completed, the PSA submission should **stop controlling the current status of the individual cards**.
+When opened from Investment or Collection package workflows, the full
+package information can be available.
 
-Each graded card must once again have an independently controllable/manual status.
+When Edit is opened from the Packages page, the initial edit view should
+focus on logistics/status:
 
-This is important because cards from the same completed submission may immediately follow very different paths.
+-   Carrier
+-   Tracking Number
+-   ETA
+-   Mark Received/Delivered
 
-For example:
+The modal must include an Expand control that allows financial
+corrections when needed, including:
 
-- One card may be held.
-- One may be listed on eBay.
-- One may be sent to a consignor.
-- One may be sold at a card show.
-- One may move into the personal collection.
-- Another may follow a completely different workflow.
+-   Items Subtotal
+-   Shipping Total
+-   Taxes Total
+-   Per-card Hammer Price
 
-The completed PSA submission and grading result remain part of the card's history, but they no longer dictate its current status.
+Cards should remain visible even before expansion.
 
----
+## 14. Sale and Payment Lifecycle
 
-## 12. PSA Grading Results
+Sale information is separate from normal card metadata.
 
-Individual cards within a PSA submission need their own grading results.
+Stored sale fields include:
 
-Examples include:
+-   Sold Via
+-   Sold Date
+-   Sold Price
+-   Payment Received (`isPaid`)
 
-- PSA 10
-- PSA 9
-- PSA 8.5
-- PSA 8
-- PSA 7 or lower
-- No Grade
+`soldDate` means the date the sale occurred, not the payment date.
 
-Exact grading-result handling can be refined later.
+No separate paid date is currently required.
 
-The grading result belongs to the card's participation in a particular PSA submission so that historical grading results can be preserved if a card is ever submitted more than once.
+Lifecycle:
 
----
+`Active/manual status → Sale Entered → Pending Payment → Payment Received → Sold`
 
-## 13. PSA Gem Rate / Grading Analytics
+When a sale exists but payment has not been received:
 
-A separate Numbers file is currently used to track grading performance.
+-   `isPaid = false`
+-   Status = Pending Payment
 
-Its current columns are:
+When payment is received:
 
-- Received Date
-- Submission #
-- Total Cards
-- Gem Mint 10
-- Mint 9
-- Near Mint+ 8.5
-- Near Mint 8
-- 7 or less
-- No Grade
-- Gem Rate
-- 9 or better
+-   `isPaid = true`
+-   Status = Sold
 
-In the new application, this information should **not** need to be manually maintained as an independent dataset.
+Payment receipt must remain reversible for corrections.
 
-Once a PSA submission is completed and individual card grades are known, the application should derive these statistics automatically from the submission's cards.
+Normal status editing must not manually select Pending Payment or Sold.
 
-Examples:
+## 15. Sale UI
 
-- Total cards
-- Number of PSA 10s
-- Number of PSA 9s
-- Number of PSA 8.5s
-- Number of PSA 8s
-- Number graded 7 or lower
-- Number receiving no grade
-- Gem Rate
-- Percentage graded 9 or better
+Sale fields live inside the same Edit Card drawer as card details but
+use a separate Sale form/action.
 
-Completed PSA submissions should therefore be usable as a grading-performance/Gem Rate table.
+Normal card metadata is saved independently from sale information.
 
----
+The Sale section should show Total Cost and allow:
 
-## 14. Future Grading Analytics
+-   Sold Via
+-   Sold Date
+-   Sold Price
+-   Payment Received
 
-Because grading results are connected to individual cards, the application should eventually be capable of analyzing grading performance beyond individual submissions.
+Existing sales can be corrected using the same section.
 
-Possible views include:
+## 16. Financial Tracking
 
-- Overall Gem Rate
-- Gem Rate by submission
-- Gem Rate by player
-- Gem Rate by year
-- Gem Rate by set
-- Gem Rate by category
-- Gem Rate over time
-- Grade distribution
-- Average grade
+Core derived values:
 
-These do not all need to be implemented initially.
+-   Price
+-   Finalized PSA Grading Cost
+-   Total Cost
+-   Sold Price
+-   Profit
+-   ROI
 
----
+`Total Cost = Price + Finalized PSA Grading Cost`
 
-## 15. Card Data Entry
+`Profit = Sold Price - Total Cost`
 
-Cards should be addable manually through the application.
+`ROI = Profit ÷ Total Cost × 100`
 
-During initial development, this will be the primary way test data is created.
+Profit/ROI are unknown when Total Cost is unknown.
 
-The application should support normal card-management operations such as:
+For pulled cards, Price/Total Cost remain unknown until a future
+acquisition-cost model exists.
 
-- Add
-- Edit
-- Delete
-- Change status
-- Move between Investment and Collection
-- Add to PSA submission
-- Enter grading results
-- Enter sale information
+## 17. Portfolio-Level Financial Reporting
 
----
+Portfolio summary metrics are required eventually but definitions must
+be agreed before implementation.
 
-## 16. Autocomplete
+Candidates:
 
-Data entry should become faster as more records are added.
+-   Total Invested
+-   Current Inventory Cost
+-   Total Sales
+-   Realized Profit
+-   Realized ROI
 
-Previously entered values should be available as autocomplete suggestions where appropriate.
+Likely reporting should distinguish current/unpaid inventory from paid
+historical sales.
 
-### Example
+Paid/Sold historical cards may eventually be grouped into year tables
+based on `soldDate`.
 
-The first Lionel Messi card requires manually entering:
+## 18. Data Import
 
-`Lionel Messi`
+Existing spreadsheet data is a migration source, not the ongoing source
+of truth.
 
-When another Messi card is added later, typing part of the name should suggest:
+A first CSV importer has successfully imported 47 ordinary card test
+records.
 
-`Lionel Messi`
+The first importer intentionally excludes PSA historical relationships.
 
-Users must always be able to enter a completely new value if the desired value does not already exist.
+Future import work should be separated by domain rather than forcing old
+spreadsheet columns directly into the new model.
 
-Autocomplete may eventually apply to reusable fields such as:
+Duplicate protection must be added before an importer is considered safe
+to rerun.
 
-- Player
-- Category
-- Set
-- Purchased From
-- eBay Seller
-- Sold Via / Sale Channel
+## 19. Sorting, Filtering, and Selection
 
-A separate manually maintained player list should not be required solely for autocomplete. Suggestions can be derived from existing application data where appropriate.
+TanStack Table v9 is the table engine.
 
-The exact fields can be determined as the forms are built.
+Current requirements implemented:
 
----
+-   Row selection
+-   Database-ID selection keys
+-   Sorting
 
-## 17. Financial Tracking
+Selection must support multiple explicit modes/workflows such as:
 
-The application should eventually calculate investment performance from the underlying card data.
+-   Add cards to PSA submission
+-   Add cards to purchase package
 
-Important concepts include:
+Future table improvements include filtering, search, faceting, and
+column visibility.
 
-- Purchase cost
-- Other applicable expenses
-- Sale price
-- Profit
-- ROI / Percentage
-- Active investment cost
-- Collection cost
+## 20. Autocomplete
 
-Calculated values such as Profit and ROI should preferably be **derived rather than stored as manually maintained values**.
+Previously used values should become suggestions while still allowing
+new values.
 
-Moving a card between Investment and Collection should change which portfolio totals include its cost without destroying its original cost basis.
+Candidates include:
 
----
+-   Player
+-   Category
+-   Set
+-   Purchased From
+-   eBay Seller
+-   Sold Via
 
-## Pulled Cards / Unknown Acquisition Cost
+## 21. Pulled Cards
 
-Some cards enter the system because they were pulled from a box or other sealed product rather than purchased individually.
+Acquisition types:
 
-In those cases, assigning an exact purchase price to the individual card may be impractical or misleading.
+-   Purchased
+-   Pulled
 
-The application should therefore support at least two acquisition types:
+Pulled cards may have unknown individual acquisition cost.
 
-- Purchased
-- Pulled
+They can still be graded, sold, and included in grading analytics, but
+the application must not imply a complete cost basis when acquisition
+cost is unknown.
 
-For purchased cards:
+Sealed-product cost allocation is deferred.
 
-- Purchase Price can be recorded normally.
+## 22. Future Shipment Tracking
 
-For pulled cards:
+The generic Packages area should eventually support more than incoming
+purchase packages.
 
-- Purchase Price may be left blank / unknown.
-- The card can still be added to PSA submissions.
-- The card can still receive grading costs.
-- The card can still contribute to Gem Rate and grading analytics.
-- The card can still be sold and tracked normally.
+Potential package/shipment types include:
 
-The application should not automatically divide the cost of a box across individual pulled cards unless a future allocation method is explicitly defined.
+-   Incoming marketplace purchases
+-   PSA outbound shipments
+-   PSA return shipments
+-   Other incoming/outgoing card packages
 
-For a pulled card, the system may know direct costs such as PSA grading costs while the original acquisition cost remains unallocated.
+Carrier status and ETA are manual initially. Automated carrier
+integration can be added later.
 
-Financial reporting should avoid presenting an incomplete known cost basis as if it were the card's true all-in economic cost.
+## 23. General Design Principles
 
-Tracking sealed-product purchases or linking cards to specific boxes may be added later if that becomes a useful workflow.
-
-## 18. Tables, Filters and Views
-
-The application should provide useful table views for the different parts of the card hobby.
-
-Primary areas currently expected:
-
-- Investments
-- Collection
-- PSA Submissions
-- Completed PSA / Gem Rate
-
-Tables should eventually support useful behaviors such as:
-
-- Sorting
-- Filtering
-- Searching
-- Row selection
-- Selecting multiple cards
-- Column visibility where useful
-- Other specialized views as requirements become clearer
-
-TanStack Table is the currently planned table solution because it provides table behavior while allowing the application's markup and styling to remain custom.
-
----
-
-## 19. Analytics / Dashboards
-
-The application should eventually make it possible to create views and graphs that are difficult or inconvenient to maintain in Numbers.
-
-Potential investment analytics include:
-
-- Total invested
-- Active inventory cost
-- Collection cost
-- Total sales
-- Profit
-- ROI
-- Profit over time
-- ROI by player
-- ROI by set
-- Amount invested over time
-- Cards currently at PSA
-- Average holding time
-
-Exact dashboards and charts will be decided later.
-
----
-
-## 20. Existing Numbers Files / Data Migration
-
-Existing Numbers files are **not being imported during the initial build**.
-
-Development should use test records created through the application's actual workflows.
-
-This allows the application's data model and behavior to be designed around the desired workflow rather than being constrained by the structure of the old spreadsheets.
-
-After the application and workflows are stable:
-
-`Numbers files → export/import → application database`
-
-The existing data will then be mapped into the new model.
-
-The Numbers files are a migration source, not the application's ongoing source of truth.
-
----
-
-## 21. General Design Principles
-
-The application should have one connected source of truth rather than maintaining independent copies of related information.
-
-Examples:
-
-- A PSA submission's status should not need to be manually copied onto every card.
-- Gem Rate statistics should be calculated from grading results rather than maintained separately.
-- Moving a card between Investment and Collection should not duplicate the card.
-- Profit and ROI should be calculated from financial data rather than independently maintained.
-- A card's history should be preserved as it moves through different workflows.
-- Original financial information such as cost basis should not be lost when a card changes portfolios.
-- Historical PSA grading information should not be destroyed by a later PSA submission.
-
-The system should remain flexible because card-investing workflows can change and new statuses, sale methods, grading scenarios, and reporting needs may appear later.
-
----
-
-# Current High-Level Application Areas
-
-```text
-Cards
-├── Investments
-└── Collection
-
-PSA
-├── Active Submissions
-├── Completed Submissions
-└── Gem Rate / Grading Analytics
-
-Analytics
-├── Investment Performance
-├── Sales / Profit
-└── Grading Performance
-```
+-   One connected source of truth.
+-   Preserve card identity/history across workflows.
+-   Derive totals/statistics when possible.
+-   Do not copy PSA stage into card status.
+-   Do not overwrite standalone purchase price with package allocation.
+-   Do not duplicate cards when moving portfolios.
+-   Do not destroy historical PSA relationships.
+-   Do not treat active PSA costs as finalized card costs.
+-   Do not treat sale occurrence and payment receipt as the same event.
+-   Reuse UI concepts/components such as Drawer, Modal, and
+    PackageModal.
+-   Keep reusable component styling centralized in each component's SCSS
+    Module when final styling begins.
+-   Keep workflows flexible enough to evolve without unnecessary
+    restrictive enums.

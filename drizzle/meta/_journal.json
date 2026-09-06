@@ -15,6 +15,27 @@
       "when": 1788537820316,
       "tag": "0001_late_arachne",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1788699422458,
+      "tag": "0002_large_madame_hydra",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1788717265092,
+      "tag": "0003_brown_firebrand",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1788723581399,
+      "tag": "0004_crazy_magdalene",
+      "breakpoints": true
     }
   ]
 }
