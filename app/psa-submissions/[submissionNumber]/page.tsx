@@ -41,7 +41,7 @@ export default async function PsaSubmissionPage({
 		Number(submission.outboundShippingCost) +
 		Number(submission.insuredReturnShippingCost);
 	return (
-		<main>
+		<div className='content'>
 			<h1>PSA Submission {submission.submissionNumber}</h1>
 
 			<PsaSubmissionDetails
@@ -51,6 +51,6 @@ export default async function PsaSubmissionPage({
 				totalSubmissionCost={totalSubmissionCost}
 			/>
 			<PsaSubmissionStats cards={cards} />
-		</main>
+		</div>
 	);
 }

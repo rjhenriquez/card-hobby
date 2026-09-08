@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { CardForm } from "@/components/CardForm/CardForm";
 import { Drawer } from "@/components/Drawer/Drawer";
+import { Button } from "@/components/Button/Button";
 import type { Card } from "@/types/types";
 
 interface CardStatus {
@@ -42,9 +43,13 @@ export function AddCard({
 	return (
 		<>
 			{!editOnly && !isEditing && (
-				<button type='button' onClick={() => setIsOpen(true)}>
-					Add Card
-				</button>
+				<Button
+					type='icon-label'
+					htmlType='button'
+					icon='add-card'
+					label='Add Card'
+					onClick={() => setIsOpen(true)}
+				/>
 			)}
 
 			<Drawer

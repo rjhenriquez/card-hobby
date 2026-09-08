@@ -3,3 +3,13 @@
 @use "sass:meta";
 
 @use "mixin-media-queries" as *;
+@use "mixin-font-family-averta" as *;
+
+@mixin heading($size) {
+	@include font-weight(semibold);
+	@if $size == h1 {
+		font-size: var(--font-size-26);
+	} @else if $size == h2 {
+		font-size: 1.5rem;
+	}
+}

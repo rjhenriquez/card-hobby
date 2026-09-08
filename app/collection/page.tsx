@@ -14,7 +14,7 @@ export default async function CollectionPage() {
 	]);
 
 	return (
-		<main>
+		<div className='content'>
 			<h1>Collection</h1>
 
 			<AddCard statuses={statuses} portfolio='collection' />
@@ -33,6 +33,6 @@ export default async function CollectionPage() {
 					/>
 				)}
 			</section>
-		</main>
+		</div>
 	);
 }

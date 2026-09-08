@@ -1,0 +1,80 @@
+@use "@/styles/utilities/all" as *;
+
+.Button {
+	cursor: pointer;
+	position: relative;
+	font-size: var(--font-size-14);
+
+	--tooltip-distance: 0.4rem;
+	--tooltip-height: 20px;
+	--tooltip-delay: 0.8s;
+	--tooltip-arrow-size: 4px;
+	// TODO: FIX THIS
+	&__tooltip {
+		position: absolute;
+		bottom: calc(100% + var(--tooltip-distance));
+		left: 50%;
+		font-size: 0.75rem;
+		transform: translate(-50%, var(--tooltip-distance));
+		padding-inline: 0.4em;
+		height: var(--tooltip-height);
+		display: flex;
+		align-items: center;
+		background: var(--black);
+		color: var(--white);
+		white-space: nowrap;
+		border-radius: 10px;
+		opacity: 0;
+		pointer-events: none;
+		transition: all ease 0.2s;
+		transition-delay: 0s;
+		&::after {
+			content: "";
+			position: absolute;
+			top: 100%;
+			left: 50%;
+			transform: translateX(-50%);
+			width: 0;
+			height: 0;
+			border-left: var(--tooltip-arrow-size) solid transparent;
+			border-right: var(--tooltip-arrow-size) solid transparent;
+			border-top: var(--tooltip-arrow-size) solid var(--black);
+		}
+	}
+	&:hover:not(:disabled) {
+		.Button__tooltip {
+			opacity: 1;
+			transform: translate(-50%, 0);
+			transition-delay: var(--tooltip-delay);
+		}
+	}
+	&--icon {
+		border: var(--button-border-line);
+		border-radius: var(--button-border-radius);
+		width: var(--button-size);
+		height: var(--button-size);
+		color: var(--text-color);
+		svg {
+			width: var(--button-icon-size);
+			height: var(--button-icon-size);
+		}
+	}
+	&--icon-label {
+		white-space: nowrap;
+		background: var(--button-main-background);
+		color: var(--white);
+		gap: var(--button-gap);
+		height: var(--button-main-size);
+		border-radius: var(--button-border-radius);
+		padding-inline: var(--button-main-padding);
+		svg {
+			width: var(--button-icon-size);
+			height: var(--button-icon-size);
+		}
+	}
+	// TODO: FIX THIS
+	&:disabled {
+		color: color-mix(in srgb, var(--text-color) 40%, var(--white));
+		cursor: not-allowed;
+	}
+}

@@ -5,7 +5,7 @@ export default async function PsaSubmissionsPage() {
 	const submissions = await getPsaSubmissions();
 
 	return (
-		<main>
+		<div className='content'>
 			<h1>PSA Submissions</h1>
 
 			{submissions.length === 0 ? (
@@ -41,6 +41,6 @@ export default async function PsaSubmissionsPage() {
 					</tbody>
 				</table>
 			)}
-		</main>
+		</div>
 	);
 }

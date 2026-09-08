@@ -12,7 +12,11 @@ import {
 	tableFeatures,
 	useTable,
 } from "@tanstack/react-table";
+
 import type { Card } from "@/types/types";
+import { Button } from "@/components/Button/Button";
+import { Input } from "@/components/Input/Input";
+import { Icon } from "@/components/Icons/Icons";
 
 import styles from "./CardTable.module.scss";
 
@@ -20,11 +24,7 @@ interface CardTableProps {
 	cards: Card[];
 	portfolio: "investment" | "collection";
 	rowSelection: RowSelectionState;
-	selectionMode: "submission" | "purchase-package" | null;
 	onRowSelectionChange: (rowSelection: RowSelectionState) => void;
-	onSelectionModeChange: (
-		mode: "submission" | "purchase-package" | null,
-	) => void;
 	onCreateSubmission: () => void;
 	onCreatePurchasePackage: () => void;
 	onMoveCard: (card: Card) => void;
@@ -48,9 +48,7 @@ export function CardTable({
 	cards,
 	portfolio,
 	rowSelection,
-	selectionMode,
 	onRowSelectionChange,
-	onSelectionModeChange,
 	onCreateSubmission,
 	onCreatePurchasePackage,
 	onMoveCard,
@@ -60,76 +58,82 @@ export function CardTable({
 
 	const selectedCardCount = Object.values(rowSelection).filter(Boolean).length;
 
-	function startSelection(mode: "submission" | "purchase-package") {
-		onRowSelectionChange({});
-		onSelectionModeChange(mode);
-	}
+	const selectedCards = cards.filter((card) => rowSelection[String(card.id)]);
 
-	function cancelSelection() {
-		onRowSelectionChange({});
-		onSelectionModeChange(null);
-	}
+	const selectedCard = selectedCards.length === 1 ? selectedCards[0] : null;
 
 	const selectionColumn: ColumnDef<typeof features, Card> = {
 		id: "select",
 		enableSorting: false,
+
 		header: ({ table }) => (
-			<input
+			<Input
 				type='checkbox'
 				checked={table.getIsAllRowsSelected()}
+				onChange={table.getToggleAllRowsSelectedHandler()}
+				ariaLabel='Select all cards'
+				isHeader
 				ref={(input) => {
 					if (input) {
 						input.indeterminate =
 							table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected();
 					}
 				}}
-				onChange={table.getToggleAllRowsSelectedHandler()}
-				aria-label='Select all cards'
 			/>
 		),
+
 		cell: ({ row }) => (
-			<input
+			<Input
 				type='checkbox'
 				checked={row.getIsSelected()}
 				onChange={row.getToggleSelectedHandler()}
-				aria-label={`Select ${row.original.player}`}
+				ariaLabel={`Select ${row.original.player}`}
 			/>
 		),
 	};
 
 	const columns: ColumnDef<typeof features, Card>[] = [
-		...(selectionMode !== null ? [selectionColumn] : []),
+		selectionColumn,
+
 		{
 			accessorKey: "player",
 			header: "Player",
 		},
+
 		{
 			accessorKey: "category",
 			header: "Category",
 		},
+
 		{
 			accessorKey: "year",
 			header: "Year",
 		},
+
 		{
 			accessorKey: "setName",
 			header: "Set",
 		},
+
 		{
 			accessorKey: "info",
 			header: "Info",
 		},
+
 		{
 			accessorKey: "effectiveStatus",
 			header: "Status",
 		},
+
 		{
 			accessorKey: "purchasedFrom",
 			header: "Purchased From",
 		},
+
 		{
 			accessorKey: "ebaySeller",
 			header: "eBay Seller",
+
 			cell: ({ row }) => {
 				const card = row.original;
 
@@ -140,9 +144,11 @@ export function CardTable({
 				return card.ebaySeller || "—";
 			},
 		},
+
 		{
 			accessorKey: "psaSubmissionNumbers",
 			header: "PSA Submission",
+
 			cell: ({ getValue }) => {
 				const submissionNumbers = getValue() as string[];
 
@@ -155,6 +161,7 @@ export function CardTable({
 						{submissionNumbers.map((submissionNumber, index) => (
 							<span key={submissionNumber}>
 								{index > 0 && ", "}
+
 								<Link href={`/psa-submissions/${submissionNumber}`}>
 									{submissionNumber}
 								</Link>
@@ -164,26 +171,33 @@ export function CardTable({
 				);
 			},
 		},
+
 		{
 			accessorKey: "price",
 			header: "Price",
+
 			cell: ({ getValue }) => {
 				const value = getValue() as number | null;
+
 				return value !== null ? formatCurrency(value) : "—";
 			},
 		},
+
 		{
 			accessorKey: "gradingCost",
 			header: "Grading Cost",
+
 			cell: ({ getValue }) => {
 				const value = getValue() as number;
 
 				return value > 0 ? formatCurrency(value) : "—";
 			},
 		},
+
 		{
 			accessorKey: "totalCost",
 			header: "Total Cost",
+
 			cell: ({ getValue }) => {
 				const value = getValue() as number | null;
 
@@ -196,24 +210,29 @@ export function CardTable({
 					{
 						accessorKey: "soldPrice",
 						header: "Sold Price",
+
 						cell: ({ getValue }) => {
 							const value = getValue() as string | null;
 
 							return value !== null ? formatCurrency(Number(value)) : "—";
 						},
 					},
+
 					{
 						accessorKey: "profit",
 						header: "Profit",
+
 						cell: ({ getValue }) => {
 							const value = getValue() as number | null;
 
 							return value !== null ? formatCurrency(value) : "—";
 						},
 					},
+
 					{
 						accessorKey: "roi",
 						header: "ROI",
+
 						cell: ({ getValue }) => {
 							const value = getValue() as number | null;
 
@@ -222,141 +241,168 @@ export function CardTable({
 					},
 				] as ColumnDef<typeof features, Card>[])
 			: []),
-
-		{
-			id: "actions",
-			header: "",
-			enableSorting: false,
-		},
 	];
 
 	const table = useTable({
 		data: cards,
 		columns,
 		features,
+
 		state: {
 			rowSelection,
 			sorting,
 		},
+
 		onSortingChange: (updater) => {
 			const nextSorting =
 				typeof updater === "function" ? updater(sorting) : updater;
 
 			setSorting(nextSorting);
 		},
+
 		onRowSelectionChange: (updater) => {
 			const nextSelection =
 				typeof updater === "function" ? updater(rowSelection) : updater;
 
 			onRowSelectionChange(nextSelection);
 		},
+
 		getRowId: (row) => String(row.id),
 	});
 
 	return (
-		<>
-			<div>
-				{selectionMode === null ? (
-					<>
-						<button type='button' onClick={() => startSelection("submission")}>
-							Add cards to submission
-						</button>
+		<div className={styles.CardTable}>
+			<div className={styles.CardTable__top}>
+				<h3>
+					{portfolio === "investment" ? "Active Investments" : "Collection"}
+				</h3>
 
-						<button
-							type='button'
-							onClick={() => startSelection("purchase-package")}
-						>
-							Add cards to purchase package
-						</button>
-					</>
-				) : (
-					<>
-						<button type='button' onClick={cancelSelection}>
-							Cancel
-						</button>
+				<div className={styles.CardTable__top__actions}>
+					<Button
+						type='icon'
+						htmlType='button'
+						icon='copy'
+						tooltip='Copy Card'
+						disabled={selectedCard === null}
+						onClick={() => {
+							if (!selectedCard) return;
 
-						<button
-							type='button'
-							disabled={selectedCardCount === 0}
-							onClick={
-								selectionMode === "submission"
-									? onCreateSubmission
-									: onCreatePurchasePackage
-							}
-						>
-							{selectionMode === "submission"
-								? `Create submission (${selectedCardCount})`
-								: `Create purchase package (${selectedCardCount})`}
-						</button>
-					</>
-				)}
+							// Copy functionality to come
+						}}
+					/>
+
+					<Button
+						type='icon'
+						htmlType='button'
+						icon='edit'
+						tooltip='Edit Card'
+						disabled={selectedCard === null}
+						onClick={() => {
+							if (!selectedCard) return;
+
+							onEditCard(selectedCard);
+						}}
+					/>
+
+					<Button
+						type='icon'
+						htmlType='button'
+						icon={portfolio === "investment" ? "move-down" : "move-up"}
+						tooltip={
+							portfolio === "investment"
+								? "Move to Collection"
+								: "Move to Investment"
+						}
+						disabled={selectedCard === null}
+						onClick={() => {
+							if (!selectedCard) return;
+
+							onMoveCard(selectedCard);
+						}}
+					/>
+
+					<Button
+						type='icon'
+						htmlType='button'
+						icon='add-sub'
+						tooltip='Add to sub'
+						disabled={selectedCardCount === 0}
+						onClick={onCreateSubmission}
+					/>
+
+					<Button
+						type='icon'
+						htmlType='button'
+						icon='package'
+						tooltip='Add to package'
+						disabled={selectedCardCount === 0}
+						onClick={onCreatePurchasePackage}
+					/>
+				</div>
 			</div>
 
-			<table>
-				<thead>
-					{table.getHeaderGroups().map((headerGroup) => (
-						<tr key={headerGroup.id}>
-							{headerGroup.headers.map((header) => (
-								<th key={header.id}>
-									{header.isPlaceholder ? null : (
-										<span>
+			<div className={styles.CardTable__table}>
+				<table>
+					<thead>
+						{table.getHeaderGroups().map((headerGroup) => (
+							<tr key={headerGroup.id}>
+								{headerGroup.headers.map((header) => (
+									<th key={header.id}>
+										{header.isPlaceholder ? null : header.column.id ===
+										  "select" ? (
 											<table.FlexRender header={header} />
+										) : header.column.getCanSort() ? (
+											<button
+												type='button'
+												onClick={header.column.getToggleSortingHandler()}
+												aria-label={`Sort by ${header.column.id}`}
+												className={styles["CardTable__header-btn"]}
+											>
+												<table.FlexRender header={header} />
 
-											{header.column.getCanSort() && (
-												<button
-													type='button'
-													onClick={header.column.getToggleSortingHandler()}
-													aria-label={`Sort by ${header.column.id}`}
-												>
-													{header.column.getIsSorted() === "asc"
-														? "↑"
-														: header.column.getIsSorted() === "desc"
-															? "↓"
-															: "↕"}
-												</button>
-											)}
-										</span>
-									)}
-								</th>
-							))}
-						</tr>
-					))}
-				</thead>
-
-				<tbody>
-					{table.getRowModel().rows.map((row) => {
-						const card = row.original;
-
-						return (
-							<tr key={row.id}>
-								{row.getAllCells().map((cell) => {
-									if (cell.column.id === "actions") {
-										return (
-											<td key={cell.id}>
-												<button type='button' onClick={() => onEditCard(card)}>
-													Edit
-												</button>
-
-												<button type='button' onClick={() => onMoveCard(card)}>
-													{portfolio === "investment"
-														? "Move to Collection"
-														: "Move to Investment"}
-												</button>
-											</td>
-										);
-									}
-
-									return (
-										<td key={cell.id}>
-											<table.FlexRender cell={cell} />
-										</td>
-									);
-								})}
+												<Icon
+													icon={
+														header.column.getIsSorted() === "asc"
+															? "arrow-up"
+															: header.column.getIsSorted() === "desc"
+																? "arrow-down"
+																: "arrow-up-down"
+													}
+												/>
+											</button>
+										) : (
+											<table.FlexRender header={header} />
+										)}
+									</th>
+								))}
 							</tr>
-						);
-					})}
-				</tbody>
-			</table>
-		</>
+						))}
+					</thead>
+
+					<tbody>
+						{table.getRowModel().rows.map((row) => (
+							<tr
+								key={row.id}
+								onClick={row.getToggleSelectedHandler()}
+								data-selected={row.getIsSelected()}
+							>
+								{row.getAllCells().map((cell) => (
+									<td
+										key={cell.id}
+										onClick={
+											cell.column.id === "select"
+												? (event) => event.stopPropagation()
+												: undefined
+										}
+									>
+										<table.FlexRender cell={cell} />
+									</td>
+								))}
+							</tr>
+						))}
+					</tbody>
+				</table>
+			</div>
+		</div>
 	);
 }

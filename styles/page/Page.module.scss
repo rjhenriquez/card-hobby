@@ -1,0 +1,16 @@
+@use "@/styles/utilities/all" as *;
+
+.Page {
+	padding: var(--page-padding);
+	&__header {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+	}
+	&__heading {
+		@include heading(h1);
+	}
+	&__section {
+		margin-block: var(--page-section-margin);
+	}
+}

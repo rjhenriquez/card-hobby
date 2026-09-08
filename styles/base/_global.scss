@@ -1,10 +1,5 @@
 @use "../utilities/all" as *;
 
-html,
-body {
-	// cursor: none;
-}
-
 html {
 	scrollbar-gutter: stable;
 }
@@ -17,6 +12,17 @@ html {
 }
 
 body {
+	@include font-weight(regular);
+	background: var(--bg-color-02);
+	color: var(--text-color);
+}
+
+a {
+	color: inherit;
+	text-decoration: none;
+	&:visited {
+		color: inherit;
+	}
 }
 
 ::selection {
@@ -25,8 +31,12 @@ body {
 	//   color: var(--white);
 }
 
-.theme--light {
+.layout {
+	display: grid;
+	grid-template-columns: var(--sidebar-size) minmax(0, 1fr);
+	min-height: 100vh;
 }
 
-.theme--dark {
+main {
+	min-width: 0;
 }

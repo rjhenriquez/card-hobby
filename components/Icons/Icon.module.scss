@@ -1,0 +1,42 @@
+@use "@/styles/utilities/all" as *;
+
+// TODO: FIX ALL THESE ANIMATIONS
+.IconAnimatedLink {
+	opacity: 0;
+	transition:
+		opacity 0.3s ease,
+		transform 0.2s ease;
+	pointer-events: none;
+	transform: translate(-5px, 5px);
+	path {
+		fill: none;
+		stroke: currentColor;
+		stroke-width: 3px;
+		stroke-miterlimit: 10;
+	}
+	&__arrowTip {
+		transition-delay: 200ms;
+		transition: transform 0.2s ease;
+		transform-origin: center;
+		transform: translate(-4px, 4px);
+	}
+	&__arrowBody {
+		transition-delay: 200ms;
+		transition: transform 0.2s ease;
+		transform-origin: center;
+		transform: translate(-7px, 7px);
+	}
+}
+
+/* when parent link is hovered/focused */
+:global(a:hover),
+:global(a:focus-visible) {
+	.IconAnimatedLink {
+		opacity: 1;
+		transform: translate(0, 0);
+		&__arrowTip,
+		&__arrowBody {
+			transform: translate(0, 0);
+		}
+	}
+}

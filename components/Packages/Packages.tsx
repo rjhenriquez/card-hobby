@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { updatePurchasePackage } from "@/app/actions/purchasePackages";
 import {
-	PackageModal,
-	PurchasePackage,
-} from "@/components/PackageModal/PackageModal";
+	markPurchasePackageReceived,
+	updatePurchasePackage,
+} from "@/app/actions/purchasePackages";
+import { PackageDrawer, PurchasePackage } from "../PackageDrawer/PackageDrawer";
 
 import styles from "./Packages.module.scss";
 
@@ -20,12 +20,40 @@ function formatCurrency(value: string | number) {
 	})}`;
 }
 
+function getTrackingUrl(carrier: string | null, trackingNumber: string | null) {
+	if (!carrier || !trackingNumber) {
+		return null;
+	}
+
+	const encodedTrackingNumber = encodeURIComponent(trackingNumber);
+
+	switch (carrier) {
+		case "USPS":
+			return `https://tools.usps.com/go/TrackConfirmAction?tLabels=${encodedTrackingNumber}`;
+
+		case "UPS":
+			return `https://www.ups.com/track?tracknum=${encodedTrackingNumber}`;
+
+		case "FedEx":
+			return `https://www.fedex.com/fedextrack/?trknbr=${encodedTrackingNumber}`;
+
+		case "DHL":
+			return `https://www.dhl.com/us-en/home/tracking.html?tracking-id=${encodedTrackingNumber}`;
+
+		default:
+			return null;
+	}
+}
+
 export function Packages({ purchasePackages }: PackagesProps) {
 	const [expandedPackageIds, setExpandedPackageIds] = useState<number[]>([]);
 	const [editingPackage, setEditingPackage] = useState<PurchasePackage | null>(
 		null,
 	);
 	const [isSavingPurchasePackage, setIsSavingPurchasePackage] = useState(false);
+	const [receivingPackageId, setReceivingPackageId] = useState<number | null>(
+		null,
+	);
 	const [purchasePackageError, setPurchasePackageError] = useState<
 		string | null
 	>(null);
@@ -38,7 +66,7 @@ export function Packages({ purchasePackages }: PackagesProps) {
 		);
 	}
 
-	function handleClosePurchasePackageModal() {
+	function handleClosePurchasePackageDrawer() {
 		if (isSavingPurchasePackage) {
 			return;
 		}
@@ -65,12 +93,33 @@ export function Packages({ purchasePackages }: PackagesProps) {
 		}
 	}
 
+	async function handleMarkReceived(packageId: number) {
+		setPurchasePackageError(null);
+		setReceivingPackageId(packageId);
+
+		try {
+			await markPurchasePackageReceived(packageId);
+		} catch (error) {
+			setPurchasePackageError(
+				error instanceof Error
+					? error.message
+					: "Unable to mark package as received.",
+			);
+		} finally {
+			setReceivingPackageId(null);
+		}
+	}
+
 	if (purchasePackages.length === 0) {
 		return <p>No packages yet.</p>;
 	}
 
 	return (
 		<>
+			{purchasePackageError && !editingPackage && (
+				<p role='alert'>{purchasePackageError}</p>
+			)}
+
 			<div className={styles.Packages}>
 				{purchasePackages.map((purchasePackage) => {
 					const isExpanded = expandedPackageIds.includes(purchasePackage.id);
@@ -80,16 +129,40 @@ export function Packages({ purchasePackages }: PackagesProps) {
 						Number(purchasePackage.shippingTotal) +
 						Number(purchasePackage.taxesTotal);
 
+					const trackingUrl = getTrackingUrl(
+						purchasePackage.carrier,
+						purchasePackage.trackingNumber,
+					);
+
+					const isReceiving = receivingPackageId === purchasePackage.id;
+
 					return (
 						<section key={purchasePackage.id}>
 							<header>
 								<div>
-									<h2>Package #{purchasePackage.id}</h2>
+									<h2>
+										{purchasePackage.source
+											? `${purchasePackage.source} Package #${purchasePackage.id}`
+											: `Package #${purchasePackage.id}`}
+									</h2>
 
+									{purchasePackage.seller && (
+										<p>Seller: {purchasePackage.seller}</p>
+									)}
 									<p>{formatCurrency(totalValue)}</p>
 								</div>
 
 								<div>
+									{!purchasePackage.isDelivered && (
+										<button
+											type='button'
+											disabled={isReceiving}
+											onClick={() => handleMarkReceived(purchasePackage.id)}
+										>
+											{isReceiving ? "Receiving..." : "Mark Received"}
+										</button>
+									)}
+
 									<button
 										type='button'
 										onClick={() => toggleExpanded(purchasePackage.id)}
@@ -117,7 +190,18 @@ export function Packages({ purchasePackages }: PackagesProps) {
 
 								<div>
 									<dt>Tracking</dt>
-									<dd>{purchasePackage.trackingNumber ?? "—"}</dd>
+									<dd>
+										{purchasePackage.trackingNumber ?? "—"}
+
+										{trackingUrl && (
+											<>
+												{" "}
+												<a href={trackingUrl} target='_blank' rel='noreferrer'>
+													Track Package
+												</a>
+											</>
+										)}
+									</dd>
 								</div>
 
 								<div>
@@ -128,7 +212,9 @@ export function Packages({ purchasePackages }: PackagesProps) {
 								<div>
 									<dt>Status</dt>
 									<dd>
-										{purchasePackage.isDelivered ? "Received" : "In Transit"}
+										<strong>
+											{purchasePackage.isDelivered ? "Received" : "In Transit"}
+										</strong>
 									</dd>
 								</div>
 							</dl>
@@ -190,14 +276,14 @@ export function Packages({ purchasePackages }: PackagesProps) {
 				})}
 			</div>
 
-			<PackageModal
+			<PackageDrawer
 				isOpen={editingPackage !== null}
 				mode='edit'
 				location='packages'
 				purchasePackage={editingPackage}
 				isSaving={isSavingPurchasePackage}
 				error={purchasePackageError}
-				onClose={handleClosePurchasePackageModal}
+				onClose={handleClosePurchasePackageDrawer}
 				onSubmit={handleUpdatePurchasePackage}
 			/>
 		</>

@@ -1,13 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Modal } from "@/components/Modal/Modal";
+import { Drawer } from "@/components/Drawer/Drawer";
 
-import styles from "./PackageModal.module.scss";
+import styles from "./PackageDrawer.module.scss";
 
-export type PackageModalLocation = "investment" | "collection" | "packages";
+export type PackageDrawerLocation = "investment" | "collection" | "packages";
 
-export interface PackageModalCard {
+export interface PackageDrawerCard {
 	id: number;
 	player: string;
 	category?: string | null;
@@ -40,19 +40,19 @@ export interface PurchasePackage {
 	cards: PurchasePackageCard[];
 }
 
-interface PackageModalProps {
+interface PackageDrawerProps {
 	isOpen: boolean;
 	mode: "create" | "edit";
-	location: PackageModalLocation;
+	location: PackageDrawerLocation;
 	purchasePackage?: PurchasePackage | null;
-	selectedCards?: PackageModalCard[];
+	selectedCards?: PackageDrawerCard[];
 	isSaving: boolean;
 	error?: string | null;
 	onClose: () => void;
 	onSubmit: (formData: FormData) => Promise<void>;
 }
 
-export function PackageModal({
+export function PackageDrawer({
 	isOpen,
 	mode,
 	location,
@@ -62,10 +62,11 @@ export function PackageModal({
 	error,
 	onClose,
 	onSubmit,
-}: PackageModalProps) {
+}: PackageDrawerProps) {
 	const [isExpanded, setIsExpanded] = useState(location !== "packages");
 
 	const isEditing = mode === "edit";
+
 	const cards = isEditing ? (purchasePackage?.cards ?? []) : selectedCards;
 
 	useEffect(() => {
@@ -81,8 +82,8 @@ export function PackageModal({
 		: "Create Purchase Package";
 
 	return (
-		<Modal isOpen={isOpen} title={title} onClose={onClose}>
-			<div className={styles.PackageModal}>
+		<Drawer isOpen={isOpen} title={title} onClose={onClose}>
+			<div className={styles.PackageDrawer}>
 				<p>
 					{cards.length} card
 					{cards.length === 1 ? "" : "s"} selected.
@@ -144,7 +145,7 @@ export function PackageModal({
 							type='button'
 							onClick={() => setIsExpanded((current) => !current)}
 						>
-							{isExpanded ? "Collapse" : "Expand"}
+							{isExpanded ? "Collapse Financials" : "Edit Financials"}
 						</button>
 					)}
 
@@ -282,6 +283,6 @@ export function PackageModal({
 					Cancel
 				</button>
 			</div>
-		</Modal>
+		</Drawer>
 	);
 }

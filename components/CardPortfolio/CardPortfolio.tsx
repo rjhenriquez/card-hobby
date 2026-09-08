@@ -3,6 +3,7 @@
 import { useState } from "react";
 import type { RowSelectionState } from "@tanstack/react-table";
 import { CardTable } from "@/components/CardTable/CardTable";
+import { Drawer } from "@/components/Drawer/Drawer";
 import { Modal } from "@/components/Modal/Modal";
 import { moveCardToPortfolio } from "@/app/actions/cards";
 import {
@@ -11,7 +12,7 @@ import {
 } from "@/app/actions/psaSubmissions";
 import { createPurchasePackage } from "@/app/actions/purchasePackages";
 import { AddCard } from "@/components/AddCard/AddCard";
-import { PackageModal } from "@/components/PackageModal/PackageModal";
+import { PackageDrawer } from "../PackageDrawer/PackageDrawer";
 import type { Card } from "@/types/types";
 
 import styles from "./CardPortfolio.module.scss";
@@ -48,8 +49,8 @@ export function CardPortfolio({
 	const [cardToMove, setCardToMove] = useState<Card | null>(null);
 	const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 	const [selectionMode, setSelectionMode] = useState<SelectionMode>(null);
-	const [isPsaModalOpen, setIsPsaModalOpen] = useState(false);
-	const [isPurchasePackageModalOpen, setIsPurchasePackageModalOpen] =
+	const [isPsaDrawerOpen, setIsPsaDrawerOpen] = useState(false);
+	const [isPurchasePackageDrawerOpen, setIsPurchasePackageDrawerOpen] =
 		useState(false);
 	const [psaError, setPsaError] = useState<string | null>(null);
 	const [purchasePackageError, setPurchasePackageError] = useState<
@@ -101,7 +102,7 @@ export function CardPortfolio({
 		try {
 			await createPsaSubmission(submissionNumber, getSelectedCardIds());
 
-			setIsPsaModalOpen(false);
+			setIsPsaDrawerOpen(false);
 			clearSelection();
 		} catch (error) {
 			setPsaError(
@@ -118,7 +119,7 @@ export function CardPortfolio({
 		try {
 			await addCardsToPsaSubmission(submissionId, getSelectedCardIds());
 
-			setIsPsaModalOpen(false);
+			setIsPsaDrawerOpen(false);
 			clearSelection();
 		} catch (error) {
 			setPsaError(
@@ -150,7 +151,7 @@ export function CardPortfolio({
 				})),
 			});
 
-			setIsPurchasePackageModalOpen(false);
+			setIsPurchasePackageDrawerOpen(false);
 			clearSelection();
 		} catch (error) {
 			setPurchasePackageError(
@@ -175,13 +176,13 @@ export function CardPortfolio({
 		return trimmedValue === "" ? null : trimmedValue;
 	}
 
-	function handleClosePsaModal() {
-		setIsPsaModalOpen(false);
+	function handleClosePsaDrawer() {
+		setIsPsaDrawerOpen(false);
 		setPsaError(null);
 	}
 
-	function handleClosePurchasePackageModal() {
-		setIsPurchasePackageModalOpen(false);
+	function handleClosePurchasePackageDrawer() {
+		setIsPurchasePackageDrawerOpen(false);
 		setPurchasePackageError(null);
 	}
 
@@ -194,8 +195,8 @@ export function CardPortfolio({
 				selectionMode={selectionMode}
 				onRowSelectionChange={setRowSelection}
 				onSelectionModeChange={setSelectionMode}
-				onCreateSubmission={() => setIsPsaModalOpen(true)}
-				onCreatePurchasePackage={() => setIsPurchasePackageModalOpen(true)}
+				onCreateSubmission={() => setIsPsaDrawerOpen(true)}
+				onCreatePurchasePackage={() => setIsPurchasePackageDrawerOpen(true)}
 				onMoveCard={setCardToMove}
 				onEditCard={setEditingCard}
 			/>
@@ -231,10 +232,10 @@ export function CardPortfolio({
 				</div>
 			</Modal>
 
-			<Modal
-				isOpen={isPsaModalOpen}
+			<Drawer
+				isOpen={isPsaDrawerOpen}
 				title='Add to PSA Submission'
-				onClose={handleClosePsaModal}
+				onClose={handleClosePsaDrawer}
 			>
 				<p>
 					{selectedCardIds.length} card
@@ -246,21 +247,27 @@ export function CardPortfolio({
 				{psaSubmissions.length === 0 ? (
 					<p>No PSA submissions yet.</p>
 				) : (
-					<ul>
-						{psaSubmissions.map((submission) => (
-							<li key={submission.id}>
-								<strong>{submission.submissionNumber}</strong>
-								{submission.stage && <> — {submission.stage}</>}{" "}
-								<button
-									type='button'
-									onClick={() => handleAddToPsaSubmission(submission.id)}
-								>
-									Add
-								</button>
-							</li>
-						))}
-					</ul>
+					<>
+						<h3>Existing Submission</h3>
+
+						<ul>
+							{psaSubmissions.map((submission) => (
+								<li key={submission.id}>
+									<strong>{submission.submissionNumber}</strong>
+									{submission.stage && <> — {submission.stage}</>}{" "}
+									<button
+										type='button'
+										onClick={() => handleAddToPsaSubmission(submission.id)}
+									>
+										Add
+									</button>
+								</li>
+							))}
+						</ul>
+					</>
 				)}
+
+				<h3>Create New Submission</h3>
 
 				<form action={handleCreatePsaSubmission}>
 					<label>
@@ -271,19 +278,19 @@ export function CardPortfolio({
 					<button type='submit'>Create New Submission</button>
 				</form>
 
-				<button type='button' onClick={handleClosePsaModal}>
+				<button type='button' onClick={handleClosePsaDrawer}>
 					Cancel
 				</button>
-			</Modal>
+			</Drawer>
 
-			<PackageModal
-				isOpen={isPurchasePackageModalOpen}
+			<PackageDrawer
+				isOpen={isPurchasePackageDrawerOpen}
 				mode='create'
 				location={portfolio}
 				selectedCards={selectedCards}
 				isSaving={isSavingPurchasePackage}
 				error={purchasePackageError}
-				onClose={handleClosePurchasePackageModal}
+				onClose={handleClosePurchasePackageDrawer}
 				onSubmit={handleCreatePurchasePackage}
 			/>
 		</div>

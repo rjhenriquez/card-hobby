@@ -6,6 +6,8 @@ import { getCardsByPortfolio } from "@/db/queries/cards";
 import { getPsaSubmissions } from "@/db/queries/psaSubmissions";
 import { CardPortfolio } from "@/components/CardPortfolio/CardPortfolio";
 
+import styles from "@/styles/page/Page.module.scss";
+
 export default async function InvestmentPage() {
 	const [cards, statuses, psaSubmissions] = await Promise.all([
 		getCardsByPortfolio("investment"),
@@ -14,14 +16,13 @@ export default async function InvestmentPage() {
 	]);
 	console.log(cards);
 	return (
-		<main>
-			<h1>Investment</h1>
+		<div className={styles.Page}>
+			<div className={styles.Page__header}>
+				<h1 className={styles.Page__heading}>Card Investments</h1>
+				<AddCard statuses={statuses} portfolio='investment' />
+			</div>
 
-			<AddCard statuses={statuses} portfolio='investment' />
-
-			<section>
-				<h2>Investment Cards</h2>
-
+			<section className={styles.Page__section}>
 				{cards.length === 0 ? (
 					<p>No investment cards yet.</p>
 				) : (
@@ -33,6 +34,7 @@ export default async function InvestmentPage() {
 					/>
 				)}
 			</section>
-		</main>
+			<div />
+		</div>
 	);
 }

@@ -1,4 +1,5 @@
 import { desc, eq } from "drizzle-orm";
+
 import { db } from "@/db";
 import { cards, purchasePackageCards, purchasePackages } from "@/db/schema";
 
@@ -9,6 +10,8 @@ export async function getPurchasePackages() {
 			itemsSubtotal: purchasePackages.itemsSubtotal,
 			shippingTotal: purchasePackages.shippingTotal,
 			taxesTotal: purchasePackages.taxesTotal,
+			source: purchasePackages.source,
+			seller: purchasePackages.seller,
 			carrier: purchasePackages.carrier,
 			trackingNumber: purchasePackages.trackingNumber,
 			estimatedDeliveryDate: purchasePackages.estimatedDeliveryDate,

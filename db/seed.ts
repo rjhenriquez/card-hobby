@@ -5,6 +5,7 @@ config({ path: ".env.local" });
 
 const statuses = [
 	"In Transit",
+	"Received",
 	"Lost In Transit",
 	"Raw Pile",
 	"DCSports Submission",

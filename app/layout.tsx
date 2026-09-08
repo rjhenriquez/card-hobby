@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
+
+import { Header } from "@/components/Header/Header";
 import { Sidebar } from "@/components/Sidebar/Sidebar";
+
 import "@/styles/styles.scss";
 import "@/styles/temporary.scss";
 
@@ -14,12 +17,12 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang='en'>
+		<html lang='en' className='theme--light'>
 			<body>
-				<div className='DevApp'>
+				<Header />
+				<div className='layout'>
 					<Sidebar />
-
-					<div className='DevApp__content'>{children}</div>
+					<main className='main'>{children}</main>
 				</div>
 			</body>
 		</html>

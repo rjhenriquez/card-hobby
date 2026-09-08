@@ -179,6 +179,9 @@ export const purchasePackages = pgTable("purchase_packages", {
 		precision: 10,
 		scale: 2,
 	}).notNull(),
+
+	source: text("source"),
+	seller: text("seller"),
 	carrier: text("carrier"),
 	trackingNumber: text("tracking_number"),
 	estimatedDeliveryDate: date("estimated_delivery_date"),

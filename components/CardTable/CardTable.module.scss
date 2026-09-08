@@ -1,2 +1,182 @@
+@use "../../styles/utilities/all" as *;
+
 .CardTable {
+	// TODO: FIX ALL STYLES
+
+	--table-select-width: 40px;
+	--table-top-height: 40px;
+
+	--table-border-color: #b5b5b5;
+
+	--table-bg-color-01: rgb(255, 223, 223);
+	--table-bg-color-02: #ffebbb;
+	--table-bg-color-03: rgb(203, 242, 255);
+	--table-bg-color-04: lightgreen;
+
+	--table-icon-size: 0.875rem;
+
+	position: relative;
+
+	padding: var(--table-padding);
+
+	background-color: var(--bg-color);
+	border-radius: var(--table-border-radius);
+	&__header-btn {
+		width: 100%;
+		display: flex;
+		justify-content: space-between;
+		svg {
+			width: var(--table-icon-size);
+			height: var(--table-icon-size);
+		}
+	}
+	&__top {
+		position: sticky;
+		top: 0;
+		z-index: 10;
+
+		min-height: var(--table-top-height);
+
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+
+		background-color: var(--bg-color);
+
+		&__actions {
+			display: flex;
+			gap: var(--table-actions-gap);
+		}
+	}
+
+	&__table {
+		width: 100%;
+
+		overflow-x: auto;
+
+		padding-bottom: 1rem;
+
+		scrollbar-gutter: stable;
+
+		table {
+			width: max-content;
+			min-width: 100%;
+
+			border-collapse: separate;
+			border-spacing: 0;
+
+			font-size: 12px;
+		}
+
+		th,
+		td {
+			padding: 6px 8px;
+
+			border-right: 1px solid var(--table-border-color);
+			border-bottom: 1px solid var(--table-border-color);
+
+			text-align: left;
+			vertical-align: middle;
+			white-space: nowrap;
+		}
+
+		// Header
+		thead {
+			th {
+				text-transform: uppercase;
+				@include font-weight(semibold);
+				border-top: 1px solid var(--table-border-color);
+
+				background-color: var(--bg-color);
+
+				font-size: 11px;
+			}
+
+			button {
+				width: 100%;
+
+				display: flex;
+				align-items: center;
+				gap: 0.25rem;
+
+				cursor: pointer;
+
+				text-align: left;
+			}
+		}
+
+		// First border
+		th:first-child,
+		td:first-child {
+			border-left: 1px solid var(--table-border-color);
+		}
+
+		// Rows
+		tbody {
+			tr:nth-child(odd) {
+				background-color: var(--table-bg-color-01);
+			}
+
+			tr:nth-child(even) {
+				background-color: var(--table-bg-color-02);
+			}
+
+			tr {
+				cursor: pointer;
+
+				&:hover {
+					background-color: var(--table-bg-color-03);
+				}
+
+				&[data-selected="true"] {
+					background-color: var(--table-bg-color-04);
+				}
+			}
+
+			td {
+				background-color: inherit;
+			}
+		}
+
+		// Checkbox column
+		th:first-child,
+		td:first-child {
+			position: sticky;
+			left: 0;
+
+			width: var(--table-select-width);
+			min-width: var(--table-select-width);
+			max-width: var(--table-select-width);
+		}
+
+		// Player column
+		th:nth-child(2),
+		td:nth-child(2) {
+			position: sticky;
+			left: var(--table-select-width);
+		}
+
+		// Sticky body columns
+		tbody {
+			td:first-child,
+			td:nth-child(2) {
+				z-index: 2;
+			}
+		}
+
+		// Sticky header
+		thead {
+			th {
+				z-index: 4;
+			}
+
+			// Sticky header + sticky horizontal columns
+			th:first-child,
+			th:nth-child(2) {
+				z-index: 5;
+
+				background-color: var(--bg-color);
+			}
+		}
+	}
 }

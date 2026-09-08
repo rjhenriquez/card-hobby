@@ -1,0 +1,93 @@
+@use "mixin-media-queries" as *;
+
+:root {
+	// ------- COLORS -------
+	--white: #ffffff;
+	--black: #000000;
+	--main: #7066ff;
+	// --green: #16c47f;
+	// --red: #f93827;
+
+	--gray-01: #f3f4f9;
+	--gray-02: #ecf0fa;
+	// --gray-03: #e8e9ea;
+	// --gray-04: #e0e0e0;
+	// --gray-05: #98999b;
+	// --gray-06: #707172;
+	// --gray-07: #616161;
+	--gray-08: #242b39;
+	--gray-09: #090a0f;
+
+	// ------- Spacing -------
+
+	--spacing-10: 0.625em; // 10px
+	--spacing-14: 0.875rem; // 14px
+	--spacing-20: 1.25rem; // 20px
+
+	// ------- Font Sizes -------
+
+	--font-size-10: 0.625em; // 10px
+	--font-size-12: 0.75em; // 12px
+	--font-size-14: 0.875rem; // 14px
+	--font-size-26: 1.625rem; // 26px
+	--font-size-32: 2rem; // 32px
+	--font-size-: 4rem;
+
+	// ------- Page -------
+	--page-padding: var(--spacing-20);
+	--page-section-margin: 1rem;
+
+	// ------- Button Component -------
+	--button-border-radius: 0.625em; //10px
+	--button-icon-size: 1.25rem; //20px
+	--button-icon-size-sm: 0.875rem; // 14px
+	--button-size: 2.25em; //36px
+	--button-border-line: var(--button-border-color) 1px solid;
+
+	--button-main-background: var(--main);
+	--button-main-size: 2rem; // 40px
+	--button-gap: var(--spacing-10);
+	--button-main-padding: 1rem; // 16px
+
+	// ------- Header Component -------
+	--header-padding: var(--spacing-10) var(--spacing-20);
+	--header-gap: var(--spacing-20);
+	--header-border-line: var(--button-border-color) 1px solid;
+
+	// ------- Sidebar Component -------
+	--sidebar-size: 14.375rem; //230px
+	--sidebar-padding: var(--spacing-14);
+	--sidebar-item-padding: 0.625rem; //10px
+	--sidebar-item-gap: 0.75rem; //12px
+	--sidebar-item-border-radius: 0.625em; //10px
+	--sidebar-item-icon-size: 1.25rem; //20px
+	--sidebar-border-line: var(--button-border-color) 1px solid;
+
+	// ------- Table -------
+	--table-border-radius: 0.625em; //10px
+	--table-padding: 0.625em; //10px
+	--table-actions-gap: 0.75rem; //12px
+
+	// ------- Inputs -------
+	--input-outer-circle-size: 18px;
+	--input-inner-circle-size: 12px;
+	--input-border-line: var(--gray-08) 1px solid;
+
+	@include media-query(medium-up) {
+	}
+	@include media-query(medium-up) {
+	}
+}
+.theme--light {
+	--bg-color: var(--white); // Header & Sidebar
+	--bg-color-02: var(--gray-02); //Main
+	--text-color: var(--gray-09);
+	--button-border-color: #ececed;
+}
+
+.theme--dark {
+	--bg-color: var(--gray-09);
+	--bg-color-02: var(--gray-08);
+	--text-color: var(--gray-01);
+	--button-border-color: #404040;
+}

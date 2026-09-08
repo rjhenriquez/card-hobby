@@ -5,10 +5,10 @@ export default async function PackagesPage() {
 	const purchasePackages = await getPurchasePackages();
 
 	return (
-		<main>
+		<div className='content'>
 			<h1>Packages</h1>
 
 			<Packages purchasePackages={purchasePackages} />
-		</main>
+		</div>
 	);
 }

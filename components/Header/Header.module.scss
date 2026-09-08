@@ -1,0 +1,22 @@
+.Header {
+	min-width: 0;
+	max-width: 100%;
+	background-color: var(--bg-color);
+	padding: var(--header-padding);
+	border-bottom: var(--header-border-line);
+
+	&__inner {
+		min-width: 0;
+		max-width: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+	}
+
+	&__list {
+		min-width: 0;
+		display: flex;
+		align-items: center;
+		gap: var(--header-gap);
+	}
+}

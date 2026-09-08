@@ -1,2 +1,31 @@
+@use "@/styles/utilities/all" as *;
+
 .Sidebar {
+	background-color: var(--bg-color);
+	padding: var(--sidebar-padding);
+	border-right: var(--sidebar-border-line);
+	&__list {
+		display: flex;
+		flex-direction: column;
+	}
+	&__link {
+		@include font-weight(semibold);
+		display: flex;
+		align-items: center;
+		gap: var(--sidebar-item-gap);
+		padding: var(--sidebar-item-padding);
+		border-radius: var(--sidebar-item-border-radius);
+		background-color: var(--bg-color);
+		font-size: var(--font-size-14);
+		&:hover {
+			background-color: var(--bg-color-02);
+		}
+		&--active {
+			background-color: var(--bg-color-02);
+		}
+	}
+	&__icon {
+		width: var(--sidebar-item-icon-size);
+		height: var(--sidebar-item-icon-size);
+	}
 }
