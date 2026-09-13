@@ -29,6 +29,11 @@ export function Header() {
 
 	return (
 		<header className={styles.Header}>
+			<div className={styles.Header__left}>
+				<Link href='/' className={styles.Header__logo}>
+					Card Hobby
+				</Link>
+			</div>
 			<div className={styles.Header__inner}>
 				<nav className={styles.Header__nav} aria-label='Main navigation'>
 					<ul className={styles.Header__list}>

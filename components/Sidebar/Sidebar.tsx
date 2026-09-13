@@ -32,6 +32,11 @@ const navigation = [
 		href: "/packages",
 		icon: "shipping",
 	},
+	{
+		label: "PSA Gem Rate",
+		href: "/psa-gem-rate",
+		icon: "diamond",
+	},
 ];
 
 export function Sidebar() {
@@ -39,7 +44,10 @@ export function Sidebar() {
 
 	return (
 		<aside className={styles.Sidebar}>
-			<nav aria-label='Sidebar navigation'>
+			<nav
+				className={styles.Sidebar__navigation}
+				aria-label='Sidebar navigation'
+			>
 				<ul className={styles.Sidebar__list}>
 					{navigation.map((item) => {
 						const isActive =

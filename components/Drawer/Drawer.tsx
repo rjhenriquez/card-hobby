@@ -2,6 +2,10 @@
 
 import { ReactNode, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import { Button } from "@/components/Button/Button";
+import cn from "classnames";
+
+import styles from "./Drawer.module.scss";
 
 interface DrawerProps {
 	isOpen: boolean;
@@ -12,10 +16,26 @@ interface DrawerProps {
 
 export function Drawer({ isOpen, title, children, onClose }: DrawerProps) {
 	const [isMounted, setIsMounted] = useState(false);
+	const [isVisible, setIsVisible] = useState(false);
+	const [isAnimatingOpen, setIsAnimatingOpen] = useState(false);
 
 	useEffect(() => {
 		setIsMounted(true);
 	}, []);
+
+	useEffect(() => {
+		if (isOpen) {
+			setIsVisible(true);
+
+			requestAnimationFrame(() => {
+				requestAnimationFrame(() => {
+					setIsAnimatingOpen(true);
+				});
+			});
+		} else {
+			setIsAnimatingOpen(false);
+		}
+	}, [isOpen]);
 
 	useEffect(() => {
 		if (!isOpen) {
@@ -35,25 +55,42 @@ export function Drawer({ isOpen, title, children, onClose }: DrawerProps) {
 		};
 	}, [isOpen, onClose]);
 
-	if (!isMounted || !isOpen) {
+	if (!isMounted || !isVisible) {
 		return null;
 	}
 
 	return createPortal(
-		<div className='DevDrawer' role='presentation' onMouseDown={onClose}>
+		<div
+			className={cn(styles.Drawer, {
+				[styles["Drawer--open"]]: isAnimatingOpen,
+			})}
+			role='presentation'
+			onMouseDown={onClose}
+			onTransitionEnd={(event) => {
+				if (!isOpen && event.target === event.currentTarget) {
+					setIsVisible(false);
+				}
+			}}
+		>
 			<div
-				className='DevDrawer__dialog'
+				className={styles.Drawer__dialog}
 				role='dialog'
 				aria-modal='true'
 				aria-labelledby='drawer-title'
 				onMouseDown={(event) => event.stopPropagation()}
 			>
-				<header className='DevDrawer__header'>
-					<h2 id='drawer-title'>{title}</h2>
+				<header className={styles.Drawer__header}>
+					<h2 className={styles.Drawer__heading} id='drawer-title'>
+						{title}
+					</h2>
 
-					<button type='button' onClick={onClose} aria-label='Close'>
-						×
-					</button>
+					<Button
+						type='icon'
+						htmlType='button'
+						leadingIcon='close'
+						onClick={onClose}
+						ariaLabel='Close'
+					/>
 				</header>
 
 				{children}

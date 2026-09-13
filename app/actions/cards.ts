@@ -22,6 +22,8 @@ export async function createCard(formData: FormData) {
 	const portfolio =
 		formData.get("portfolio") === "collection" ? "collection" : "investment";
 
+	const isShared = formData.get("isShared") === "on";
+
 	await db.insert(cards).values({
 		player: player.trim(),
 		category: getOptionalString(formData, "category"),
@@ -40,6 +42,8 @@ export async function createCard(formData: FormData) {
 		purchasedFrom: getOptionalString(formData, "purchasedFrom"),
 		ebaySeller: getOptionalString(formData, "ebaySeller"),
 		purchasePrice: getOptionalString(formData, "purchasePrice"),
+
+		isShared,
 	});
 
 	revalidatePath("/");
@@ -76,6 +80,7 @@ export async function updateCard(formData: FormData) {
 
 	const statusIdValue = formData.get("statusId");
 	const hasSale = existingCard.soldPrice !== null;
+	const isShared = formData.get("isShared") === "on";
 
 	const statusId = hasSale
 		? existingCard.statusId
@@ -103,6 +108,8 @@ export async function updateCard(formData: FormData) {
 			ebaySeller: getOptionalString(formData, "ebaySeller"),
 			purchasePrice: getOptionalString(formData, "purchasePrice"),
 
+			isShared,
+
 			updatedAt: new Date(),
 		})
 		.where(eq(cards.id, id));
@@ -111,6 +118,7 @@ export async function updateCard(formData: FormData) {
 	revalidatePath("/investment");
 	revalidatePath("/collection");
 }
+
 export async function sellCard(formData: FormData) {
 	const idValue = formData.get("id");
 	const soldPriceValue = formData.get("soldPrice");
@@ -179,6 +187,7 @@ export async function sellCard(formData: FormData) {
 	revalidatePath("/investment");
 	revalidatePath("/collection");
 }
+
 export async function deleteCard(id: number) {
 	if (!Number.isInteger(id)) {
 		throw new Error("Invalid card ID");
@@ -216,6 +225,7 @@ export async function deleteCard(id: number) {
 	revalidatePath("/investment");
 	revalidatePath("/collection");
 }
+
 function getOptionalString(formData: FormData, name: string) {
 	const value = formData.get(name);
 
@@ -227,6 +237,7 @@ function getOptionalString(formData: FormData, name: string) {
 
 	return trimmedValue || null;
 }
+
 export async function moveCardToPortfolio(
 	cardId: number,
 	portfolio: "investment" | "collection",

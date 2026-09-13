@@ -34,8 +34,9 @@ export function ThemeToggle() {
 
 	return (
 		<Button
+			type='icon'
 			onClick={toggleTheme}
-			icon={theme === "light" ? "dark" : "light"}
+			leadingIcon={theme === "light" ? "dark" : "light"}
 			tooltip={`Switch to ${theme === "light" ? "dark" : "light"} theme`}
 		/>
 	);

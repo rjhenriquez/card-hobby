@@ -43,6 +43,20 @@
       "when": 1788785479552,
       "tag": "0005_bright_night_thrasher",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1789308763803,
+      "tag": "0006_mighty_marauders",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1789317016051,
+      "tag": "0007_complex_mindworm",
+      "breakpoints": true
     }
   ]
 }

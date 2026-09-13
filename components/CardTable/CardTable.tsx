@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { CSSProperties, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import {
 	ColumnDef,
@@ -12,11 +12,20 @@ import {
 	tableFeatures,
 	useTable,
 } from "@tanstack/react-table";
-
+import {
+	CARD_TABLE_COLUMN_WIDTHS,
+	CARD_TABLE_HIDDEN_COLUMNS,
+} from "@/constants";
+import {
+	getStoredCardTableExpanded,
+	setStoredCardTableExpanded,
+} from "@/lib/storage";
+import { formatShortDate } from "@/lib/date";
 import type { Card } from "@/types/types";
 import { Button } from "@/components/Button/Button";
-import { Input } from "@/components/Input/Input";
+import { InputCheckbox } from "@/components/InputCheckbox/InputCheckbox";
 import { Icon } from "@/components/Icons/Icons";
+import cn from "classnames";
 
 import styles from "./CardTable.module.scss";
 
@@ -29,19 +38,30 @@ interface CardTableProps {
 	onCreatePurchasePackage: () => void;
 	onMoveCard: (card: Card) => void;
 	onEditCard: (card: Card) => void;
+	onCopyCard: (card: Card) => void;
 }
-
 const features = tableFeatures({
 	rowSelectionFeature,
 	rowSortingFeature,
 	sortedRowModel: createSortedRowModel(),
 });
 
-function formatCurrency(value: number) {
-	return `$${value.toLocaleString("en-US", {
+function formatCurrency(value: number, showSign = true) {
+	return `${showSign ? "$" : ""}${value.toLocaleString("en-US", {
 		minimumFractionDigits: 2,
 		maximumFractionDigits: 2,
 	})}`;
+}
+function getColumnId(
+	column: ColumnDef<typeof features, Card>,
+): string | undefined {
+	if ("id" in column && column.id) {
+		return column.id;
+	}
+	if ("accessorKey" in column && typeof column.accessorKey === "string") {
+		return column.accessorKey;
+	}
+	return undefined;
 }
 
 export function CardTable({
@@ -53,22 +73,30 @@ export function CardTable({
 	onCreatePurchasePackage,
 	onMoveCard,
 	onEditCard,
+	onCopyCard,
 }: CardTableProps) {
 	const [sorting, setSorting] = useState<SortingState>([]);
+	const [isExpanded, setIsExpanded] = useState(false);
+
+	const headerTableRef = useRef<HTMLTableElement>(null);
+	const bodyTableRef = useRef<HTMLTableElement>(null);
+	const tableScrollRef = useRef<HTMLDivElement>(null);
+	const headerScrollRef = useRef<HTMLDivElement>(null);
 
 	const selectedCardCount = Object.values(rowSelection).filter(Boolean).length;
-
 	const selectedCards = cards.filter((card) => rowSelection[String(card.id)]);
-
 	const selectedCard = selectedCards.length === 1 ? selectedCards[0] : null;
+
+	useEffect(() => {
+		setIsExpanded(getStoredCardTableExpanded());
+	}, []);
 
 	const selectionColumn: ColumnDef<typeof features, Card> = {
 		id: "select",
 		enableSorting: false,
 
 		header: ({ table }) => (
-			<Input
-				type='checkbox'
+			<InputCheckbox
 				checked={table.getIsAllRowsSelected()}
 				onChange={table.getToggleAllRowsSelectedHandler()}
 				ariaLabel='Select all cards'
@@ -83,8 +111,7 @@ export function CardTable({
 		),
 
 		cell: ({ row }) => (
-			<Input
-				type='checkbox'
+			<InputCheckbox
 				checked={row.getIsSelected()}
 				onChange={row.getToggleSelectedHandler()}
 				ariaLabel={`Select ${row.original.player}`}
@@ -92,7 +119,7 @@ export function CardTable({
 		),
 	};
 
-	const columns: ColumnDef<typeof features, Card>[] = [
+	const allColumns: ColumnDef<typeof features, Card>[] = [
 		selectionColumn,
 
 		{
@@ -119,6 +146,18 @@ export function CardTable({
 			accessorKey: "info",
 			header: "Info",
 		},
+		{
+			accessorKey: "notes",
+			header: "Notes",
+		},
+		{
+			accessorKey: "purchaseDate",
+			header: "Date",
+			cell: ({ getValue }) => {
+				const value = getValue() as string | null;
+				return formatShortDate(value);
+			},
+		},
 
 		{
 			accessorKey: "effectiveStatus",
@@ -127,7 +166,7 @@ export function CardTable({
 
 		{
 			accessorKey: "purchasedFrom",
-			header: "Purchased From",
+			header: "Seller",
 		},
 
 		{
@@ -147,7 +186,7 @@ export function CardTable({
 
 		{
 			accessorKey: "psaSubmissionNumbers",
-			header: "PSA Submission",
+			header: "PSA Sub",
 
 			cell: ({ getValue }) => {
 				const submissionNumbers = getValue() as string[];
@@ -174,7 +213,7 @@ export function CardTable({
 
 		{
 			accessorKey: "price",
-			header: "Price",
+			header: "Cost ",
 
 			cell: ({ getValue }) => {
 				const value = getValue() as number | null;
@@ -185,7 +224,7 @@ export function CardTable({
 
 		{
 			accessorKey: "gradingCost",
-			header: "Grading Cost",
+			header: "Grading",
 
 			cell: ({ getValue }) => {
 				const value = getValue() as number;
@@ -205,44 +244,89 @@ export function CardTable({
 			},
 		},
 
-		...(portfolio === "investment"
-			? ([
-					{
-						accessorKey: "soldPrice",
-						header: "Sold Price",
+		{
+			accessorKey: "soldPrice",
+			header: "Sold Price",
 
-						cell: ({ getValue }) => {
-							const value = getValue() as string | null;
+			cell: ({ getValue }) => {
+				const value = getValue() as string | null;
 
-							return value !== null ? formatCurrency(Number(value)) : "—";
-						},
-					},
+				return value !== null ? formatCurrency(Number(value)) : "—";
+			},
+		},
+		{
+			accessorKey: "soldDate",
+			header: "Sold Date",
+			cell: ({ getValue }) => {
+				const value = getValue() as string | null;
+				return formatShortDate(value);
+			},
+		},
+		{
+			accessorKey: "profit",
+			header: "Profit",
 
-					{
-						accessorKey: "profit",
-						header: "Profit",
+			cell: ({ getValue }) => {
+				const value = getValue() as number | null;
 
-						cell: ({ getValue }) => {
-							const value = getValue() as number | null;
+				if (value === null) {
+					return "";
+				}
 
-							return value !== null ? formatCurrency(value) : "—";
-						},
-					},
+				return (
+					<span
+						className={cn(styles.CardTable__value, {
+							[styles["CardTable__value--positive"]]: value > 0,
+							[styles["CardTable__value--negative"]]: value < 0,
+						})}
+					>
+						<span>$</span>
+						<span>{formatCurrency(value, false)}</span>
+					</span>
+				);
+			},
+		},
+		{
+			accessorKey: "roi",
+			header: "ROI",
 
-					{
-						accessorKey: "roi",
-						header: "ROI",
+			cell: ({ getValue }) => {
+				const value = getValue() as number | null;
 
-						cell: ({ getValue }) => {
-							const value = getValue() as number | null;
+				if (value === null) {
+					return "";
+				}
 
-							return value !== null ? `${value.toFixed(2)}%` : "—";
-						},
-					},
-				] as ColumnDef<typeof features, Card>[])
-			: []),
+				return (
+					<span
+						className={cn(styles.CardTable__value, {
+							[styles["CardTable__value--positive"]]: value > 0,
+							[styles["CardTable__value--negative"]]: value < 0,
+						})}
+					>
+						<span>%</span>
+						<span>{value.toFixed(2)}</span>
+					</span>
+				);
+			},
+		},
+		{
+			accessorKey: "isShared",
+			header: "Shared",
+
+			cell: ({ getValue }) => {
+				const value = getValue() as boolean;
+
+				return value ? "Yes" : "No";
+			},
+		},
 	];
+	const hiddenColumns = new Set(CARD_TABLE_HIDDEN_COLUMNS[portfolio]);
 
+	const columns = allColumns.filter((column) => {
+		const columnId = getColumnId(column);
+		return !columnId || !hiddenColumns.has(columnId);
+	});
 	const table = useTable({
 		data: cards,
 		columns,
@@ -270,84 +354,186 @@ export function CardTable({
 		getRowId: (row) => String(row.id),
 	});
 
+	useEffect(() => {
+		const headerTable = headerTableRef.current;
+		const bodyTable = bodyTableRef.current;
+
+		if (!headerTable || !bodyTable) {
+			return;
+		}
+
+		const currentHeaderTable = headerTable;
+		const currentBodyTable = bodyTable;
+
+		function syncColumnWidths() {
+			const bodyCells = currentBodyTable.querySelectorAll(
+				"tbody tr:first-child td",
+			);
+			const headerCells = currentHeaderTable.querySelectorAll("thead th");
+
+			if (bodyCells.length === 0) {
+				return;
+			}
+
+			bodyCells.forEach((bodyCell, index) => {
+				const headerCell = headerCells[index];
+
+				if (!(headerCell instanceof HTMLElement)) {
+					return;
+				}
+
+				const width = bodyCell.getBoundingClientRect().width;
+
+				headerCell.style.width = `${width}px`;
+				headerCell.style.maxWidth = `${width}px`;
+			});
+
+			currentHeaderTable.style.width = `${currentBodyTable.getBoundingClientRect().width}px`;
+		}
+
+		syncColumnWidths();
+
+		const resizeObserver = new ResizeObserver(syncColumnWidths);
+
+		resizeObserver.observe(currentBodyTable);
+
+		return () => {
+			resizeObserver.disconnect();
+		};
+	}, [cards, isExpanded]);
+
+	function getColumnProps(columnId: string) {
+		if (isExpanded) {
+			return {};
+		}
+
+		const width = CARD_TABLE_COLUMN_WIDTHS[columnId];
+
+		if (!width) {
+			return {};
+		}
+
+		return {
+			className: styles["CardTable__column--capped"],
+			style: {
+				"--column-width": width,
+			} as CSSProperties,
+		};
+	}
+
+	function handleTableScroll() {
+		const tableScroll = tableScrollRef.current;
+		const headerScroll = headerScrollRef.current;
+
+		if (!tableScroll || !headerScroll) return;
+
+		headerScroll.scrollLeft = tableScroll.scrollLeft;
+	}
+
 	return (
 		<div className={styles.CardTable}>
 			<div className={styles.CardTable__top}>
-				<h3>
-					{portfolio === "investment" ? "Active Investments" : "Collection"}
-				</h3>
+				<div className={styles.CardTable__actions}>
+					<div className={styles.CardTable__actions__group}>
+						<Button
+							type='icon'
+							htmlType='button'
+							leadingIcon='edit'
+							tooltip='Edit Card'
+							disabled={selectedCard === null}
+							onClick={() => {
+								if (!selectedCard) return;
 
-				<div className={styles.CardTable__top__actions}>
-					<Button
-						type='icon'
-						htmlType='button'
-						icon='copy'
-						tooltip='Copy Card'
-						disabled={selectedCard === null}
-						onClick={() => {
-							if (!selectedCard) return;
+								onEditCard(selectedCard);
+							}}
+						/>
+						<Button
+							type='icon'
+							htmlType='button'
+							leadingIcon='copy'
+							tooltip='Copy Card'
+							disabled={selectedCard === null}
+							onClick={() => {
+								if (!selectedCard) return;
+								onCopyCard(selectedCard);
+							}}
+						/>
+						<span className={styles.CardTable__actions__separator} />
 
-							// Copy functionality to come
-						}}
-					/>
+						<Button
+							type='icon'
+							htmlType='button'
+							leadingIcon='add-sub'
+							tooltip='Add to sub'
+							disabled={selectedCardCount === 0}
+							onClick={onCreateSubmission}
+						/>
 
-					<Button
-						type='icon'
-						htmlType='button'
-						icon='edit'
-						tooltip='Edit Card'
-						disabled={selectedCard === null}
-						onClick={() => {
-							if (!selectedCard) return;
+						<Button
+							type='icon'
+							htmlType='button'
+							leadingIcon='package'
+							tooltip='Add to package'
+							disabled={selectedCardCount === 0}
+							onClick={onCreatePurchasePackage}
+						/>
+						<span className={styles.CardTable__actions__separator} />
+						<Button
+							type='icon'
+							htmlType='button'
+							leadingIcon={portfolio === "investment" ? "move-down" : "move-up"}
+							tooltip={
+								portfolio === "investment"
+									? "Move to Collection"
+									: "Move to Investment"
+							}
+							disabled={selectedCard === null}
+							onClick={() => {
+								if (!selectedCard) return;
 
-							onEditCard(selectedCard);
-						}}
-					/>
+								onMoveCard(selectedCard);
+							}}
+						/>
+					</div>
+					<div className={styles.CardTable__actions__group}>
+						<Button
+							type='icon'
+							htmlType='button'
+							leadingIcon={isExpanded ? "compress" : "expand"}
+							tooltip={isExpanded ? "Compress columns" : "Expand columns"}
+							onClick={() => {
+								setIsExpanded((current) => {
+									const next = !current;
 
-					<Button
-						type='icon'
-						htmlType='button'
-						icon={portfolio === "investment" ? "move-down" : "move-up"}
-						tooltip={
-							portfolio === "investment"
-								? "Move to Collection"
-								: "Move to Investment"
-						}
-						disabled={selectedCard === null}
-						onClick={() => {
-							if (!selectedCard) return;
+									setStoredCardTableExpanded(next);
 
-							onMoveCard(selectedCard);
-						}}
-					/>
+									return next;
+								});
+							}}
+						/>
+						<Button
+							type='icon'
+							htmlType='button'
+							leadingIcon='font-size'
+							tooltip='font Size'
+							disabled={selectedCard === null}
+							onClick={() => {
+								if (!selectedCard) return;
 
-					<Button
-						type='icon'
-						htmlType='button'
-						icon='add-sub'
-						tooltip='Add to sub'
-						disabled={selectedCardCount === 0}
-						onClick={onCreateSubmission}
-					/>
-
-					<Button
-						type='icon'
-						htmlType='button'
-						icon='package'
-						tooltip='Add to package'
-						disabled={selectedCardCount === 0}
-						onClick={onCreatePurchasePackage}
-					/>
+								// Copy functionality to come
+							}}
+						/>
+					</div>
 				</div>
 			</div>
 
-			<div className={styles.CardTable__table}>
-				<table>
+			<div ref={headerScrollRef} className={styles.CardTable__header}>
+				<table ref={headerTableRef}>
 					<thead>
 						{table.getHeaderGroups().map((headerGroup) => (
 							<tr key={headerGroup.id}>
 								{headerGroup.headers.map((header) => (
-									<th key={header.id}>
+									<th key={header.id} {...getColumnProps(header.column.id)}>
 										{header.isPlaceholder ? null : header.column.id ===
 										  "select" ? (
 											<table.FlexRender header={header} />
@@ -361,6 +547,11 @@ export function CardTable({
 												<table.FlexRender header={header} />
 
 												<Icon
+													className={cn(styles["CardTable__header-icon"], {
+														[styles["CardTable__header-icon--all"]]:
+															header.column.getIsSorted() !== "asc" &&
+															header.column.getIsSorted() !== "desc",
+													})}
 													icon={
 														header.column.getIsSorted() === "asc"
 															? "arrow-up"
@@ -378,26 +569,52 @@ export function CardTable({
 							</tr>
 						))}
 					</thead>
+				</table>
+			</div>
 
+			<div
+				ref={tableScrollRef}
+				className={styles.CardTable__table}
+				onScroll={handleTableScroll}
+			>
+				<table ref={bodyTableRef}>
 					<tbody>
 						{table.getRowModel().rows.map((row) => (
-							<tr
-								key={row.id}
-								onClick={row.getToggleSelectedHandler()}
-								data-selected={row.getIsSelected()}
-							>
-								{row.getAllCells().map((cell) => (
-									<td
-										key={cell.id}
-										onClick={
-											cell.column.id === "select"
-												? (event) => event.stopPropagation()
-												: undefined
-										}
-									>
-										<table.FlexRender cell={cell} />
-									</td>
-								))}
+							<tr key={row.id} data-selected={row.getIsSelected()}>
+								{row.getAllCells().map((cell) => {
+									const isSelectCell = cell.column.id === "select";
+									const isPlayerCell = cell.column.id === "player";
+									const columnProps = getColumnProps(cell.column.id);
+
+									return (
+										<td
+											key={cell.id}
+											{...columnProps}
+											className={cn(
+												columnProps.className,
+												(isSelectCell || isPlayerCell) &&
+													styles["CardTable__cell--selectable"],
+											)}
+											onClick={
+												isSelectCell || isPlayerCell
+													? (event) => {
+															if (
+																isSelectCell &&
+																event.target instanceof HTMLElement &&
+																event.target.closest("label")
+															) {
+																return;
+															}
+
+															row.toggleSelected();
+														}
+													: undefined
+											}
+										>
+											<table.FlexRender cell={cell} />
+										</td>
+									);
+								})}
 							</tr>
 						))}
 					</tbody>

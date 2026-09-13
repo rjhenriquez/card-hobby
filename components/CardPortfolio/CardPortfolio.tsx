@@ -12,10 +12,13 @@ import {
 } from "@/app/actions/psaSubmissions";
 import { createPurchasePackage } from "@/app/actions/purchasePackages";
 import { AddCard } from "@/components/AddCard/AddCard";
+import { InputText } from "@/components/InputText/InputText";
+import { Button } from "@/components/Button/Button";
 import { PackageDrawer } from "../PackageDrawer/PackageDrawer";
+import type { CardFormOptions } from "@/db/queries/cardFormOptions";
 import type { Card } from "@/types/types";
 
-import styles from "./CardPortfolio.module.scss";
+import styles from "@/styles/components/DrawerContent.module.scss";
 
 interface CardStatus {
 	id: number;
@@ -36,6 +39,7 @@ interface CardPortfolioProps {
 	statuses: CardStatus[];
 	psaSubmissions: PsaSubmission[];
 	portfolio: "investment" | "collection";
+	options: CardFormOptions;
 }
 
 type SelectionMode = "submission" | "purchase-package" | null;
@@ -45,6 +49,7 @@ export function CardPortfolio({
 	statuses,
 	psaSubmissions,
 	portfolio,
+	options,
 }: CardPortfolioProps) {
 	const [cardToMove, setCardToMove] = useState<Card | null>(null);
 	const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
@@ -58,6 +63,7 @@ export function CardPortfolio({
 	>(null);
 	const [isSavingPurchasePackage, setIsSavingPurchasePackage] = useState(false);
 	const [editingCard, setEditingCard] = useState<Card | null>(null);
+	const [copyingCard, setCopyingCard] = useState<Card | null>(null);
 
 	const destination = portfolio === "investment" ? "collection" : "investment";
 
@@ -192,22 +198,35 @@ export function CardPortfolio({
 				cards={cards}
 				portfolio={portfolio}
 				rowSelection={rowSelection}
-				selectionMode={selectionMode}
 				onRowSelectionChange={setRowSelection}
-				onSelectionModeChange={setSelectionMode}
 				onCreateSubmission={() => setIsPsaDrawerOpen(true)}
 				onCreatePurchasePackage={() => setIsPurchasePackageDrawerOpen(true)}
 				onMoveCard={setCardToMove}
 				onEditCard={setEditingCard}
+				onCopyCard={setCopyingCard}
 			/>
 
-			<AddCard
-				statuses={statuses}
-				portfolio={portfolio}
-				card={editingCard}
-				onCloseEdit={() => setEditingCard(null)}
-				editOnly
-			/>
+			{editingCard && (
+				<AddCard
+					statuses={statuses}
+					portfolio={portfolio}
+					options={options}
+					card={editingCard}
+					onCloseEdit={() => setEditingCard(null)}
+					editOnly
+				/>
+			)}
+
+			{copyingCard && (
+				<AddCard
+					statuses={statuses}
+					portfolio={portfolio}
+					options={options}
+					copyFrom={copyingCard}
+					onCloseCopy={() => setCopyingCard(null)}
+					copyOnly
+				/>
+			)}
 
 			<Modal
 				isOpen={cardToMove !== null}
@@ -237,50 +256,77 @@ export function CardPortfolio({
 				title='Add to PSA Submission'
 				onClose={handleClosePsaDrawer}
 			>
-				<p>
-					{selectedCardIds.length} card
-					{selectedCardIds.length === 1 ? "" : "s"} selected.
-				</p>
+				<div className={styles.DrawerInfo}>
+					<div className={styles.DrawerInfo__section}>
+						<h3 className={styles.DrawerInfo__count}>
+							{selectedCardIds.length} card
+							{selectedCardIds.length === 1 ? "" : "s"} selected
+						</h3>
+						{psaError && (
+							<h3 className={styles.DrawerInfo__count} role='alert'>
+								{psaError}
+							</h3>
+						)}
+						{psaSubmissions.length >= 1 && (
+							<>
+								<div className={styles.DrawerInfo__section__header}>
+									<h4 className={styles.DrawerInfo__section__heading}>
+										Existing Submission
+									</h4>
+									<hr className={styles.DrawerInfo__section__hr} />
+								</div>
+								<ul className={styles.DrawerInfo__list}>
+									{psaSubmissions.map((submission) => (
+										<li
+											key={submission.id}
+											className={styles.DrawerInfo__list__item}
+										>
+											<span>Submission #</span>
+											<Button
+												type='number-add'
+												htmlType='button'
+												trailingIcon='plus-sign'
+												label={submission.submissionNumber}
+												onClick={() => handleAddToPsaSubmission(submission.id)}
+											/>
+										</li>
+									))}
+								</ul>
+							</>
+						)}
+					</div>
+				</div>
 
-				{psaError && <p role='alert'>{psaError}</p>}
-
-				{psaSubmissions.length === 0 ? (
-					<p>No PSA submissions yet.</p>
-				) : (
-					<>
-						<h3>Existing Submission</h3>
-
-						<ul>
-							{psaSubmissions.map((submission) => (
-								<li key={submission.id}>
-									<strong>{submission.submissionNumber}</strong>
-									{submission.stage && <> — {submission.stage}</>}{" "}
-									<button
-										type='button'
-										onClick={() => handleAddToPsaSubmission(submission.id)}
-									>
-										Add
-									</button>
-								</li>
-							))}
-						</ul>
-					</>
-				)}
-
-				<h3>Create New Submission</h3>
-
-				<form action={handleCreatePsaSubmission}>
-					<label>
-						Submission Number
-						<input type='text' name='submissionNumber' required />
-					</label>
-
-					<button type='submit'>Create New Submission</button>
+				<form className={styles.DrawerForm} action={handleCreatePsaSubmission}>
+					<div className={styles.DrawerForm__section}>
+						<div className={styles.DrawerForm__section__header}>
+							<hr className={styles.DrawerForm__section__hr} />
+							<h3 className={styles.DrawerForm__section__heading}>
+								Create New Submission
+							</h3>
+						</div>
+						<InputText
+							label='Submission Number'
+							name='submissionNumber'
+							required
+						/>
+					</div>
+					<div className={styles.DrawerForm__actions}>
+						<Button
+							type='main'
+							variant='add'
+							htmlType='submit'
+							label='Create New Submission'
+						/>
+						<Button
+							type='main'
+							variant='cancel'
+							htmlType='submit'
+							label='Cancel'
+							onClick={handleClosePsaDrawer}
+						/>
+					</div>
 				</form>
-
-				<button type='button' onClick={handleClosePsaDrawer}>
-					Cancel
-				</button>
 			</Drawer>
 
 			<PackageDrawer

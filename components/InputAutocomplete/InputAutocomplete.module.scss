@@ -1,0 +1,83 @@
+@use "@/styles/utilities/all" as *;
+
+.InputAutocomplete {
+	display: flex;
+	flex-direction: column;
+	gap: var(--input-gap);
+	flex: 0 0 100%;
+	min-width: 0;
+
+	&--half {
+		flex-basis: calc(50% - var(--form-gap) / 2);
+	}
+
+	&--third {
+		flex-basis: calc(33.333% - var(--form-gap) / 2);
+	}
+
+	&__label {
+		@include font-weight(semibold);
+
+		font-size: var(--font-size-12);
+		letter-spacing: 0.05em;
+		text-transform: uppercase;
+	}
+
+	&__field {
+		position: relative;
+	}
+
+	input {
+		width: 100%;
+		height: var(--input-height);
+
+		padding-inline: var(--input-padding);
+
+		border: var(--input-border);
+		border-radius: var(--input-border-radius);
+
+		outline: none;
+
+		font-size: var(--input-font-size);
+
+		&:focus {
+			border-color: var(--main);
+		}
+	}
+
+	&__options {
+		position: absolute;
+		top: 100%;
+		left: 0;
+		z-index: 20;
+
+		width: 100%;
+
+		background: var(--bg-color);
+
+		border: var(--input-border);
+		border-radius: var(--input-border-radius);
+
+		overflow: hidden;
+	}
+
+	&__option {
+		width: 100%;
+
+		padding: var(--input-padding);
+
+		text-align: left;
+		justify-content: flex-start;
+
+		text-align: left;
+
+		cursor: pointer;
+
+		&:hover {
+			background: var(--bg-color-02);
+		}
+		&--active {
+			background: var(--bg-color-02);
+		}
+	}
+}

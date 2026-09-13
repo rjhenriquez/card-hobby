@@ -1,30 +1,35 @@
 import fs from "node:fs";
 import path from "node:path";
+import dotenv from "dotenv";
 import { parse } from "csv-parse/sync";
-import { db } from "@/db";
-import { cards, cardStatuses } from "@/db/schema";
+import {
+	cards,
+	cardStatuses,
+	psaSubmissionCards,
+	psaSubmissions,
+} from "@/db/schema";
+
+dotenv.config({
+	path: path.join(process.cwd(), ".env.local"),
+});
 
 interface CsvRow {
-	Player: string;
-	Category: string;
-	Status: string;
-	Year: string;
-	Set: string;
-	Info: string;
-	Notes: string;
-	"Purchase Date": string;
-	"Purchased from": string;
-	"Ebay Seller": string;
-	Price: string;
-	Sold: string;
+	player: string;
+	category: string;
+	year: string;
+	setName: string;
+	info: string;
+	notes: string;
+	purchaseDate: string;
+	purchasedFrom: string;
+	ebaySeller: string;
+	purchasePrice: string;
+	gradingCost: string;
+	psaSubmissionNumber: string;
+	grade: string;
+	soldPrice: string;
+	soldDate: string;
 }
-const statusMap: Record<string, string> = {
-	"PSA - Ebay Auction": "Raw Pile",
-	"PSA Grading": "Raw Pile",
-	"Ebay Fixed": "Raw Pile",
-	"In Transit from PSA": "In Transit",
-	"Waiting PSA lower tier": "Raw Pile",
-};
 
 function parseCurrency(value: string) {
 	const cleaned = value.replace(/[$,]/g, "").trim();
@@ -39,11 +44,13 @@ function parseCurrency(value: string) {
 }
 
 function parseDate(value: string) {
-	if (!value.trim()) {
+	const trimmed = value.trim();
+
+	if (!trimmed) {
 		return null;
 	}
 
-	const date = new Date(value);
+	const date = new Date(trimmed);
 
 	if (Number.isNaN(date.getTime())) {
 		return null;
@@ -52,29 +59,32 @@ function parseDate(value: string) {
 	return date.toISOString().slice(0, 10);
 }
 
-const fileArgument = process.argv[2];
-const shouldImport = process.argv.includes("--import");
+function parseOptionalString(value: string) {
+	const trimmed = value?.trim();
 
-if (!fileArgument) {
-	throw new Error(
-		"CSV file is required. Example: npm run import:cards -- testData.csv",
-	);
+	if (!trimmed || trimmed.toUpperCase() === "N/A") {
+		return null;
+	}
+
+	return trimmed;
 }
+
+const fileArgument = process.argv[2] ?? "cards_sold.csv";
+const shouldImport = process.argv.includes("--import");
 
 const filePath = path.resolve(fileArgument);
 const csv = fs.readFileSync(filePath, "utf8");
 
-const lines = csv.split(/\r?\n/);
-
-// Numbers exported an extra title line before the actual CSV header.
-const csvWithoutTitle = lines.slice(1).join("\n");
-
-const rows = parse(csvWithoutTitle, {
+const rows = parse(csv, {
 	columns: true,
 	skip_empty_lines: true,
 	trim: true,
 }) as CsvRow[];
+
 async function main() {
+	// Import DB only after .env.local has been loaded.
+	const { db } = await import("@/db");
+
 	const statusRows = await db
 		.select({
 			id: cardStatuses.id,
@@ -82,13 +92,25 @@ async function main() {
 		})
 		.from(cardStatuses);
 
-	const statusByName = new Map(
-		statusRows.map((status) => [status.name, status.id]),
+	const soldStatus = statusRows.find((status) => status.name === "Sold");
+
+	if (!soldStatus) {
+		throw new Error('Card status "Sold" does not exist');
+	}
+
+	const submissionRows = await db
+		.select({
+			id: psaSubmissions.id,
+			submissionNumber: psaSubmissions.submissionNumber,
+		})
+		.from(psaSubmissions);
+
+	const submissionByNumber = new Map(
+		submissionRows.map((submission) => [
+			submission.submissionNumber,
+			submission.id,
+		]),
 	);
-
-	const cardRows = rows.filter((row) => row.Player?.trim());
-
-	const unsoldRows = cardRows.filter((row) => !row.Sold?.trim());
 
 	const invalidRows: {
 		row: number;
@@ -96,68 +118,111 @@ async function main() {
 		reasons: string[];
 	}[] = [];
 
-	const cardsToImport = unsoldRows.map((row, index) => {
+	const cardsToImport = rows.map((row, index) => {
 		const reasons: string[] = [];
 
-		if (!row.Player?.trim()) {
+		const player = row.player?.trim();
+
+		if (!player) {
 			reasons.push("Missing player");
 		}
 
-		const rawStatus = row.Status?.trim() ?? "";
+		const purchaseDate = parseDate(row.purchaseDate);
 
-		const normalizedStatus = statusMap[rawStatus] ?? rawStatus;
-
-		if (normalizedStatus && !statusByName.has(normalizedStatus)) {
-			reasons.push(`Unknown status: "${rawStatus}"`);
+		if (row.purchaseDate?.trim() && !purchaseDate) {
+			reasons.push(`Invalid purchase date: "${row.purchaseDate}"`);
 		}
 
-		const purchaseDate = parseDate(row["Purchase Date"]);
+		const soldDate = parseDate(row.soldDate);
 
-		if (row["Purchase Date"]?.trim() && !purchaseDate) {
-			reasons.push(`Invalid purchase date: "${row["Purchase Date"]}"`);
+		if (!soldDate) {
+			reasons.push(`Invalid sold date: "${row.soldDate}"`);
 		}
 
-		const purchasePrice = parseCurrency(row.Price);
+		const purchasePrice = parseCurrency(row.purchasePrice);
 
-		if (row.Price?.trim() && purchasePrice === null) {
-			reasons.push(`Invalid price: "${row.Price}"`);
+		if (row.purchasePrice?.trim() && purchasePrice === null) {
+			reasons.push(`Invalid purchase price: "${row.purchasePrice}"`);
+		}
+
+		const soldPrice = parseCurrency(row.soldPrice);
+
+		if (soldPrice === null) {
+			reasons.push(`Invalid sold price: "${row.soldPrice}"`);
+		}
+
+		const gradingCost = parseCurrency(row.gradingCost);
+
+		if (row.gradingCost?.trim() && gradingCost === null) {
+			reasons.push(`Invalid grading cost: "${row.gradingCost}"`);
+		}
+
+		const submissionNumber = parseOptionalString(row.psaSubmissionNumber);
+
+		if (submissionNumber && !submissionByNumber.has(submissionNumber)) {
+			reasons.push(`Unknown PSA submission: "${submissionNumber}"`);
+		}
+
+		const gradeValue = parseOptionalString(row.grade);
+
+		if (
+			gradeValue &&
+			(Number.isNaN(Number(gradeValue)) ||
+				Number(gradeValue) < 0 ||
+				Number(gradeValue) > 10)
+		) {
+			reasons.push(`Invalid grade: "${row.grade}"`);
 		}
 
 		if (reasons.length > 0) {
 			invalidRows.push({
-				row: index + 3,
-				player: row.Player || "Unknown",
+				row: index + 2,
+				player: player || "Unknown",
 				reasons,
 			});
 		}
-
 		return {
-			player: row.Player.trim(),
-			category: row.Category?.trim() || null,
-			year: row.Year?.trim() || null,
-			setName: row.Set?.trim() || null,
-			info: row.Info?.trim() || null,
-			notes: row.Notes?.trim() || null,
-			portfolio: "investment" as const,
-			statusId: normalizedStatus
-				? (statusByName.get(normalizedStatus) ?? null)
-				: null,
-			acquisitionType: "purchased" as const,
-			purchaseDate,
-			purchasedFrom: row["Purchased from"]?.trim() || null,
-			ebaySeller: row["Ebay Seller"]?.trim() || null,
-			purchasePrice,
-			isPaid: false,
+			card: {
+				player: player ?? "",
+				category: parseOptionalString(row.category),
+				year: parseOptionalString(row.year),
+				setName: parseOptionalString(row.setName),
+				info: parseOptionalString(row.info),
+				notes: parseOptionalString(row.notes),
+
+				portfolio: "investment" as const,
+				statusId: soldStatus.id,
+				acquisitionType: "purchased" as const,
+
+				purchaseDate,
+				purchasedFrom: parseOptionalString(row.purchasedFrom),
+				ebaySeller: parseOptionalString(row.ebaySeller),
+				purchasePrice,
+
+				historicalGradingCost: !submissionNumber ? gradingCost : null,
+
+				historicalGrade:
+					!submissionNumber && gradeValue
+						? Number(gradeValue).toFixed(1)
+						: null,
+
+				soldDate,
+				soldPrice,
+
+				isPaid: true,
+				isShared: false,
+			},
+
+			submissionNumber,
+			gradingCost,
+			grade: gradeValue,
 		};
 	});
 
 	console.log("");
-	console.log("Card Import Dry Run");
-	console.log("-------------------");
+	console.log("Sold Card Import Dry Run");
+	console.log("------------------------");
 	console.log(`CSV rows: ${rows.length}`);
-	console.log(`Card rows: ${cardRows.length}`);
-	console.log(`Unsold rows: ${unsoldRows.length}`);
-	console.log(`Skipped sold rows: ${cardRows.length - unsoldRows.length}`);
 	console.log(`Valid cards: ${cardsToImport.length - invalidRows.length}`);
 	console.log(`Invalid cards: ${invalidRows.length}`);
 	console.log("");
@@ -179,7 +244,8 @@ async function main() {
 	if (!shouldImport) {
 		console.log("No database changes made.");
 		console.log("");
-		console.log("Run again with --import to insert these cards.");
+		console.log(`Run again with --import to insert these cards:`);
+		console.log(`npx tsx scripts/import-cards.ts ${fileArgument} --import`);
 		return;
 	}
 
@@ -188,12 +254,41 @@ async function main() {
 		return;
 	}
 
-	await db.insert(cards).values(cardsToImport);
+	for (const [index, item] of cardsToImport.entries()) {
+		const [insertedCard] = await db.insert(cards).values(item.card).returning({
+			id: cards.id,
+		});
 
-	console.log(`Imported ${cardsToImport.length} cards.`);
+		if (item.submissionNumber) {
+			const submissionId = submissionByNumber.get(item.submissionNumber);
+
+			if (!submissionId) {
+				throw new Error(`PSA submission ${item.submissionNumber} not found`);
+			}
+
+			await db.insert(psaSubmissionCards).values({
+				submissionId,
+				cardId: insertedCard.id,
+
+				baseGradingFee: item.gradingCost ?? "0",
+				gradingAdjustment: "0",
+
+				grade: item.grade ? Number(item.grade).toFixed(1) : null,
+
+				gradeStatus: item.grade ? "graded" : "no_grade",
+			});
+		}
+
+		console.log(`✓ ${index + 1}/${cardsToImport.length} — ${item.card.player}`);
+	}
+
+	console.log("");
+	console.log(`✓ Imported ${cardsToImport.length} sold cards.`);
 }
 
 main().catch((error) => {
+	console.error("");
+	console.error("Card import failed:");
 	console.error(error);
 	process.exit(1);
 });

@@ -67,14 +67,24 @@ export const cards = pgTable("cards", {
 		precision: 10,
 		scale: 2,
 	}),
-
+	historicalGradingCost: numeric("historical_grading_cost", {
+		precision: 10,
+		scale: 2,
+	}),
+	historicalGrade: numeric("historical_grade", {
+		precision: 3,
+		scale: 1,
+	}),
 	soldVia: text("sold_via"),
 	soldDate: date("sold_date"),
 	soldPrice: numeric("sold_price", {
 		precision: 10,
 		scale: 2,
 	}),
+
 	isPaid: boolean("is_paid").notNull().default(false),
+	isShared: boolean("is_shared").notNull().default(false),
+
 	createdAt: timestamp("created_at").notNull().defaultNow(),
 	updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
@@ -107,6 +117,18 @@ export const psaSubmissions = pgTable("psa_submissions", {
 	})
 		.notNull()
 		.default("0"),
+
+	// Historical submissions may have incomplete card membership.
+	// For these records, the aggregate values below are authoritative.
+	isHistorical: boolean("is_historical").notNull().default(false),
+
+	historicalTotalCards: integer("historical_total_cards"),
+	historicalPsa10: integer("historical_psa_10"),
+	historicalPsa9: integer("historical_psa_9"),
+	historicalPsa85: integer("historical_psa_85"),
+	historicalPsa8: integer("historical_psa_8"),
+	historicalPsa75OrLess: integer("historical_psa_75_or_less"),
+	historicalNoGrade: integer("historical_no_grade"),
 
 	createdAt: timestamp("created_at").notNull().defaultNow(),
 	updatedAt: timestamp("updated_at").notNull().defaultNow(),
@@ -165,16 +187,23 @@ export const psaSubmissionCards = pgTable(
 	],
 );
 
+// ---------------------------------------------
+// Purchase Packages
+// ---------------------------------------------
+
 export const purchasePackages = pgTable("purchase_packages", {
 	id: serial("id").primaryKey(),
+
 	itemsSubtotal: numeric("items_subtotal", {
 		precision: 10,
 		scale: 2,
 	}).notNull(),
+
 	shippingTotal: numeric("shipping_total", {
 		precision: 10,
 		scale: 2,
 	}).notNull(),
+
 	taxesTotal: numeric("taxes_total", {
 		precision: 10,
 		scale: 2,
@@ -186,28 +215,37 @@ export const purchasePackages = pgTable("purchase_packages", {
 	trackingNumber: text("tracking_number"),
 	estimatedDeliveryDate: date("estimated_delivery_date"),
 	isDelivered: boolean("is_delivered").notNull().default(false),
+
 	createdAt: timestamp("created_at").notNull().defaultNow(),
 	updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
+
+// ---------------------------------------------
+// Purchase Package Cards
+// ---------------------------------------------
 
 export const purchasePackageCards = pgTable(
 	"purchase_package_cards",
 	{
 		id: serial("id").primaryKey(),
+
 		purchasePackageId: integer("purchase_package_id")
 			.notNull()
 			.references(() => purchasePackages.id, {
 				onDelete: "cascade",
 			}),
+
 		cardId: integer("card_id")
 			.notNull()
 			.references(() => cards.id, {
 				onDelete: "restrict",
 			}),
+
 		hammerPrice: numeric("hammer_price", {
 			precision: 10,
 			scale: 2,
 		}).notNull(),
+
 		createdAt: timestamp("created_at").notNull().defaultNow(),
 		updatedAt: timestamp("updated_at").notNull().defaultNow(),
 	},

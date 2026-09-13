@@ -72,7 +72,7 @@ export function PsaSubmissionDetails({
 				})}`}
 			</p>
 
-			<section>
+			<section className='welvnew'>
 				<h2>Cards</h2>
 
 				{cards.length === 0 ? (

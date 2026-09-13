@@ -5,18 +5,24 @@
 	--white: #ffffff;
 	--black: #000000;
 	--main: #7066ff;
-	// --green: #16c47f;
-	// --red: #f93827;
+	--green: #16c47f;
+	--red: #f93827;
 
 	--gray-01: #f3f4f9;
-	--gray-02: #ecf0fa;
-	// --gray-03: #e8e9ea;
-	// --gray-04: #e0e0e0;
-	// --gray-05: #98999b;
-	// --gray-06: #707172;
-	// --gray-07: #616161;
+	--gray-02: #f5f7fc;
+	--gray-03: #eff1f4;
+	--gray-04: #e6e7e8;
+	--gray-05: #98999b;
+	--gray-06: #707172;
+	--gray-07: #616161;
 	--gray-08: #242b39;
 	--gray-09: #090a0f;
+
+	--input-border-color: var(--gray-05);
+	--border-color: #d6d7d8;
+	--button-border-color: #dbdbdb;
+
+	--transition-productive: 0.2s all ease;
 
 	// ------- Spacing -------
 
@@ -29,6 +35,7 @@
 	--font-size-10: 0.625em; // 10px
 	--font-size-12: 0.75em; // 12px
 	--font-size-14: 0.875rem; // 14px
+	--font-size-18: 1.125rem; // 18px
 	--font-size-26: 1.625rem; // 26px
 	--font-size-32: 2rem; // 32px
 	--font-size-: 4rem;
@@ -37,8 +44,11 @@
 	--page-padding: var(--spacing-20);
 	--page-section-margin: 1rem;
 
+	// ------- Header -------
+	--header-height: 60px;
+
 	// ------- Button Component -------
-	--button-border-radius: 0.625em; //10px
+	--button-border-radius: 0.25em; //4px
 	--button-icon-size: 1.25rem; //20px
 	--button-icon-size-sm: 0.875rem; // 14px
 	--button-size: 2.25em; //36px
@@ -46,32 +56,90 @@
 
 	--button-main-background: var(--main);
 	--button-main-size: 2rem; // 40px
+	--button-main-size-lg: 42px; // 40px
 	--button-gap: var(--spacing-10);
 	--button-main-padding: 1rem; // 16px
+	--button-main-padding-lg: 1.4rem; // 16px
+	--button-main-padding-sm: 0.5rem; // 8px
 
 	// ------- Header Component -------
-	--header-padding: var(--spacing-10) var(--spacing-20);
+	--header-padding: var(--spacing-14);
 	--header-gap: var(--spacing-20);
-	--header-border-line: var(--button-border-color) 1px solid;
+	--header-border-line: var(--border-color) 1px solid;
 
 	// ------- Sidebar Component -------
-	--sidebar-size: 14.375rem; //230px
+	--sidebar-width: 14.375rem; //230px
+	--sidebar-width: 230px; //230px
 	--sidebar-padding: var(--spacing-14);
 	--sidebar-item-padding: 0.625rem; //10px
+	--sidebar-menu-gap: 0.35em; //4px
 	--sidebar-item-gap: 0.75rem; //12px
 	--sidebar-item-border-radius: 0.625em; //10px
-	--sidebar-item-icon-size: 1.25rem; //20px
-	--sidebar-border-line: var(--button-border-color) 1px solid;
+	--sidebar-item-icon-size: 1.5rem; //24px
+	--sidebar-border-line: var(--border-color) 1px solid;
 
 	// ------- Table -------
 	--table-border-radius: 0.625em; //10px
 	--table-padding: 0.625em; //10px
 	--table-actions-gap: 0.75rem; //12px
+	--table-select-width: 30px;
+	--table-top-height: 60px;
+	--table-border-color: var(--border-color);
+	--table-border-color-header: #bebebf;
+	--table-bg-color-01: var(--bg-color);
+	--table-bg-color-02: var(--bg-color);
+	--table-bg-color-hover: var(--bg-color-02);
+	--table-bg-color-selected: var(--bg-color-03);
+	--table-header-bg: var(--gray-03);
+	--table-icon-size: 20px;
 
-	// ------- Inputs -------
-	--input-outer-circle-size: 18px;
-	--input-inner-circle-size: 12px;
-	--input-border-line: var(--gray-08) 1px solid;
+	--table-cell-min-width: 90px;
+	--table-cell-padding: 8px 4px;
+	--table-cell-header-padding: 5px 4px;
+	--table-header-font-size: 10px;
+	--table-font-size: 12px;
+	--table-value-font-size: 14px;
+
+	--table-color-value-positive: var(--green);
+	--table-color-value-negative: var(--red);
+
+	// ------- Drawer -------
+	--drawer-dialog-width: 460px;
+	--drawer-dialog-padding: 1rem; // 16px
+	--drawer-box-shadow: -4px 0 16px rgb(0 0 0 / 15%);
+	--drawer-background: rgb(0 0 0 / 50%);
+
+	// ------- Inputs Checkbox -------
+	--input-outer-circle-size: 14px;
+	--input-inner-circle-size: 8px;
+	--input-border-line: 1px solid var(--input-border-color);
+
+	// ------- Form -------
+	--form-gap: 0.75rem; //12px
+	--form-section-margin: 1.4rem;
+	--form-heading-margin: 1rem;
+	--input-height: 34px;
+	--input-gap: 0.35em; //4px
+	--input-border: 1px solid var(--input-border-color);
+	--input-border-radius: 0.25em; //4px
+	--input-padding: 0.4em; //10px
+	--input-font-size: 1rem;
+
+	// ------- Packages-------
+	--package-card-border: var(--button-border-color) 1px solid;
+	--package-border-radius: 0.25em; //4px
+	--package-padding: var(--spacing-20);
+	--packages-gap: 0.75rem; //12px
+	--packages-card-gap: 0.25em; //4px
+	--packages-item-min-width: 4rem;
+	--packages-item-price-width: 5rem;
+	--package-table-padding: 0.25rem;
+
+	// ------- Accordion -------
+	--accordion-transition: var(--transition-productive);
+	--accordion-icon-size: 1.75em; //36px
+	--accordion-trigger-hover: var(--bg-color-02);
+	--accordion-trigger-gap: 0.75rem; //12px
 
 	@include media-query(medium-up) {
 	}
@@ -81,13 +149,13 @@
 .theme--light {
 	--bg-color: var(--white); // Header & Sidebar
 	--bg-color-02: var(--gray-02); //Main
+	--bg-color-03: var(--gray-03); //Main
 	--text-color: var(--gray-09);
-	--button-border-color: #ececed;
 }
 
 .theme--dark {
 	--bg-color: var(--gray-09);
 	--bg-color-02: var(--gray-08);
+	--bg-color-03: var(--gray-07);
 	--text-color: var(--gray-01);
-	--button-border-color: #404040;
 }

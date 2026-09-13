@@ -7,6 +7,8 @@ import {
 } from "@/app/actions/psaSubmissions";
 import { Modal } from "@/components/Modal/Modal";
 
+import styles from "@/styles/components/DrawerForm.module.scss";
+
 interface PsaSubmission {
 	id: number;
 	submissionNumber: string;
@@ -97,7 +99,7 @@ export function PsaSubmissionForm({
 	return (
 		<>
 			{isEditing ? (
-				<form onSubmit={handleSubmit}>
+				<form className='table' onSubmit={handleSubmit}>
 					<input type='hidden' name='id' value={submission.id} />
 
 					<input

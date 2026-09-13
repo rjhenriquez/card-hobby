@@ -1,4 +1,4 @@
-import { and, desc, eq, inArray, isNotNull, isNull } from "drizzle-orm";
+import { and, desc, eq, inArray, isNotNull, isNull, or } from "drizzle-orm";
 import { db } from "@/db";
 import {
 	cards,
@@ -27,11 +27,14 @@ export async function getCardsByPortfolio(portfolio: CardPortfolio) {
 			purchasedFrom: cards.purchasedFrom,
 			ebaySeller: cards.ebaySeller,
 			purchasePrice: cards.purchasePrice,
+			historicalGradingCost: cards.historicalGradingCost,
+			historicalGrade: cards.historicalGrade,
 			soldVia: cards.soldVia,
 			soldDate: cards.soldDate,
 			soldPrice: cards.soldPrice,
 			isPaid: cards.isPaid,
 			status: cardStatuses.name,
+			isShared: cards.isShared,
 		})
 		.from(cards)
 		.leftJoin(cardStatuses, eq(cards.statusId, cardStatuses.id))
@@ -126,8 +129,8 @@ export async function getCardsByPortfolio(portfolio: CardPortfolio) {
 	// ---------------------------------------------
 	// Active PSA Submissions
 	// ---------------------------------------------
-	// Only active submissions control the card's
-	// effective status.
+	// Only non-historical, incomplete submissions
+	// control the card's effective status.
 
 	const activePsaRows = await db
 		.select({
@@ -143,6 +146,7 @@ export async function getCardsByPortfolio(portfolio: CardPortfolio) {
 		.where(
 			and(
 				inArray(psaSubmissionCards.cardId, cardIds),
+				eq(psaSubmissions.isHistorical, false),
 				isNull(psaSubmissions.completedDate),
 			),
 		);
@@ -150,7 +154,8 @@ export async function getCardsByPortfolio(portfolio: CardPortfolio) {
 	// ---------------------------------------------
 	// PSA Submission History
 	// ---------------------------------------------
-	// Includes both active and completed submissions.
+	// Includes both active and completed submissions,
+	// including historical submissions.
 
 	const psaHistoryRows = await db
 		.select({
@@ -167,8 +172,9 @@ export async function getCardsByPortfolio(portfolio: CardPortfolio) {
 	// ---------------------------------------------
 	// Finalized PSA Grading Costs
 	// ---------------------------------------------
-	// Only completed submissions contribute to the
-	// card's financial cost basis.
+	// Normal submissions contribute once completed.
+	// Historical submissions always contribute because
+	// their imported card-level grading data is finalized.
 
 	const gradingRows = await db
 		.select({
@@ -178,6 +184,7 @@ export async function getCardsByPortfolio(portfolio: CardPortfolio) {
 			gradingAdjustment: psaSubmissionCards.gradingAdjustment,
 			outboundShippingCost: psaSubmissions.outboundShippingCost,
 			insuredReturnShippingCost: psaSubmissions.insuredReturnShippingCost,
+			isHistorical: psaSubmissions.isHistorical,
 		})
 		.from(psaSubmissionCards)
 		.innerJoin(
@@ -187,7 +194,10 @@ export async function getCardsByPortfolio(portfolio: CardPortfolio) {
 		.where(
 			and(
 				inArray(psaSubmissionCards.cardId, cardIds),
-				isNotNull(psaSubmissions.completedDate),
+				or(
+					isNotNull(psaSubmissions.completedDate),
+					eq(psaSubmissions.isHistorical, true),
+				),
 			),
 		);
 
@@ -195,10 +205,18 @@ export async function getCardsByPortfolio(portfolio: CardPortfolio) {
 	// Submission Card Counts
 	// ---------------------------------------------
 	// Needed to distribute shared submission costs
-	// evenly across every card in the submission.
+	// evenly across every card in a normal submission.
+	//
+	// Historical submissions may have incomplete card
+	// membership, so shared costs are not distributed
+	// from those imported relationships.
 
 	const submissionIds = [
-		...new Set(gradingRows.map((row) => row.submissionId)),
+		...new Set(
+			gradingRows
+				.filter((row) => !row.isHistorical)
+				.map((row) => row.submissionId),
+		),
 	];
 
 	const submissionCardCounts = new Map<number, number>();
@@ -229,7 +247,7 @@ export async function getCardsByPortfolio(portfolio: CardPortfolio) {
 		const cardCount = submissionCardCounts.get(row.submissionId) ?? 0;
 
 		const sharedCost =
-			cardCount > 0
+			!row.isHistorical && cardCount > 0
 				? (Number(row.outboundShippingCost) +
 						Number(row.insuredReturnShippingCost)) /
 					cardCount
@@ -280,7 +298,9 @@ export async function getCardsByPortfolio(portfolio: CardPortfolio) {
 	return cardRows.map((card) => {
 		const activePsaSubmission = activePsaByCardId.get(card.id);
 
-		const gradingCost = gradingCostByCardId.get(card.id) ?? 0;
+		const gradingCost =
+			gradingCostByCardId.get(card.id) ??
+			Number(card.historicalGradingCost ?? 0);
 
 		const packageAcquisitionCost = acquisitionCostByCardId.get(card.id);
 
@@ -316,7 +336,9 @@ export async function getCardsByPortfolio(portfolio: CardPortfolio) {
 						activePsaSubmission.stage ? ` - ${activePsaSubmission.stage}` : ""
 					}`
 				: card.status,
+
 			psaSubmissionNumbers: psaSubmissionNumbersByCardId.get(card.id) ?? [],
+
 			price,
 			gradingCost,
 			totalCost,

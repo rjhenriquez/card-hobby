@@ -1,0 +1,60 @@
+@use "@/styles/utilities/all" as *;
+
+.InputDate {
+	display: flex;
+	flex-direction: column;
+	gap: var(--input-gap);
+	flex: 0 0 100%;
+	min-width: 0;
+
+	&--half {
+		flex-basis: calc(50% - var(--form-gap) / 2);
+	}
+
+	&__label {
+		@include font-weight(semibold);
+		font-size: var(--font-size-12);
+		letter-spacing: 0.05em;
+		text-transform: uppercase;
+	}
+
+	&__field {
+		position: relative;
+	}
+
+	&__icon {
+		width: var(--sidebar-item-icon-size);
+		height: var(--sidebar-item-icon-size);
+		position: absolute;
+		top: 50%;
+		right: var(--input-padding);
+		pointer-events: none;
+		transform: translateY(-50%);
+	}
+
+	input {
+		@include font-weight(regular);
+		height: var(--input-height);
+		display: flex;
+		align-items: center;
+		width: 100%;
+		padding-left: var(--input-padding);
+		padding-right: calc(var(--input-padding) * 2 + 1rem);
+		border: var(--input-border);
+		border-radius: var(--input-border-radius);
+		outline: none;
+		font-size: var(--input-font-size);
+		&:focus {
+			border-color: var(--main);
+		}
+		&::-webkit-calendar-picker-indicator {
+			position: absolute;
+			right: var(--input-padding);
+			width: var(--sidebar-item-icon-size);
+			height: var(--sidebar-item-icon-size);
+			margin: 0;
+			opacity: 0;
+			cursor: pointer;
+		}
+	}
+}

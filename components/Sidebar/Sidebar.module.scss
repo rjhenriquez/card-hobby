@@ -4,12 +4,18 @@
 	background-color: var(--bg-color);
 	padding: var(--sidebar-padding);
 	border-right: var(--sidebar-border-line);
+	position: relative;
+	&__navigation {
+		position: sticky;
+		top: 0;
+	}
 	&__list {
 		display: flex;
 		flex-direction: column;
+		gap: var(--sidebar-menu-gap);
 	}
 	&__link {
-		@include font-weight(semibold);
+		// @include font-weight(semibold);
 		display: flex;
 		align-items: center;
 		gap: var(--sidebar-item-gap);
@@ -17,6 +23,7 @@
 		border-radius: var(--sidebar-item-border-radius);
 		background-color: var(--bg-color);
 		font-size: var(--font-size-14);
+		font-size: 1rem;
 		&:hover {
 			background-color: var(--bg-color-02);
 		}

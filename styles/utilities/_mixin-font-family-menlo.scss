@@ -1,0 +1,66 @@
+$fonts-mono-path: "/fonts/menlo";
+
+@use "sass:map";
+
+@use "sass:list";
+
+@use "sass:string";
+
+@each $font-name,
+	$map
+		in (
+			MenloRegular: (
+					filehandle: menlo-regular,
+				),
+			MenloRegularItalic: (
+					filehandle: menlo-italic,
+				),
+			MenloBold: (
+					filehandle: menlo-bold,
+				),
+			MenloBoldItalic: (
+					filehandle: menlo-bold-italic,
+				)
+		)
+{
+	$f: map.get($map, filehandle);
+
+	@font-face {
+		font-display: swap;
+		font-family: "#{$font-name}";
+		font-style: normal;
+		font-weight: normal;
+		src:
+			local("#{$font-name}"),
+			url("#{$fonts-mono-path}/#{$f}.woff2") format("woff2");
+
+		@each $attr, $value in map.remove($map, filehandle) {
+			#{$attr}: $value;
+		}
+	}
+}
+
+@mixin font-weight-mono($family-shorthand) {
+	$weight-stacks: (
+		regular: ("MenloRegular"),
+		regularitalic: ("MenloRegularItalic"),
+		bold: ("MenloBold"),
+		bolditalic: ("MenloBoldItalic"),
+	);
+	$fallback-stack: (
+		Consolas,
+		"Lucida Console",
+		"Courier New",
+		Courier,
+		monospace
+	);
+
+	@if map.has-key($weight-stacks, $family-shorthand) {
+		font-family: list.join(
+			map.get($weight-stacks, $family-shorthand),
+			$fallback-stack
+		);
+	} @else {
+		@error 'Unable to find a breakpoint with name `#{$family-shorthand}`. Expected one of: (#{map-keys($weight-stacks)})';
+	}
+}

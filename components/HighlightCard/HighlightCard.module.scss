@@ -1,0 +1,26 @@
+@use "@/styles/utilities/all" as *;
+
+.HighlightCard {
+	--highlight-border-radius: 0.25em; //4px
+	--highlight-padding: var(--spacing-20);
+	background-color: #bada55;
+	padding-inline: var(--highlight-padding);
+	width: fit-content;
+	border-radius: var(--highlight-border-radius);
+	margin: 2rem;
+	&__highlight {
+		&__label {
+		}
+
+		&__value {
+		}
+	}
+
+	&__sub {
+		&__label {
+		}
+
+		&__value {
+		}
+	}
+}

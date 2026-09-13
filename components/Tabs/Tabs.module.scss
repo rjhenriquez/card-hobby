@@ -1,0 +1,18 @@
+@use "@/styles/utilities/all" as *;
+
+.Tabs {
+	&__header {
+		display: flex;
+		gap: 2rem;
+	}
+
+	&__label {
+		cursor: pointer;
+
+		&--active {
+		}
+	}
+
+	&__content {
+	}
+}

@@ -1,0 +1,35 @@
+.Accordion {
+	&__trigger {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		transition: var(--accordion-transition);
+		gap: var(--accordion-trigger-gap);
+		width: 100%;
+		cursor: pointer;
+		svg {
+			width: var(--accordion-icon-size);
+			height: var(--accordion-icon-size);
+		}
+		&--open {
+			svg {
+				transform: rotate(180deg);
+			}
+		}
+	}
+
+	&__content {
+		display: grid;
+		grid-template-rows: 0fr;
+		transition: var(--accordion-transition);
+		&__inner {
+			min-height: 0;
+			overflow: hidden;
+		}
+	}
+	&--open {
+		.Accordion__content {
+			grid-template-rows: 1fr;
+		}
+	}
+}

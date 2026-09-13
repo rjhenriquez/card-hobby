@@ -1,182 +1,237 @@
-@use "../../styles/utilities/all" as *;
+@use "@/styles/utilities/all" as *;
 
 .CardTable {
-	// TODO: FIX ALL STYLES
-
-	--table-select-width: 40px;
-	--table-top-height: 40px;
-
-	--table-border-color: #b5b5b5;
-
-	--table-bg-color-01: rgb(255, 223, 223);
-	--table-bg-color-02: #ffebbb;
-	--table-bg-color-03: rgb(203, 242, 255);
-	--table-bg-color-04: lightgreen;
-
-	--table-icon-size: 0.875rem;
-
 	position: relative;
-
-	padding: var(--table-padding);
-
 	background-color: var(--bg-color);
-	border-radius: var(--table-border-radius);
+	padding-inline: var(--page-padding);
+
 	&__header-btn {
 		width: 100%;
 		display: flex;
+		align-items: center;
 		justify-content: space-between;
-		svg {
-			width: var(--table-icon-size);
-			height: var(--table-icon-size);
+		gap: 0.25rem;
+		cursor: pointer;
+		text-align: left;
+		color: var(--black);
+	}
+	&__header-icon {
+		width: var(--table-icon-size);
+		height: var(--table-icon-size);
+		transform: translateX(2px);
+		&--all {
+			opacity: 0.3;
 		}
 	}
+
 	&__top {
 		position: sticky;
 		top: 0;
-		z-index: 10;
-
+		z-index: 20;
 		min-height: var(--table-top-height);
-
+		display: flex;
+		align-items: center;
+		width: 100%;
+		background-color: var(--bg-color);
+		min-width: 0;
+	}
+	&__actions {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-
-		background-color: var(--bg-color);
-
-		&__actions {
+		width: 100%;
+		min-width: 0;
+		&__group {
 			display: flex;
-			gap: var(--table-actions-gap);
+			align-items: center;
+			gap: 1rem;
+		}
+		&__separator {
+			display: block;
+			width: 1px;
+			background: var(--button-border-color);
+			height: var(--button-size);
+		}
+	}
+
+	&__header {
+		position: sticky;
+		top: var(--table-top-height);
+		z-index: 15;
+		width: 100%;
+		overflow: hidden;
+		background-color: var(--bg-color);
+		table {
+			border-collapse: separate;
+			border-spacing: 0;
+		}
+
+		th {
+			padding: var(--table-cell-header-padding);
+			border-top: 1px solid var(--table-border-color-header);
+			border-right: 1px solid var(--table-border-color-header);
+			border-bottom: 1px solid var(--table-border-color-header);
+			background-color: var(--table-header-bg);
+			text-align: left;
+			vertical-align: middle;
+			white-space: nowrap;
+			font-size: var(--table-header-font-size);
+			text-transform: uppercase;
+			@include font-weight(bold);
+			min-width: var(--table-cell-min-width);
+		}
+
+		th:first-child {
+			position: sticky;
+			left: 0;
+			z-index: 2;
+			width: var(--table-select-width);
+			min-width: var(--table-select-width);
+			max-width: var(--table-select-width);
+			border-left: 1px solid var(--table-border-color);
+		}
+
+		th:nth-child(2) {
+			position: sticky;
+			left: var(--table-select-width);
+			z-index: 2;
 		}
 	}
 
 	&__table {
 		width: 100%;
-
 		overflow-x: auto;
-
 		padding-bottom: 1rem;
-
 		scrollbar-gutter: stable;
-
 		table {
 			width: max-content;
 			min-width: 100%;
-
 			border-collapse: separate;
 			border-spacing: 0;
-
-			font-size: 12px;
+			font-size: var(--table-font-size);
 		}
 
-		th,
 		td {
-			padding: 6px 8px;
-
+			padding: var(--table-cell-padding);
 			border-right: 1px solid var(--table-border-color);
 			border-bottom: 1px solid var(--table-border-color);
-
 			text-align: left;
 			vertical-align: middle;
 			white-space: nowrap;
+			min-width: var(--table-cell-min-width);
 		}
 
-		// Header
-		thead {
-			th {
-				text-transform: uppercase;
-				@include font-weight(semibold);
-				border-top: 1px solid var(--table-border-color);
-
-				background-color: var(--bg-color);
-
-				font-size: 11px;
-			}
-
-			button {
-				width: 100%;
-
-				display: flex;
-				align-items: center;
-				gap: 0.25rem;
-
-				cursor: pointer;
-
-				text-align: left;
-			}
-		}
-
-		// First border
-		th:first-child,
-		td:first-child {
-			border-left: 1px solid var(--table-border-color);
-		}
-
-		// Rows
 		tbody {
 			tr:nth-child(odd) {
 				background-color: var(--table-bg-color-01);
 			}
-
 			tr:nth-child(even) {
 				background-color: var(--table-bg-color-02);
 			}
-
 			tr {
-				cursor: pointer;
-
 				&:hover {
-					background-color: var(--table-bg-color-03);
+					background-color: var(--table-bg-color-hover);
 				}
 
 				&[data-selected="true"] {
-					background-color: var(--table-bg-color-04);
+					background-color: var(--table-bg-color-selected);
 				}
 			}
-
 			td {
 				background-color: inherit;
 			}
 		}
 
-		// Checkbox column
-		th:first-child,
 		td:first-child {
 			position: sticky;
 			left: 0;
-
+			z-index: 2;
 			width: var(--table-select-width);
 			min-width: var(--table-select-width);
 			max-width: var(--table-select-width);
+			border-left: 1px solid var(--table-border-color);
 		}
 
-		// Player column
-		th:nth-child(2),
 		td:nth-child(2) {
 			position: sticky;
 			left: var(--table-select-width);
+			z-index: 2;
 		}
+		td:nth-last-child(-n + 2) {
+			position: relative;
+			padding: 0;
 
-		// Sticky body columns
-		tbody {
-			td:first-child,
-			td:nth-child(2) {
-				z-index: 2;
+			.CardTable__value {
+				position: absolute;
+				inset: 0;
+				display: grid;
+				grid-template-columns: auto 1fr;
+				align-items: stretch;
 			}
 		}
+	}
 
-		// Sticky header
-		thead {
-			th {
-				z-index: 4;
+	&__cell {
+		&--selectable {
+			cursor: pointer;
+		}
+	}
+
+	&__column {
+		&--capped {
+			width: var(--column-width);
+			max-width: var(--column-width);
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+	}
+	&__value {
+		@include font-weight-mono(regular);
+		span {
+			&:first-of-type {
+				display: grid;
+				place-items: center;
+				padding-inline: var(--table-cell-padding);
+				color: var(--white);
 			}
-
-			// Sticky header + sticky horizontal columns
-			th:first-child,
-			th:nth-child(2) {
-				z-index: 5;
-
-				background-color: var(--bg-color);
+			&:nth-of-type(2) {
+				display: grid;
+				align-items: center;
+				justify-items: end;
+				padding-inline: var(--table-cell-padding);
+				font-size: var(--table-value-font-size);
 			}
 		}
+		&--positive {
+			color: var(--table-color-value-positive);
+			background: color-mix(
+				in srgb,
+				var(--table-color-value-positive) 10%,
+				var(--white)
+			);
+			span {
+				&:first-of-type {
+					background: var(--table-color-value-positive);
+				}
+			}
+		}
+		&--negative {
+			color: var(--table-color-value-negative);
+			background: color-mix(
+				in srgb,
+				var(--table-color-value-negative) 10%,
+				var(--white)
+			);
+			span {
+				&:first-of-type {
+					background: var(--table-color-value-negative);
+				}
+			}
+		}
+	}
+
+	:global(.input) {
+		transform: translateY(1px);
 	}
 }

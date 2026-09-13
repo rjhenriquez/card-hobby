@@ -3,30 +3,76 @@ interface PsaSubmissionCard {
 	gradeStatus: "pending" | "graded" | "no_grade";
 }
 
-interface PsaSubmissionStatsProps {
-	cards: PsaSubmissionCard[];
+interface HistoricalPsaStats {
+	totalCards: number | null;
+	psa10: number | null;
+	psa9: number | null;
+	psa85: number | null;
+	psa8: number | null;
+	psa75OrLess: number | null;
+	noGrade: number | null;
 }
 
-export function PsaSubmissionStats({ cards }: PsaSubmissionStatsProps) {
+interface PsaSubmissionStatsProps {
+	cards: PsaSubmissionCard[];
+	isHistorical: boolean;
+	historicalStats?: HistoricalPsaStats;
+}
+
+export function PsaSubmissionStats({
+	cards,
+	isHistorical,
+	historicalStats,
+}: PsaSubmissionStatsProps) {
 	const gradedCards = cards.filter((card) => card.gradeStatus === "graded");
 
-	const psa10 = gradedCards.filter((card) => Number(card.grade) === 10).length;
+	const derivedPsa10 = gradedCards.filter(
+		(card) => Number(card.grade) === 10,
+	).length;
 
-	const psa9 = gradedCards.filter((card) => Number(card.grade) === 9).length;
+	const derivedPsa9 = gradedCards.filter(
+		(card) => Number(card.grade) === 9,
+	).length;
 
-	const psa85 = gradedCards.filter((card) => Number(card.grade) === 8.5).length;
+	const derivedPsa85 = gradedCards.filter(
+		(card) => Number(card.grade) === 8.5,
+	).length;
 
-	const psa8 = gradedCards.filter((card) => Number(card.grade) === 8).length;
+	const derivedPsa8 = gradedCards.filter(
+		(card) => Number(card.grade) === 8,
+	).length;
 
-	const psa75OrLess = gradedCards.filter(
+	const derivedPsa75OrLess = gradedCards.filter(
 		(card) => Number(card.grade) <= 7.5,
 	).length;
 
-	const noGrade = cards.filter(
+	const derivedNoGrade = cards.filter(
 		(card) => card.gradeStatus === "no_grade",
 	).length;
 
-	const completedCards = gradedCards.length + noGrade;
+	const derivedTotalCards = cards.length;
+
+	const totalCards = isHistorical
+		? (historicalStats?.totalCards ?? 0)
+		: derivedTotalCards;
+
+	const psa10 = isHistorical ? (historicalStats?.psa10 ?? 0) : derivedPsa10;
+
+	const psa9 = isHistorical ? (historicalStats?.psa9 ?? 0) : derivedPsa9;
+
+	const psa85 = isHistorical ? (historicalStats?.psa85 ?? 0) : derivedPsa85;
+
+	const psa8 = isHistorical ? (historicalStats?.psa8 ?? 0) : derivedPsa8;
+
+	const psa75OrLess = isHistorical
+		? (historicalStats?.psa75OrLess ?? 0)
+		: derivedPsa75OrLess;
+
+	const noGrade = isHistorical
+		? (historicalStats?.noGrade ?? 0)
+		: derivedNoGrade;
+
+	const completedCards = psa10 + psa9 + psa85 + psa8 + psa75OrLess + noGrade;
 
 	const gemRate = completedCards > 0 ? (psa10 / completedCards) * 100 : 0;
 
@@ -40,7 +86,7 @@ export function PsaSubmissionStats({ cards }: PsaSubmissionStatsProps) {
 			<dl>
 				<div>
 					<dt>Total Cards</dt>
-					<dd>{cards.length}</dd>
+					<dd>{totalCards}</dd>
 				</div>
 
 				<div>

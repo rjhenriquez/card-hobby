@@ -18,6 +18,14 @@ export async function getPsaSubmissionByNumber(submissionNumber: string) {
 			completedDate: psaSubmissions.completedDate,
 			outboundShippingCost: psaSubmissions.outboundShippingCost,
 			insuredReturnShippingCost: psaSubmissions.insuredReturnShippingCost,
+			isHistorical: psaSubmissions.isHistorical,
+			historicalTotalCards: psaSubmissions.historicalTotalCards,
+			historicalPsa10: psaSubmissions.historicalPsa10,
+			historicalPsa9: psaSubmissions.historicalPsa9,
+			historicalPsa85: psaSubmissions.historicalPsa85,
+			historicalPsa8: psaSubmissions.historicalPsa8,
+			historicalPsa75OrLess: psaSubmissions.historicalPsa75OrLess,
+			historicalNoGrade: psaSubmissions.historicalNoGrade,
 		})
 		.from(psaSubmissions)
 		.where(eq(psaSubmissions.submissionNumber, submissionNumber));

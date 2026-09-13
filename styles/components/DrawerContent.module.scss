@@ -1,0 +1,174 @@
+@use "../../styles/utilities/all" as *;
+
+.DrawerForm {
+	display: flex;
+	flex-wrap: wrap;
+	&__section {
+		width: 100%;
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--form-gap);
+		margin-bottom: var(--form-section-margin);
+		&__header {
+			display: grid;
+			grid-template-columns: 1fr;
+			align-items: center;
+			width: 100%;
+		}
+		&__hr,
+		&__heading {
+			grid-column: 1;
+			grid-row: 1;
+		}
+		&__hr {
+			width: 100%;
+			margin: 0;
+		}
+		&__heading {
+			@include heading(h3);
+			z-index: 1;
+			justify-self: center;
+			padding-inline: 0.5em;
+			background-color: var(--bg-color);
+		}
+		&__title {
+			display: block;
+			width: 100%;
+			font-size: var(--font-size-12);
+			letter-spacing: 0.05em;
+			@include font-weight(semibold);
+			text-transform: uppercase;
+			margin-block: calc(var(--form-section-margin) / 2);
+			padding-bottom: 0.3em;
+			border-bottom: var(--input-border);
+		}
+		&__accordion {
+			margin-top: var(--form-section-margin);
+		}
+		&__card {
+			display: grid;
+			grid-template-columns: 2fr 1fr;
+			gap: var(--form-gap);
+			align-items: flex-end;
+			&__name {
+				min-width: 0;
+				@include font-weight(semibold);
+				font-size: var(--font-size-14);
+				margin: 0;
+			}
+		}
+	}
+	&__actions {
+		display: flex;
+		justify-content: space-between;
+		width: 100%;
+		gap: var(--form-gap);
+	}
+	&__info {
+		display: flex;
+		gap: var(--form-gap);
+		width: 100%;
+		&__label {
+			@include font-weight(semibold);
+			text-transform: uppercase;
+		}
+		&__value {
+			@include font-weight-mono(bold);
+		}
+	}
+	&__info__stacked {
+		display: flex;
+		flex-direction: column;
+		gap: var(--input-gap);
+		flex: 0 0 100%;
+		min-width: 0;
+		&--half {
+			flex-basis: calc(50% - var(--form-gap) / 2);
+		}
+		&__label {
+			@include font-weight(semibold);
+			font-size: var(--font-size-12);
+			letter-spacing: 0.05em;
+			text-transform: uppercase;
+		}
+		&__value {
+			width: 100%;
+			padding-inline: var(--input-padding);
+			background: var(--bg-color-02);
+			height: var(--input-height);
+			display: flex;
+			align-items: center;
+			border: var(--input-border);
+			border-radius: var(--input-border-radius);
+			outline: none;
+			font-size: var(--input-font-size);
+		}
+	}
+	&__card {
+		display: grid;
+		grid-template-columns: 2fr 1fr;
+		gap: var(--form-gap);
+		align-items: flex-end;
+		&__name {
+			min-width: 0;
+			@include font-weight(semibold);
+			font-size: var(--font-size-14);
+			margin: 0;
+		}
+	}
+}
+
+.DrawerInfo {
+	display: flex;
+	flex-wrap: wrap;
+	&__section {
+		width: 100%;
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--form-gap);
+		margin-block: var(--form-section-margin);
+		&__header {
+			display: grid;
+			grid-template-columns: 1fr;
+			align-items: center;
+			width: 100%;
+		}
+		&__hr,
+		&__heading {
+			grid-column: 1;
+			grid-row: 1;
+		}
+		&__hr {
+			width: 100%;
+			margin: 0;
+		}
+		&__heading {
+			@include heading(h3);
+			z-index: 1;
+			justify-self: center;
+			padding-inline: 0.5em;
+			background-color: var(--bg-color);
+		}
+	}
+	&__count {
+		@include heading(h3);
+		text-transform: uppercase;
+		font-size: var(--font-size-18);
+		display: flex;
+		width: 100%;
+	}
+	&__sub-heading {
+		@include heading(h4);
+	}
+
+	&__list {
+		display: flex;
+		flex-direction: column;
+		gap: var(--form-gap);
+		&__item {
+			display: flex;
+			align-items: baseline;
+			gap: var(--form-gap);
+		}
+	}
+}

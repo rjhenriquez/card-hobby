@@ -45,6 +45,30 @@ export const Icon: FC<IconInterface> = ({ icon, className }) => {
 				return <ArrowDown className={className} />;
 			case "arrow-up":
 				return <ArrowUp className={className} />;
+			case "compress":
+				return <Compress className={className} />;
+			case "expand":
+				return <Expand className={className} />;
+			case "font-size":
+				return <FontSize className={className} />;
+			case "close":
+				return <Close className={className} />;
+			case "calendar":
+				return <Calendar className={className} />;
+			case "dollar-sign":
+				return <DollarSign className={className} />;
+			case "loading":
+				return <Loading className={className} />;
+			case "checkmark":
+				return <Checkmark className={className} />;
+			case "plus-sign":
+				return <PlusSign className={className} />;
+			case "circle-check":
+				return <CircleCheck className={className} />;
+			case "open":
+				return <Open className={className} />;
+			case "diamond":
+				return <Diamond className={className} />;
 			default:
 				return <Moon className={className} />;
 		}
@@ -229,7 +253,7 @@ const ArrowDown = ({ className }: { className?: string }) => {
 			fill='currentColor'
 			viewBox='0 -960 960 960'
 		>
-			<path d='M440-800v487L216-537l-56 57 320 320 320-320-56-57-224 224v-487z' />
+			<path d='M480-344 240-584l56-56 184 184 184-184 56 56z' />
 		</svg>
 	);
 };
@@ -242,7 +266,7 @@ const ArrowUp = ({ className }: { className?: string }) => {
 			fill='currentColor'
 			viewBox='0 -960 960 960'
 		>
-			<path d='M440-160v-487L216-423l-56-57 320-320 320 320-56 57-224-224v487z' />
+			<path d='M480-528 296-344l-56-56 240-240 240 240-56 56z' />
 		</svg>
 	);
 };
@@ -255,7 +279,156 @@ const ArrowUpDown = ({ className }: { className?: string }) => {
 			fill='currentColor'
 			viewBox='0 -960 960 960'
 		>
-			<path d='M320-440v-287L217-624l-57-56 200-200 200 200-57 56-103-103v287zM600-80 400-280l57-56 103 103v-287h80v287l103-103 57 56z' />
+			<path d='M480-120 300-300l58-58 122 122 122-122 58 58zM358-598l-58-58 180-180 180 180-58 58-122-122z' />
+		</svg>
+	);
+};
+const Compress = ({ className }: { className?: string }) => {
+	return (
+		<svg
+			xmlns='http://www.w3.org/2000/svg'
+			className={className}
+			fill='currentColor'
+			viewBox='0 -960 960 960'
+		>
+			<path d='M120-120v-240h80v160h160v80zm480 0v-80h160v-160h80v240zM287-327l-57-56 57-57H80v-80h207l-57-57 57-56 153 153zm386 0L520-480l153-153 57 56-57 57h207v80H673l57 57zM120-600v-240h240v80H200v160zm640 0v-160H600v-80h240v240z' />
+		</svg>
+	);
+};
+const Expand = ({ className }: { className?: string }) => {
+	return (
+		<svg
+			xmlns='http://www.w3.org/2000/svg'
+			className={className}
+			fill='currentColor'
+			viewBox='0 -960 960 960'
+		>
+			<path d='m680-280-56-56 103-104H520v-80h207L624-624l56-56 200 200zm-400 0L80-480l200-200 56 56-103 104h207v80H233l103 104z' />
+		</svg>
+	);
+};
+const FontSize = ({ className }: { className?: string }) => {
+	return (
+		<svg
+			xmlns='http://www.w3.org/2000/svg'
+			className={className}
+			fill='currentColor'
+			viewBox='0 -960 960 960'
+		>
+			<path d='M560-160v-520H360v-120h520v120H680v520zm-360 0v-320H80v-120h360v120H320v320z' />
+		</svg>
+	);
+};
+const Close = ({ className }: { className?: string }) => {
+	return (
+		<svg
+			xmlns='http://www.w3.org/2000/svg'
+			className={className}
+			fill='currentColor'
+			viewBox='0 -960 960 960'
+		>
+			<path d='m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224z' />
+		</svg>
+	);
+};
+const Calendar = ({ className }: { className?: string }) => {
+	return (
+		<svg
+			xmlns='http://www.w3.org/2000/svg'
+			className={className}
+			fill='currentColor'
+			viewBox='0 -960 960 960'
+		>
+			<path d='M200-80q-33 0-56.5-23.5T120-160v-560q0-33 23.5-56.5T200-800h40v-80h80v80h320v-80h80v80h40q33 0 56.5 23.5T840-720v560q0 33-23.5 56.5T760-80zm0-80h560v-400H200zm0-480h560v-80H200zm0 0v-80zm280 240q-17 0-28.5-11.5T440-440t11.5-28.5T480-480t28.5 11.5T520-440t-11.5 28.5T480-400m-188.5-11.5Q280-423 280-440t11.5-28.5T320-480t28.5 11.5T360-440t-11.5 28.5T320-400t-28.5-11.5M640-400q-17 0-28.5-11.5T600-440t11.5-28.5T640-480t28.5 11.5T680-440t-11.5 28.5T640-400M480-240q-17 0-28.5-11.5T440-280t11.5-28.5T480-320t28.5 11.5T520-280t-11.5 28.5T480-240m-188.5-11.5Q280-263 280-280t11.5-28.5T320-320t28.5 11.5T360-280t-11.5 28.5T320-240t-28.5-11.5M640-240q-17 0-28.5-11.5T600-280t11.5-28.5T640-320t28.5 11.5T680-280t-11.5 28.5T640-240' />
+		</svg>
+	);
+};
+const DollarSign = ({ className }: { className?: string }) => {
+	return (
+		<svg
+			xmlns='http://www.w3.org/2000/svg'
+			className={className}
+			fill='currentColor'
+			viewBox='0 -960 960 960'
+		>
+			<path d='M441-120v-86q-53-12-91.5-46T293-348l74-30q15 48 44.5 73t77.5 25q41 0 69.5-18.5T587-356q0-35-22-55.5T463-458q-86-27-118-64.5T313-614q0-65 42-101t86-41v-84h80v84q50 8 82.5 36.5T651-650l-74 32q-12-32-34-48t-60-16q-44 0-67 19.5T393-614q0 33 30 52t104 40q69 20 104.5 63.5T667-358q0 71-42 108t-104 46v84z' />
+		</svg>
+	);
+};
+const Loading = ({ className }: { className?: string }) => {
+	return (
+		<svg
+			xmlns='http://www.w3.org/2000/svg'
+			viewBox='0 0 24 24'
+			className={className}
+			fill='currentColor'
+		>
+			<path d='M4.3 18.3c-.6-.8-1.1-1.6-1.5-2.5S2.2 14 2.1 13h2.1q.15 1.05.6 2.1c.45 1.05.6 1.3 1.1 1.8l-1.4 1.4ZM2 11c.1-1 .4-1.9.8-2.8s.9-1.7 1.5-2.5l1.4 1.4c-.4.6-.8 1.2-1.1 1.8S4.1 10.2 4 11H1.9Zm9 10.9c-1-.1-1.9-.3-2.8-.7s-1.7-.9-2.5-1.5l1.4-1.5c.6.4 1.2.8 1.9 1.1s1.3.5 2.1.6v2ZM7.1 5.7 5.6 4.2c.8-.6 1.6-1.1 2.5-1.5s1.8-.6 2.8-.7v2q-1.05.15-2.1.6c-1.05.45-1.3.6-1.8 1.1m6 16.2v-2q1.05-.15 2.1-.6c1.05-.45 1.3-.6 1.9-1.1l1.5 1.5c-.8.6-1.6 1.1-2.5 1.5s-1.9.6-2.9.7M17 5.7c-.6-.4-1.2-.8-1.9-1.1S13.7 4.1 13 4V2c1 .1 1.9.3 2.8.7s1.7.9 2.5 1.5l-1.4 1.5Zm2.8 12.6-1.4-1.4c.4-.6.8-1.2 1.1-1.8s.5-1.3.6-2.1h2.1c-.1 1-.4 1.9-.8 2.8s-.9 1.7-1.5 2.5M20 11q-.15-1.05-.6-2.1c-.45-1.05-.6-1.3-1.1-1.8l1.4-1.4c.6.8 1.1 1.6 1.5 2.5s.6 1.8.7 2.8h-2.1Z' />
+		</svg>
+	);
+};
+
+const Checkmark = ({ className }: { className?: string }) => {
+	return (
+		<svg
+			xmlns='http://www.w3.org/2000/svg'
+			className={className}
+			fill='currentColor'
+			viewBox='0 -960 960 960'
+		>
+			<path d='M382-240 154-468l57-57 171 171 367-367 57 57z' />
+		</svg>
+	);
+};
+
+const PlusSign = ({ className }: { className?: string }) => {
+	return (
+		<svg
+			xmlns='http://www.w3.org/2000/svg'
+			className={className}
+			fill='currentColor'
+			viewBox='0 -960 960 960'
+		>
+			<path d='M440-280h80v-160h160v-80H520v-160h-80v160H280v80h160zm40 200q-83 0-156-31.5T197-197t-85.5-127T80-480t31.5-156T197-763t127-85.5T480-880t156 31.5T763-763t85.5 127T880-480t-31.5 156T763-197t-127 85.5T480-80m0-80q134 0 227-93t93-227-93-227-227-93-227 93-93 227 93 227 227 93m0-320' />
+		</svg>
+	);
+};
+
+const CircleCheck = ({ className }: { className?: string }) => {
+	return (
+		<svg
+			xmlns='http://www.w3.org/2000/svg'
+			className={className}
+			fill='currentColor'
+			viewBox='0 -960 960 960'
+		>
+			<path d='m424-296 282-282-56-56-226 226-114-114-56 56zm56 216q-83 0-156-31.5T197-197t-85.5-127T80-480t31.5-156T197-763t127-85.5T480-880t156 31.5T763-763t85.5 127T880-480t-31.5 156T763-197t-127 85.5T480-80m0-80q134 0 227-93t93-227-93-227-227-93-227 93-93 227 93 227 227 93m0-320' />
+		</svg>
+	);
+};
+
+const Open = ({ className }: { className?: string }) => {
+	return (
+		<svg
+			xmlns='http://www.w3.org/2000/svg'
+			className={className}
+			fill='currentColor'
+			viewBox='0 -960 960 960'
+		>
+			<path d='M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h560v-280h80v280q0 33-23.5 56.5T760-120zm188-212-56-56 372-372H560v-80h280v280h-80v-144z' />
+		</svg>
+	);
+};
+
+const Diamond = ({ className }: { className?: string }) => {
+	return (
+		<svg
+			xmlns='http://www.w3.org/2000/svg'
+			className={className}
+			fill='currentColor'
+			viewBox='0 -960 960 960'
+		>
+			<path d='M480-120 80-600l120-240h560l120 240zm-95-520h190l-60-120h-70zm55 347v-267H218zm80 0 222-267H520zm144-347h106l-60-120H604zm-474 0h106l60-120H250z' />
 		</svg>
 	);
 };

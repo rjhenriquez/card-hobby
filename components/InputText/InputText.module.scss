@@ -1,0 +1,62 @@
+@use "@/styles/utilities/all" as *;
+
+.InputText {
+	display: flex;
+	flex-direction: column;
+	gap: var(--input-gap);
+	flex: 0 0 100%;
+	min-width: 0;
+	&--half {
+		flex-basis: calc(50% - var(--form-gap) / 2);
+	}
+	&--third {
+		flex-basis: calc(33% - var(--form-gap) / 2);
+	}
+	&__label {
+		@include font-weight(semibold);
+		font-size: var(--font-size-12);
+		letter-spacing: 0.05em;
+		text-transform: uppercase;
+	}
+	&__field {
+		position: relative;
+	}
+	&__icon {
+		width: var(--sidebar-item-icon-size);
+		height: var(--sidebar-item-icon-size);
+		&__wrapper {
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			left: 0;
+			display: grid;
+			place-items: center;
+			width: calc(var(--sidebar-item-icon-size) + var(--input-padding) * 2);
+			pointer-events: none;
+			border-right: var(--input-border);
+		}
+	}
+	input {
+		width: 100%;
+		padding-inline: var(--input-padding);
+		height: var(--input-height);
+		display: flex;
+		align-items: center;
+		border: var(--input-border);
+		border-radius: var(--input-border-radius);
+		outline: none;
+		font-size: var(--input-font-size);
+		&:focus {
+			border-color: var(--main);
+		}
+	}
+	&__field {
+		&--icon {
+			input {
+				padding-left: calc(
+					var(--sidebar-item-icon-size) + var(--input-padding) * 3
+				);
+			}
+		}
+	}
+}

@@ -20,9 +20,6 @@ body {
 a {
 	color: inherit;
 	text-decoration: none;
-	&:visited {
-		color: inherit;
-	}
 }
 
 ::selection {
@@ -33,8 +30,8 @@ a {
 
 .layout {
 	display: grid;
-	grid-template-columns: var(--sidebar-size) minmax(0, 1fr);
-	min-height: 100vh;
+	grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
+	min-height: calc(100vh - var(--header-height));
 }
 
 main {

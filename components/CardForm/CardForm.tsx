@@ -8,7 +8,16 @@ import {
 	updateCard,
 } from "@/app/actions/cards";
 import { Modal } from "@/components/Modal/Modal";
+import { Button } from "@/components/Button/Button";
+import { InputText } from "@/components/InputText/InputText";
+import { InputDate } from "@/components/InputDate/InputDate";
+import { InputCheckbox } from "@/components/InputCheckbox/InputCheckbox";
+import { InputSelect } from "@/components/InputSelect/InputSelect";
+import { InputAutocomplete } from "@/components/InputAutocomplete/InputAutocomplete";
+import type { CardFormOptions } from "@/db/queries/cardFormOptions";
 import type { Card } from "@/types/types";
+
+import styles from "@/styles/components/DrawerContent.module.scss";
 
 interface CardStatus {
 	id: number;
@@ -18,20 +27,25 @@ interface CardStatus {
 interface CardFormProps {
 	statuses: CardStatus[];
 	portfolio: "investment" | "collection";
+	options: CardFormOptions;
 	card?: Card;
+	copyFrom?: Card;
 	onClose?: () => void;
 }
 
 export function CardForm({
 	statuses,
 	portfolio,
+	options,
 	card,
 	onClose,
+	copyFrom,
 }: CardFormProps) {
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 	const [isDeleting, setIsDeleting] = useState(false);
 	const [deleteError, setDeleteError] = useState<string | null>(null);
 	const isEditing = card !== undefined;
+	const initialCard = card ?? copyFrom;
 	const [isSavingSale, setIsSavingSale] = useState(false);
 	const [saleError, setSaleError] = useState<string | null>(null);
 
@@ -81,215 +95,250 @@ export function CardForm({
 	}
 	return (
 		<>
-			<form action={handleCardSubmit}>
-				<input type='hidden' name='portfolio' value={portfolio} />
-
-				{card && <input type='hidden' name='id' value={card.id} />}
-
-				<label>
-					Player
-					<input
+			<form className={styles.DrawerForm} action={handleCardSubmit}>
+				<div className={styles.DrawerForm__section}>
+					<input type='hidden' name='portfolio' value={portfolio} />
+					{card && <input type='hidden' name='id' value={card.id} />}
+					<InputAutocomplete
 						name='player'
-						type='text'
-						defaultValue={card?.player ?? ""}
+						label='Player'
+						defaultValue={initialCard?.player ?? ""}
+						options={options.players}
+						width='half'
 						required
 					/>
-				</label>
 
-				<label>
-					Category
-					<input
+					<InputAutocomplete
 						name='category'
-						type='text'
-						defaultValue={card?.category ?? ""}
+						label='Category'
+						defaultValue={initialCard?.category ?? ""}
+						options={options.categories}
+						width='half'
 					/>
-				</label>
 
-				<label>
-					Year
-					<input name='year' type='text' defaultValue={card?.year ?? ""} />
-				</label>
+					<InputText
+						name='year'
+						width='half'
+						label='Year'
+						defaultValue={initialCard?.year ?? ""}
+					/>
 
-				<label>
-					Set
-					<input
+					<InputText
 						name='setName'
-						type='text'
-						defaultValue={card?.setName ?? ""}
+						label='Set'
+						defaultValue={initialCard?.setName ?? ""}
+						width='half'
 					/>
-				</label>
 
-				<label>
-					Info
-					<input name='info' type='text' defaultValue={card?.info ?? ""} />
-				</label>
+					<InputText
+						name='info'
+						label='Info'
+						defaultValue={initialCard?.info ?? ""}
+						width='half'
+					/>
 
-				<label>
-					Notes
-					<textarea name='notes' defaultValue={card?.notes ?? ""} />
-				</label>
+					<InputText
+						name='notes'
+						label='Notes'
+						defaultValue={initialCard?.notes ?? ""}
+						width='half'
+					/>
+				</div>
+				<div className={styles.DrawerForm__section}>
+					<div className={styles.DrawerForm__section__header}>
+						<hr className={styles.DrawerForm__section__hr} />
+						<h3 className={styles.DrawerForm__section__heading}>Acquisition</h3>
+					</div>
 
-				<label>
-					Acquisition Type
-					<select
+					<InputSelect
 						name='acquisitionType'
-						defaultValue={card?.acquisitionType ?? "purchased"}
-					>
-						<option value='purchased'>Purchased</option>
-						<option value='pulled'>Pulled</option>
-					</select>
-				</label>
+						label='Acquisition Type'
+						defaultValue={initialCard?.acquisitionType ?? "purchased"}
+						options={[
+							{
+								label: "Purchased",
+								value: "purchased",
+							},
+							{
+								label: "Pulled",
+								value: "pulled",
+							},
+						]}
+						width='half'
+					/>
 
-				{card?.soldPrice !== null && card?.soldPrice !== undefined ? (
-					<p>
-						<strong>Status:</strong>{" "}
-						{card.effectiveStatus ?? card.status ?? "—"}
-					</p>
-				) : (
-					<label>
-						Status
-						<select
-							name='statusId'
-							defaultValue={
-								statuses.find((status) => status.name === card?.status)?.id ??
-								""
-							}
-						>
-							<option value=''>No status</option>
-
-							{statuses
-								.filter(
-									(status) =>
-										status.name !== "Sold" && status.name !== "Pending Payment",
-								)
-								.map((status) => (
-									<option key={status.id} value={status.id}>
-										{status.name}
-									</option>
-								))}
-						</select>
-					</label>
-				)}
-
-				<label>
-					Purchase Date
-					<input
+					<InputDate
 						name='purchaseDate'
-						type='date'
-						defaultValue={card?.purchaseDate ?? ""}
+						label='Purchase Date'
+						width='half'
+						defaultValue={initialCard?.purchaseDate ?? ""}
 					/>
-				</label>
 
-				<label>
-					Purchased From
-					<input
+					<InputText
 						name='purchasedFrom'
-						type='text'
-						defaultValue={card?.purchasedFrom ?? ""}
+						label='Purchased From'
+						defaultValue={initialCard?.purchasedFrom ?? ""}
+						width='half'
 					/>
-				</label>
 
-				<label>
-					eBay Seller
-					<input
+					<InputText
 						name='ebaySeller'
-						type='text'
-						defaultValue={card?.ebaySeller ?? ""}
+						label='eBay Seller'
+						defaultValue={initialCard?.ebaySeller ?? ""}
+						width='half'
 					/>
-				</label>
 
-				<label>
-					Purchase Price
-					<input
+					{card?.soldPrice !== null && card?.soldPrice !== undefined ? (
+						<p
+							className={`${styles.DrawerForm__info__stacked} ${styles["CardForm__info__stacked--half"]}`}
+						>
+							<span className={styles.DrawerForm__info__stacked__label}>
+								Status
+							</span>
+							<span className={styles.DrawerForm__info__stacked__value}>
+								{card.effectiveStatus ?? card.status ?? "—"}
+							</span>
+						</p>
+					) : (
+						<InputSelect
+							name='statusId'
+							label='Status'
+							defaultValue={
+								statuses
+									.find((status) => status.name === card?.status)
+									?.id?.toString() ?? ""
+							}
+							options={[
+								{ label: "No status", value: "" },
+								...statuses
+									.filter(
+										(status) =>
+											status.name !== "Sold" &&
+											status.name !== "Pending Payment",
+									)
+									.map((status) => ({
+										label: status.name,
+										value: status.id.toString(),
+									})),
+							]}
+							width='half'
+						/>
+					)}
+					<InputText
 						name='purchasePrice'
+						label='Purchase Price'
 						type='number'
-						min='0'
-						step='0.01'
-						defaultValue={card?.purchasePrice ?? ""}
+						leadingIcon='dollar-sign'
+						width='half'
+						min={0}
+						step={0.01}
+						defaultValue={initialCard?.purchasePrice ?? ""}
 					/>
-				</label>
-
-				<button type='submit'>{isEditing ? "Save Changes" : "Add Card"}</button>
-
-				{card && (
-					<button
-						type='button'
-						onClick={() => {
-							setDeleteError(null);
-							setIsDeleteModalOpen(true);
-						}}
-					>
-						Delete Card
-					</button>
-				)}
+				</div>
+				<div className={styles.DrawerForm__section}>
+					<InputCheckbox
+						name='isShared'
+						label='Shared on IG'
+						type='square'
+						defaultChecked={card?.isShared ?? false}
+					/>
+				</div>
+				<div className={styles.DrawerForm__actions}>
+					<Button
+						type='main'
+						variant='add'
+						htmlType='submit'
+						label={isEditing ? "Save Changes" : "Add Card"}
+					/>
+					{card && (
+						<Button
+							type='main'
+							variant='delete'
+							htmlType='button'
+							onClick={() => {
+								setDeleteError(null);
+								setIsDeleteModalOpen(true);
+							}}
+							label='Delete Card'
+						/>
+					)}
+				</div>
 			</form>
 			{card && portfolio === "investment" && (
-				<section>
-					<h3>Sale</h3>
+				<form action={handleSale}>
+					<div className={styles.DrawerForm__section}>
+						<div className={styles.DrawerForm__section__header}>
+							<hr className={styles.DrawerForm__section__hr} />
+							<h3 className={styles.DrawerForm__section__heading}>Sale</h3>
+						</div>
 
-					<form action={handleSale}>
 						<input type='hidden' name='id' value={card.id} />
 
-						<p>
-							<strong>Total Cost:</strong>{" "}
-							{card.totalCost !== null
-								? `$${card.totalCost.toLocaleString("en-US", {
-										minimumFractionDigits: 2,
-										maximumFractionDigits: 2,
-									})}`
-								: "Unknown"}
+						<p className={styles.DrawerForm__info}>
+							<span className={styles.DrawerForm__info__label}>
+								Total Cost:
+							</span>
+							<span className={styles.DrawerForm__info__value}>
+								{card.totalCost !== null
+									? `$${card.totalCost.toLocaleString("en-US", {
+											minimumFractionDigits: 2,
+											maximumFractionDigits: 2,
+										})}`
+									: "Unknown"}
+							</span>
 						</p>
+						<InputText
+							name='soldVia'
+							label='Sold Via'
+							defaultValue={card.soldVia ?? ""}
+							width='half'
+						/>
 
-						<label>
-							Sold Via
-							<input
-								type='text'
-								name='soldVia'
-								defaultValue={card.soldVia ?? ""}
-							/>
-						</label>
+						<InputDate
+							name='soldDate'
+							label='		Sold Date'
+							width='half'
+							defaultValue={card.soldDate ?? ""}
+						/>
+						<InputText
+							name='soldPrice'
+							label='Sold Price'
+							type='number'
+							leadingIcon='dollar-sign'
+							width='half'
+							min={0}
+							step={0.01}
+							defaultValue={card.soldPrice ?? ""}
+							required
+						/>
 
-						<label>
-							Sold Date
-							<input
-								type='date'
-								name='soldDate'
-								defaultValue={card.soldDate ?? ""}
-							/>
-						</label>
-
-						<label>
-							Sold Price
-							<input
-								type='number'
-								name='soldPrice'
-								min='0'
-								step='0.01'
-								defaultValue={card.soldPrice ?? ""}
-								required
-							/>
-						</label>
-
-						<label>
-							<input
-								type='checkbox'
-								name='isPaid'
-								defaultChecked={card.isPaid}
-							/>
-							Payment Received
-						</label>
+						<InputCheckbox
+							name='isPaid'
+							label='Payment Received'
+							type='square'
+							width='half'
+							defaultChecked={card.isPaid}
+						/>
 
 						{saleError && <p role='alert'>{saleError}</p>}
-
-						<button type='submit' disabled={isSavingSale}>
-							{isSavingSale
-								? "Saving..."
-								: card.soldPrice !== null
-									? "Save Sale Changes"
-									: "Sell Card"}
-						</button>
-					</form>
-				</section>
+						<div className={styles.DrawerForm__actions}>
+							<Button
+								type='main'
+								variant='add'
+								htmlType='submit'
+								disabled={isSavingSale}
+								label={
+									isSavingSale
+										? "Saving..."
+										: card.soldPrice !== null
+											? "Save Changes"
+											: "Sell Card"
+								}
+								trailingIcon={isSavingSale ? "loading" : undefined}
+							/>
+						</div>
+					</div>
+				</form>
 			)}
 			<Modal
 				isOpen={isDeleteModalOpen}

@@ -10,6 +10,13 @@
 	@if $size == h1 {
 		font-size: var(--font-size-26);
 	} @else if $size == h2 {
-		font-size: 1.5rem;
+		@include font-weight(semibold);
+		font-size: var(--font-size-18);
+	} @else if $size == h3 {
+		@include font-weight(semibold);
+		font-size: 1rem;
+	} @else if $size == h4 {
+		@include font-weight(semibold);
+		font-size: 1rem;
 	}
 }

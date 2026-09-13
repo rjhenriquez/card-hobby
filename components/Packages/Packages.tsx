@@ -1,12 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Fragment } from "react";
 import {
 	markPurchasePackageReceived,
 	updatePurchasePackage,
 } from "@/app/actions/purchasePackages";
 import { PackageDrawer, PurchasePackage } from "../PackageDrawer/PackageDrawer";
-
+import { Accordion } from "@/components/Accordion/Accordion";
+import { formatDayWithOrdinal } from "@/lib/date";
+import { Icon } from "@/components/Icons/Icons";
+import { Button } from "@/components/Button/Button";
 import styles from "./Packages.module.scss";
 
 interface PackagesProps {
@@ -137,141 +140,159 @@ export function Packages({ purchasePackages }: PackagesProps) {
 					const isReceiving = receivingPackageId === purchasePackage.id;
 
 					return (
-						<section key={purchasePackage.id}>
-							<header>
-								<div>
-									<h2>
-										{purchasePackage.source
-											? `${purchasePackage.source} Package #${purchasePackage.id}`
-											: `Package #${purchasePackage.id}`}
-									</h2>
-
+						<div className={styles.Package} key={purchasePackage.id}>
+							<header className={styles.Package__header}>
+								<h2 className={styles.Package__heading}>
+									{purchasePackage.source
+										? `${purchasePackage.source} Package #${purchasePackage.id}`
+										: `Package #${purchasePackage.id}`}
 									{purchasePackage.seller && (
-										<p>Seller: {purchasePackage.seller}</p>
+										<span>Seller: {purchasePackage.seller}</span>
 									)}
-									<p>{formatCurrency(totalValue)}</p>
-								</div>
-
-								<div>
-									{!purchasePackage.isDelivered && (
-										<button
-											type='button'
-											disabled={isReceiving}
-											onClick={() => handleMarkReceived(purchasePackage.id)}
-										>
-											{isReceiving ? "Receiving..." : "Mark Received"}
-										</button>
-									)}
-
-									<button
-										type='button'
-										onClick={() => toggleExpanded(purchasePackage.id)}
-									>
-										{isExpanded ? "Collapse" : "Expand"}
-									</button>
-
-									<button
-										type='button'
-										onClick={() => {
-											setPurchasePackageError(null);
-											setEditingPackage(purchasePackage);
-										}}
-									>
-										Edit
-									</button>
-								</div>
+								</h2>
+								<Button
+									type='icon'
+									htmlType='button'
+									leadingIcon='edit'
+									tooltip='Edit'
+									onClick={() => {
+										setPurchasePackageError(null);
+										setEditingPackage(purchasePackage);
+									}}
+								/>
 							</header>
-
-							<dl>
-								<div>
-									<dt>Carrier</dt>
-									<dd>{purchasePackage.carrier ?? "—"}</dd>
+							<div className={styles.Package__content}>
+								<div className={styles.Package__content__top}>
+									<div className={styles.Package__content__info}>
+										<p className={styles.Package__content__label}>
+											Package Value:{" "}
+										</p>
+										<p className={styles.Package__content__value}>
+											<span>$</span>
+											{formatCurrency(totalValue).replace("$", "")}
+										</p>
+									</div>
+									{!purchasePackage.isDelivered && (
+										<Button
+											type='main'
+											variant='default'
+											htmlType='button'
+											leadingIcon='circle-check'
+											label={isReceiving ? "Receiving..." : "Mark Received"}
+											onClick={() => handleMarkReceived(purchasePackage.id)}
+											disabled={isReceiving}
+										/>
+									)}
 								</div>
+								<dl className={styles["Package__description-list"]}>
+									<div className={styles["Package__description-list__wrapper"]}>
+										<dt>Carrier</dt>
+										<dd>{purchasePackage.carrier ?? "—"}</dd>
+									</div>
 
-								<div>
-									<dt>Tracking</dt>
-									<dd>
-										{purchasePackage.trackingNumber ?? "—"}
-
-										{trackingUrl && (
-											<>
-												{" "}
-												<a href={trackingUrl} target='_blank' rel='noreferrer'>
-													Track Package
-												</a>
-											</>
-										)}
-									</dd>
-								</div>
-
-								<div>
-									<dt>ETA</dt>
-									<dd>{purchasePackage.estimatedDeliveryDate ?? "—"}</dd>
-								</div>
-
-								<div>
-									<dt>Status</dt>
-									<dd>
-										<strong>
-											{purchasePackage.isDelivered ? "Received" : "In Transit"}
-										</strong>
-									</dd>
-								</div>
-							</dl>
-
-							<h3>Cards</h3>
-
-							<table>
-								<thead>
-									<tr>
-										<th>Player</th>
-										<th>Category</th>
-										<th>Year</th>
-										<th>Set</th>
-										<th>Info</th>
-
-										{isExpanded && <th>Hammer Price</th>}
-									</tr>
-								</thead>
-
-								<tbody>
-									{purchasePackage.cards.map((card) => (
-										<tr key={card.cardId}>
-											<td>{card.player}</td>
-											<td>{card.category ?? "—"}</td>
-											<td>{card.year ?? "—"}</td>
-											<td>{card.setName ?? "—"}</td>
-											<td>{card.info ?? "—"}</td>
-
-											{isExpanded && (
-												<td>{formatCurrency(card.hammerPrice)}</td>
+									<div className={styles["Package__description-list__wrapper"]}>
+										<dt>ETA</dt>
+										<dd>
+											{formatDayWithOrdinal(
+												purchasePackage.estimatedDeliveryDate,
 											)}
-										</tr>
-									))}
-								</tbody>
-							</table>
+										</dd>
+									</div>
 
-							{isExpanded && (
-								<div>
-									<dl>
-										<div>
-											<dt>Items Subtotal</dt>
-											<dd>{formatCurrency(purchasePackage.itemsSubtotal)}</dd>
-										</div>
+									<div className={styles["Package__description-list__wrapper"]}>
+										<dt>Status</dt>
+										<dd>
+											{purchasePackage.isDelivered ? "Received" : "In Transit"}
+										</dd>
+									</div>
+									<div className={styles["Package__description-list__wrapper"]}>
+										<dt>Tracking</dt>
+										<dd>
+											{trackingUrl && (
+												<>
+													{" "}
+													<a
+														className={styles.Package__link}
+														href={trackingUrl}
+														target='_blank'
+														rel='noreferrer'
+													>
+														<span>{purchasePackage.trackingNumber ?? "—"}</span>
+														<Icon
+															className={styles.Package__link__icon}
+															icon='open'
+														/>
+													</a>
+												</>
+											)}
+										</dd>
+									</div>
+								</dl>
+								<Accordion icon='arrow-down' label='Package Details'>
+									<div className={styles.Package__cards}>
+										<table className={styles.Package__table}>
+											<thead>
+												<tr>
+													<th>Card</th>
+													<th>Price</th>
+												</tr>
+											</thead>
 
-										<div>
-											<dt>Shipping</dt>
-											<dd>{formatCurrency(purchasePackage.shippingTotal)}</dd>
-										</div>
+											<tbody>
+												{purchasePackage.cards.map((card) => (
+													<tr key={card.cardId}>
+														<td>
+															{[card.player, card.year, card.setName, card.info]
+																.filter(Boolean)
+																.join(" ")}
+														</td>
 
-										<div>
-											<dt>Taxes</dt>
-											<dd>{formatCurrency(purchasePackage.taxesTotal)}</dd>
-										</div>
-									</dl>
-								</div>
-							)}
-						</section>
+														<td className={styles.Package__cards__number}>
+															{formatCurrency(card.hammerPrice)}
+														</td>
+													</tr>
+												))}
+											</tbody>
+										</table>
+									</div>
+
+									<div className={styles.Package__financials}>
+										<dl
+											className={`${styles["Package__description-list"]} ${
+												styles["Package__description-list--financials"]
+											}`}
+										>
+											<div
+												className={styles["Package__description-list__wrapper"]}
+											>
+												<dt>Items Subtotal</dt>
+												<dd className={styles.Package__financials__number}>
+													{formatCurrency(purchasePackage.itemsSubtotal)}
+												</dd>
+											</div>
+
+											<div
+												className={styles["Package__description-list__wrapper"]}
+											>
+												<dt>Shipping</dt>
+												<dd className={styles.Package__financials__number}>
+													{formatCurrency(purchasePackage.shippingTotal)}
+												</dd>
+											</div>
+
+											<div
+												className={styles["Package__description-list__wrapper"]}
+											>
+												<dt>Taxes</dt>
+												<dd className={styles.Package__financials__number}>
+													{formatCurrency(purchasePackage.taxesTotal)}
+												</dd>
+											</div>
+										</dl>
+									</div>
+								</Accordion>
+							</div>
+						</div>
 					);
 				})}
 			</div>

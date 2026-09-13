@@ -9,6 +9,7 @@
 	--tooltip-height: 20px;
 	--tooltip-delay: 0.8s;
 	--tooltip-arrow-size: 4px;
+	transition: var(--transition-productive);
 	// TODO: FIX THIS
 	&__tooltip {
 		position: absolute;
@@ -48,33 +49,93 @@
 			transition-delay: var(--tooltip-delay);
 		}
 	}
+	&--main {
+		@include font-weight(semibold);
+		height: var(--button-main-size-lg);
+		border-radius: var(--button-border-radius);
+		padding-inline: var(--button-main-padding-lg);
+		font-size: 1rem;
+		gap: var(--button-gap);
+		border: 1px solid transparent;
+		.Button__icon {
+			width: var(--button-icon-size);
+			height: var(--button-icon-size);
+		}
+	}
+	&--default {
+		height: var(--button-main-size);
+		padding-inline: var(--button-main-padding);
+		background: var(--bg-color);
+		border: var(--button-border-line);
+	}
+	&--add {
+		background: var(--button-main-background);
+		@include color-light-on-dark(var(--white));
+		&:hover {
+			background: color-mix(in srgb, var(--button-main-background) 80%, black);
+		}
+	}
+	&--delete {
+		background: var(--bg-color);
+		color: var(--red);
+		border-color: var(--red);
+		&:hover {
+			@include color-light-on-dark(var(--white));
+			background: var(--red);
+		}
+	}
+	&--cancel {
+		background: var(--bg-color);
+		border-color: var(--button-border-line);
+	}
+
 	&--icon {
 		border: var(--button-border-line);
 		border-radius: var(--button-border-radius);
 		width: var(--button-size);
 		height: var(--button-size);
 		color: var(--text-color);
-		svg {
+		.Button__icon {
 			width: var(--button-icon-size);
 			height: var(--button-icon-size);
 		}
 	}
-	&--icon-label {
-		white-space: nowrap;
-		background: var(--button-main-background);
-		color: var(--white);
-		gap: var(--button-gap);
-		height: var(--button-main-size);
+	&--number-add {
+		@include font-weight-mono(regular);
+		border: var(--button-border-line);
 		border-radius: var(--button-border-radius);
-		padding-inline: var(--button-main-padding);
-		svg {
+		font-size: var(--font-size-18);
+		span {
+			padding: var(--button-main-padding-sm);
+			border-right: var(--button-border-line);
+		}
+		.Button__icon {
+			margin-inline: var(--button-main-padding-sm);
 			width: var(--button-icon-size);
 			height: var(--button-icon-size);
 		}
+		&:hover {
+			background: var(--gray-02);
+		}
 	}
+	&__icon {
+		&--loading {
+			animation: button-icon-spin 2s linear infinite;
+		}
+	}
+
 	// TODO: FIX THIS
 	&:disabled {
 		color: color-mix(in srgb, var(--text-color) 40%, var(--white));
 		cursor: not-allowed;
+	}
+}
+
+@keyframes button-icon-spin {
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
 	}
 }

@@ -24,4 +24,5 @@ export interface Card {
 	profit: number | null;
 	isPaid: boolean;
 	roi: number | null;
+	isShared: boolean;
 }

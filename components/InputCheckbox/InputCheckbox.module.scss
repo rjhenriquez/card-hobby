@@ -1,0 +1,129 @@
+@use "@/styles/utilities/all" as *;
+
+@mixin input-indicator {
+	box-sizing: border-box;
+
+	&::before {
+		content: "";
+		box-sizing: border-box;
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		width: var(--input-outer-circle-size);
+		height: var(--input-outer-circle-size);
+		border: var(--input-border-line);
+		border-radius: 100%;
+		background: var(--white);
+		transform: translate(-50%, -50%);
+	}
+
+	&::after {
+		content: "";
+		box-sizing: border-box;
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		width: var(--input-inner-circle-size);
+		height: var(--input-inner-circle-size);
+		border-radius: 100%;
+		background: var(--main);
+		opacity: 0;
+		transform: translate(-50%, -50%) scale(0);
+		transition:
+			opacity 0.2s ease,
+			transform 0.2s ease;
+	}
+}
+
+.InputCheckbox {
+	position: relative;
+	width: 100%;
+	display: flex;
+	align-items: center;
+	gap: var(--form-gap);
+	justify-content: center;
+	cursor: pointer;
+	background: transparent;
+	flex: 0 0 100%;
+	min-width: 0;
+	&--half {
+		flex-basis: calc(50% - var(--form-gap) / 2);
+	}
+
+	input {
+		position: absolute;
+		width: 0;
+		height: 0;
+		opacity: 0;
+		pointer-events: none;
+	}
+
+	&__indicator {
+		position: relative;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		flex-shrink: 0;
+	}
+
+	&__label {
+		@include font-weight(semibold);
+		font-size: var(--font-size-12);
+		letter-spacing: 0.05em;
+		text-transform: uppercase;
+		flex: 1;
+		min-width: 0;
+	}
+
+	&__icon {
+		width: var(--sidebar-item-icon-size);
+		height: var(--sidebar-item-icon-size);
+		opacity: 0;
+		transform: scale(0.5);
+		transition: var(--transition-productive);
+	}
+
+	&--circle {
+		.InputCheckbox__indicator {
+			width: var(--input-outer-circle-size);
+			height: var(--input-outer-circle-size);
+			@include input-indicator;
+		}
+
+		input:checked + .InputCheckbox__indicator::after {
+			opacity: 1;
+			transform: translate(-50%, -50%) scale(1);
+		}
+	}
+
+	&--square {
+		align-self: flex-end;
+		.InputCheckbox__indicator {
+			height: var(--input-height);
+			width: var(--input-height);
+			border: var(--input-border);
+			border-radius: var(--input-border-radius);
+			color: var(--text-color);
+		}
+
+		input:checked + .InputCheckbox__indicator {
+			background: var(--main);
+			color: var(--white);
+			border-color: var(--main);
+
+			.InputCheckbox__icon {
+				opacity: 1;
+				transform: scale(1);
+			}
+		}
+	}
+
+	&--disabled {
+		cursor: not-allowed;
+		opacity: 0.5;
+	}
+
+	&--header {
+		font-size: 14px;
+	}
+}

@@ -1,13 +1,24 @@
-.Header {
-	min-width: 0;
-	max-width: 100%;
-	background-color: var(--bg-color);
-	padding: var(--header-padding);
-	border-bottom: var(--header-border-line);
+@use "@/styles/utilities/all" as *;
 
+.Header {
+	background-color: var(--bg-color);
+	border-bottom: var(--header-border-line);
+	display: flex;
+	align-items: center;
+	min-height: var(--header-height);
+	&__left {
+		flex: 0 0 auto;
+		width: var(--sidebar-width);
+		padding-inline: calc(var(--header-padding) + var(--sidebar-item-padding));
+	}
+	&__logo {
+		@include font-weight(bold);
+	}
 	&__inner {
+		padding-inline: var(--header-padding);
 		min-width: 0;
 		max-width: 100%;
+		width: 100%;
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
