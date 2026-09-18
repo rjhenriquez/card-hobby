@@ -38,6 +38,9 @@ export function ThemeToggle() {
 			onClick={toggleTheme}
 			leadingIcon={theme === "light" ? "dark" : "light"}
 			tooltip={`Switch to ${theme === "light" ? "dark" : "light"} theme`}
+			tooltipPosition='left'
+			className={styles.ThemeToggle}
+			variant='header'
 		/>
 	);
 }

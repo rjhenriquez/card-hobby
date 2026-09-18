@@ -5,22 +5,22 @@
 	--white: #ffffff;
 	--black: #000000;
 	--main: #7066ff;
-	--green: #16c47f;
-	--red: #f93827;
+	--red: #ff5976;
+
+	--psa-color: var(--main);
 
 	--gray-01: #f3f4f9;
-	--gray-02: #f5f7fc;
+	--gray-02: #fafbfc;
 	--gray-03: #eff1f4;
 	--gray-04: #e6e7e8;
 	--gray-05: #98999b;
 	--gray-06: #707172;
 	--gray-07: #616161;
 	--gray-08: #242b39;
+	--gray-08: #1e2229;
 	--gray-09: #090a0f;
 
 	--input-border-color: var(--gray-05);
-	--border-color: #d6d7d8;
-	--button-border-color: #dbdbdb;
 
 	--transition-productive: 0.2s all ease;
 
@@ -51,7 +51,7 @@
 	--button-border-radius: 0.25em; //4px
 	--button-icon-size: 1.25rem; //20px
 	--button-icon-size-sm: 0.875rem; // 14px
-	--button-size: 2.25em; //36px
+	--button-size: 34px;
 	--button-border-line: var(--button-border-color) 1px solid;
 
 	--button-main-background: var(--main);
@@ -70,6 +70,12 @@
 	// ------- Sidebar Component -------
 	--sidebar-width: 14.375rem; //230px
 	--sidebar-width: 230px; //230px
+	--sidebar-width-closed: 100px; //230px
+	--sidebar-width-closed: calc(
+		(var(--sidebar-padding) * 2) + var(--sidebar-item-icon-size) +
+			(var(--sidebar-item-padding) * 2)
+	); //230px
+
 	--sidebar-padding: var(--spacing-14);
 	--sidebar-item-padding: 0.625rem; //10px
 	--sidebar-menu-gap: 0.35em; //4px
@@ -77,6 +83,8 @@
 	--sidebar-item-border-radius: 0.625em; //10px
 	--sidebar-item-icon-size: 1.5rem; //24px
 	--sidebar-border-line: var(--border-color) 1px solid;
+	--sidebar-transition:
+		all 0.12s ease-in-out, width 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
 
 	// ------- Table -------
 	--table-border-radius: 0.625em; //10px
@@ -85,23 +93,21 @@
 	--table-select-width: 30px;
 	--table-top-height: 60px;
 	--table-border-color: var(--border-color);
-	--table-border-color-header: #bebebf;
-	--table-bg-color-01: var(--bg-color);
-	--table-bg-color-02: var(--bg-color);
-	--table-bg-color-hover: var(--bg-color-02);
-	--table-bg-color-selected: var(--bg-color-03);
-	--table-header-bg: var(--gray-03);
+	--table-border-color-header: var(--border-color);
+	--table-bg-color: var(--bg-color);
+	--table-bg-color-hover: var(--table-header-bg);
+	--table-bg-color-selected: var(--table-header-bg);
 	--table-icon-size: 20px;
 
-	--table-cell-min-width: 90px;
-	--table-cell-padding: 8px 4px;
-	--table-cell-header-padding: 5px 4px;
+	--table-cell-min-width: 7.5em;
+	--table-cell-padding: 0.5em 0.4em;
+	--table-cell-header-padding: 0.5em 0.4em;
 	--table-header-font-size: 10px;
-	--table-font-size: 12px;
 	--table-value-font-size: 14px;
 
 	--table-color-value-positive: var(--green);
 	--table-color-value-negative: var(--red);
+	--table-link-padding: 0.1em 0.4em;
 
 	// ------- Drawer -------
 	--drawer-dialog-width: 460px;
@@ -116,14 +122,17 @@
 
 	// ------- Form -------
 	--form-gap: 0.75rem; //12px
+	--form-gap-lg: 1rem;
 	--form-section-margin: 1.4rem;
 	--form-heading-margin: 1rem;
 	--input-height: 34px;
+	--input-height-sm: 28px;
 	--input-gap: 0.35em; //4px
 	--input-border: 1px solid var(--input-border-color);
 	--input-border-radius: 0.25em; //4px
 	--input-padding: 0.4em; //10px
 	--input-font-size: 1rem;
+	--input-font-sm: 0.875rem; // 14px
 
 	// ------- Packages-------
 	--package-card-border: var(--button-border-color) 1px solid;
@@ -141,6 +150,52 @@
 	--accordion-trigger-hover: var(--bg-color-02);
 	--accordion-trigger-gap: 0.75rem; //12px
 
+	// ------- Accordion -------
+	--tooltip-distance: 0.4rem;
+	--tooltip-height: 20px;
+	--tooltip-delay: 0.8s;
+	--tooltip-arrow-size: 4px;
+
+	// ------- Tooltip -------
+	--tooltip-background-color: var(--black);
+	--tooltip-text-color: var(--white);
+	--tooltip-font-size: 0.75rem; //12px
+	--tooltip-padding-vertical: 0.4em;
+	--tooltip-padding-horizontal: 0.6em;
+	--tooltip-border-radius: 0.25em;
+	--tooltip-max-width: 10rem;
+	--tooltip-arrow-size: 0.4rem;
+	--tooltip-distance: 0.6rem;
+	--tooltip-animation-distance: 0.25rem;
+	--tooltip-transition-duration: 0.15s;
+	--tooltip-z-index: 100;
+
+	// ------- Tabs -------
+	--tabs-border-line: var(--button-border-color) 1px solid;
+	--tabs-gap: 2rem; //32px
+	--tabs-margin-top: 1rem; //16px
+	--tabs-padding: 0.5em;
+	--tabs-border-width-lg: 3px;
+	--tabs-border-width: 1px;
+	--tabs-font-size: 0.875rem; // 14px
+
+	// ------- HighlightCard -------
+	--highlight-border-radius: 0.25em; //4px
+	--highlight-padding: var(--spacing-20);
+	--highlight-value-font-size: 1.6rem;
+	--highlight-value-font-size-sm: 1.4rem;
+	--highlight-sub-font-size: 14px;
+	--highlight-gap: 1.2rem;
+	--highlight-gap-sm: 0.4rem;
+	--highlight-gap-md: 0.6em;
+	--highlight-gap-lg: 3rem;
+	--highlight-icon-size: 2.4rem;
+	--highlight-label-color: color-mix(
+		in srgb,
+		var(--text-color) 70%,
+		transparent
+	);
+
 	@include media-query(medium-up) {
 	}
 	@include media-query(medium-up) {
@@ -151,6 +206,10 @@
 	--bg-color-02: var(--gray-02); //Main
 	--bg-color-03: var(--gray-03); //Main
 	--text-color: var(--gray-09);
+	--border-color: #d6d7d8;
+	--button-border-color: #dbdbdb;
+	--table-header-bg: var(--gray-03);
+	--green: #58a500;
 }
 
 .theme--dark {
@@ -158,4 +217,9 @@
 	--bg-color-02: var(--gray-08);
 	--bg-color-03: var(--gray-07);
 	--text-color: var(--gray-01);
+	--border-color: color-mix(in srgb, #a8b3ce, transparent 80%);
+	--border-color: #3a3d48;
+	--button-border-color: #4f535f;
+	--table-header-bg: #2c313b;
+	--green: #a0d664;
 }

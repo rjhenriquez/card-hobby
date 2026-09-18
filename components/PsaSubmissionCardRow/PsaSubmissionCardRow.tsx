@@ -2,10 +2,14 @@
 
 import { FormEvent, useState, useTransition } from "react";
 import { Modal } from "@/components/Modal/Modal";
+import { InputText } from "@/components/InputText/InputText";
+import { Button } from "@/components/Button/Button";
+import { InputSelect } from "@/components/InputSelect/InputSelect";
 import {
 	removeCardFromPsaSubmission,
 	updatePsaSubmissionCard,
 } from "@/app/actions/psaSubmissions";
+import styles from "./PsaSubmissionCardRow.module.scss";
 
 interface PsaSubmissionCard {
 	submissionCardId: number;
@@ -83,24 +87,23 @@ export function PsaSubmissionCardRow({
 							value={submissionNumber}
 						/>
 
-						{card.player}
+						{[card.player, card.year, card.setName, card.info]
+							.filter(Boolean)
+							.join(" ")}
 					</form>
 				</td>
 
-				<td>{card.year ?? "—"}</td>
-
-				<td>{card.setName ?? "—"}</td>
-
-				<td>{card.info ?? "—"}</td>
-
 				<td>
 					{isEditing ? (
-						<input
-							form={formId}
-							type='number'
+						<InputText
+							className={styles.PsaSubmissionCardRow__input}
 							name='baseGradingFee'
-							step='0.01'
-							min='0'
+							type='number'
+							variant='small'
+							leadingIcon='dollar-sign'
+							width='half'
+							min={0}
+							step={0.01}
 							defaultValue={card.baseGradingFee}
 						/>
 					) : (
@@ -112,12 +115,14 @@ export function PsaSubmissionCardRow({
 
 				<td>
 					{isEditing ? (
-						<input
-							form={formId}
+						<InputText
+							className={styles.PsaSubmissionCardRow__input}
 							type='number'
+							variant='small'
 							name='gradingAdjustment'
-							step='0.01'
-							min='0'
+							leadingIcon='dollar-sign'
+							min={0}
+							step={0.01}
 							defaultValue={card.gradingAdjustment}
 						/>
 					) : (
@@ -130,10 +135,24 @@ export function PsaSubmissionCardRow({
 				<td>
 					{isEditing ? (
 						<>
-							<select
+							<InputSelect
 								form={formId}
 								name='gradeStatus'
 								value={gradeStatus}
+								options={[
+									{
+										label: "Pending",
+										value: "pending",
+									},
+									{
+										label: "Graded",
+										value: "graded",
+									},
+									{
+										label: "No Grade",
+										value: "no_grade",
+									},
+								]}
 								onChange={(event) => {
 									const value = event.target.value as
 										"pending" | "graded" | "no_grade";
@@ -144,20 +163,19 @@ export function PsaSubmissionCardRow({
 										setGrade("");
 									}
 								}}
-							>
-								<option value='pending'>Pending</option>
-								<option value='graded'>Graded</option>
-								<option value='no_grade'>No Grade</option>
-							</select>
+							/>
 
-							<input
+							<InputText
 								form={formId}
+								className={styles.PsaSubmissionCardRow__input}
 								type='number'
 								name='grade'
-								step='0.5'
-								min='1'
-								max='10'
+								label='Grade'
+								step={0.5}
+								min={1}
+								max={10}
 								value={grade}
+								variant='small'
 								disabled={gradeStatus !== "graded"}
 								onChange={(event) => setGrade(event.target.value)}
 							/>
@@ -173,23 +191,26 @@ export function PsaSubmissionCardRow({
 
 				<td>
 					{isEditing && (
-						<button
+						<Button
+							type='icon'
+							htmlType='submit'
+							variant='add'
 							form={formId}
-							type='submit'
 							disabled={isSaving || isRemoving}
-						>
-							{isSaving ? "Saving..." : "Save"}
-						</button>
+							tooltip='Save'
+							trailingIcon='save'
+						/>
 					)}
 
 					{!isCompleted && isEditing && (
-						<button
-							type='button'
+						<Button
+							type='icon'
+							variant='delete'
 							disabled={isSaving || isRemoving}
 							onClick={() => setIsRemoveModalOpen(true)}
-						>
-							Remove
-						</button>
+							tooltip='Remove'
+							trailingIcon='delete'
+						/>
 					)}
 				</td>
 			</tr>

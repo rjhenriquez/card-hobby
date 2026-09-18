@@ -1,10 +1,16 @@
 @use "@/styles/utilities/all" as *;
 
 .Sidebar {
-	background-color: var(--bg-color);
-	padding: var(--sidebar-padding);
-	border-right: var(--sidebar-border-line);
+	background-color: var(--bg-color-02);
 	position: relative;
+	width: var(--sidebar-width);
+	flex: 0 0 auto;
+	display: flex;
+	flex-direction: column;
+	transition: var(--sidebar-transition);
+	&--closed {
+		width: var(--sidebar-width-closed);
+	}
 	&__navigation {
 		position: sticky;
 		top: 0;
@@ -15,24 +21,57 @@
 		gap: var(--sidebar-menu-gap);
 	}
 	&__link {
-		// @include font-weight(semibold);
 		display: flex;
 		align-items: center;
 		gap: var(--sidebar-item-gap);
 		padding: var(--sidebar-item-padding);
 		border-radius: var(--sidebar-item-border-radius);
-		background-color: var(--bg-color);
+		background-color: var(--bg-color-02);
 		font-size: var(--font-size-14);
 		font-size: 1rem;
 		&:hover {
-			background-color: var(--bg-color-02);
+			background-color: var(--bg-color-03);
 		}
 		&--active {
-			background-color: var(--bg-color-02);
+			background-color: var(--bg-color-03);
 		}
 	}
 	&__icon {
 		width: var(--sidebar-item-icon-size);
 		height: var(--sidebar-item-icon-size);
+	}
+	&__label {
+		max-width: 12rem;
+		opacity: 1;
+		overflow: hidden;
+		white-space: nowrap;
+	}
+	&__top {
+		min-height: var(--header-height);
+		border-bottom: var(--header-border-line);
+		border-right: var(--header-border-line);
+		display: flex;
+		align-items: center;
+		padding-inline: calc(var(--header-padding) + var(--sidebar-item-padding));
+	}
+	&__bottom {
+		border-right: var(--header-border-line);
+		padding: var(--sidebar-padding);
+		flex: 1;
+	}
+	&__logo {
+		@include font-weight(bold);
+	}
+	&--closed {
+		width: var(--sidebar-width-closed);
+		.Sidebar {
+			&__label {
+				max-width: 0;
+				opacity: 0;
+			}
+			&__link {
+				gap: 0;
+			}
+		}
 	}
 }

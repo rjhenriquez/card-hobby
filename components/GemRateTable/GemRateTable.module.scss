@@ -128,14 +128,6 @@
 		}
 
 		tbody {
-			tr:nth-child(odd) {
-				background-color: var(--table-bg-color-01);
-			}
-
-			tr:nth-child(even) {
-				background-color: var(--table-bg-color-02);
-			}
-
 			tr:hover {
 				background-color: var(--table-bg-color-hover);
 			}

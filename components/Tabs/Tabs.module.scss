@@ -1,15 +1,35 @@
 @use "@/styles/utilities/all" as *;
 
 .Tabs {
+	position: relative;
+	z-index: 1;
+	width: 100%;
 	&__header {
+		border-bottom: var(--tabs-border-line);
+		gap: var(--tabs-gap);
+		margin-block: var(--tabs-margin-top);
 		display: flex;
-		gap: 2rem;
 	}
 
 	&__label {
+		@include font-weight(bold);
+		font-size: var(--tabs-font-size);
+		letter-spacing: 0.05em;
+		border-bottom: var(--tabs-border-width-lg) solid transparent;
+		text-transform: uppercase;
 		cursor: pointer;
-
+		padding-bottom: var(--tabs-padding);
+		transform: translateY(calc(var(--tabs-border-width) * 2));
+		transition: var(--transition-productive);
+		color: var(--text-color);
+		&:hover {
+			color: var(--main);
+		}
 		&--active {
+			border-bottom-color: var(--main);
+			&:hover {
+				color: var(--text-color);
+			}
 		}
 	}
 

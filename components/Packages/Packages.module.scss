@@ -50,7 +50,7 @@
 			text-transform: uppercase;
 		}
 		&__value {
-			@include font-weight-mono(regular);
+			@include font-weight-chivo(regular);
 			font-size: var(--font-size-18);
 			span {
 				font-size: 0.8em;
@@ -62,7 +62,7 @@
 	&__financials {
 		margin-top: var(--packages-gap);
 		&__number {
-			@include font-weight-mono(regular);
+			@include font-weight-chivo(regular);
 		}
 	}
 
@@ -135,7 +135,7 @@
 	&__link {
 		border: var(--button-border-line);
 		border-radius: var(--button-border-radius);
-		@include font-weight-mono(regular);
+		@include font-weight-chivo(regular);
 		font-size: var(--font-size-14);
 		display: flex;
 		justify-content: center;

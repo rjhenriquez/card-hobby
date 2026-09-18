@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import { Header } from "@/components/Header/Header";
 import { Sidebar } from "@/components/Sidebar/Sidebar";
+import { SidebarProvider } from "@/components/Sidebar/SidebarContext";
 
 import "@/styles/styles.scss";
 import "@/styles/temporary.scss";
@@ -19,11 +20,13 @@ export default function RootLayout({
 	return (
 		<html lang='en' className='theme--light'>
 			<body>
-				<Header />
-				<div className='layout'>
+				<SidebarProvider>
 					<Sidebar />
-					<main className='main'>{children}</main>
-				</div>
+					<div className='layout'>
+						<Header />
+						<main className='main'>{children}</main>
+					</div>
+				</SidebarProvider>
 			</body>
 		</html>
 	);

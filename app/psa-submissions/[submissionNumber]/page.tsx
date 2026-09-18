@@ -44,9 +44,7 @@ export default async function PsaSubmissionPage({
 	return (
 		<div className={styles.Page}>
 			<div className={styles.Page__header}>
-				<h1 className={styles.Page__heading}>
-					PSA Submission {submission.submissionNumber}
-				</h1>
+				<h1 className={styles.Page__heading}>PSA Submission</h1>
 			</div>
 			<section className={styles.Page__section}>
 				<PsaSubmissionDetails
@@ -55,6 +53,7 @@ export default async function PsaSubmissionPage({
 					sharedCost={sharedCost}
 					totalSubmissionCost={totalSubmissionCost}
 				/>
+				<h2>Stats here</h2>
 				<PsaSubmissionStats
 					cards={cards}
 					isHistorical={submission.isHistorical}

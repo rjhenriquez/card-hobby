@@ -11,6 +11,8 @@ interface AccordionProps {
 	label: string;
 	children: ReactNode;
 	defaultOpen?: boolean;
+	triggerLocation?: "above" | "below";
+	className?: string;
 }
 
 export function Accordion({
@@ -18,30 +20,38 @@ export function Accordion({
 	label,
 	children,
 	defaultOpen = false,
+	triggerLocation = "above",
+	className,
 }: AccordionProps) {
 	const [isOpen, setIsOpen] = useState(defaultOpen);
 
+	const trigger = (
+		<button
+			type='button'
+			className={cn(styles.Accordion__trigger, {
+				[styles["Accordion__trigger--open"]]: isOpen,
+			})}
+			aria-expanded={isOpen}
+			onClick={() => setIsOpen((current) => !current)}
+		>
+			<span className={styles.Accordion__label}>{label}</span>
+			<Icon icon={icon} />
+		</button>
+	);
+
 	return (
 		<div
-			className={cn(Accordion, styles.Accordion, {
+			className={cn(styles.Accordion, className, {
 				[styles["Accordion--open"]]: isOpen,
 			})}
 		>
-			<button
-				type='button'
-				className={cn(styles.Accordion__trigger, {
-					[styles["Accordion__trigger--open"]]: isOpen,
-				})}
-				aria-expanded={isOpen}
-				onClick={() => setIsOpen((current) => !current)}
-			>
-				<span className={styles.Accordion__label}>{label}</span>
-				<Icon icon={icon} />
-			</button>
+			{triggerLocation === "above" && trigger}
 
 			<div className={styles.Accordion__content}>
 				<div className={styles.Accordion__content__inner}>{children}</div>
 			</div>
+
+			{triggerLocation === "below" && trigger}
 		</div>
 	);
 }

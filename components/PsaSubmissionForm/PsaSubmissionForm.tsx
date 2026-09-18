@@ -5,9 +5,12 @@ import {
 	finishPsaSubmission,
 	updatePsaSubmission,
 } from "@/app/actions/psaSubmissions";
+import { Button } from "@/components/Button/Button";
+import { InputText } from "@/components/InputText/InputText";
+import { InputDate } from "@/components/InputDate/InputDate";
 import { Modal } from "@/components/Modal/Modal";
 
-import styles from "@/styles/components/DrawerForm.module.scss";
+import styles from "./PsaSubmissionForm.module.scss";
 
 interface PsaSubmission {
 	id: number;
@@ -97,81 +100,88 @@ export function PsaSubmissionForm({
 	}
 
 	return (
-		<>
+		<div className={styles.PsaSubmissionForm}>
 			{isEditing ? (
-				<form className='table' onSubmit={handleSubmit}>
+				<form
+					className={styles.PsaSubmissionForm__form}
+					onSubmit={handleSubmit}
+				>
 					<input type='hidden' name='id' value={submission.id} />
-
 					<input
 						type='hidden'
 						name='submissionNumber'
 						value={submission.submissionNumber}
 					/>
-
-					<label>
-						Submission Number
-						<input type='text' value={submission.submissionNumber} disabled />
-					</label>
-
-					<label>
-						Stage
-						<input
-							type='text'
+					<h2 className={styles.PsaSubmissionForm__heading}>
+						Submission Number: <span>{submission.submissionNumber}</span>
+					</h2>
+					<div className={styles.PsaSubmissionForm__section}>
+						<InputText
+							className={styles.PsaSubmissionForm__input}
 							name='stage'
+							label='Stage'
 							value={stage}
 							onChange={(event) => setStage(event.target.value)}
 						/>
-					</label>
-
-					<label>
-						Sent Date
-						<input
-							type='date'
+						<InputDate
+							className={styles.PsaSubmissionForm__input}
 							name='sentDate'
+							label='Sent Date'
 							value={sentDate}
 							onChange={(event) => setSentDate(event.target.value)}
 						/>
-					</label>
-
-					<label>
-						Received Date
-						<input
-							type='date'
+						<InputDate
+							className={styles.PsaSubmissionForm__input}
 							name='receivedDate'
+							label='Received Date'
 							value={receivedDate}
 							onChange={(event) => setReceivedDate(event.target.value)}
 						/>
-					</label>
-
-					<label>
-						Outbound Shipping
-						<input
+					</div>
+					<div className={styles.PsaSubmissionForm__section}>
+						<InputText
+							className={styles.PsaSubmissionForm__input}
 							type='number'
 							name='outboundShippingCost'
-							step='0.01'
-							min='0'
+							label='Outbound Shipping'
+							leadingIcon='dollar-sign'
+							step={0.01}
+							min={0}
 							value={outboundShippingCost}
 							onChange={(event) => setOutboundShippingCost(event.target.value)}
 						/>
-					</label>
-
-					<label>
-						Insured Return Shipping
-						<input
+						<InputText
+							className={styles.PsaSubmissionForm__input}
 							type='number'
 							name='insuredReturnShippingCost'
-							step='0.01'
-							min='0'
+							label='Insured Return Shipping'
+							leadingIcon='dollar-sign'
+							step={0.01}
+							min={0}
 							value={insuredReturnShippingCost}
 							onChange={(event) =>
 								setInsuredReturnShippingCost(event.target.value)
 							}
 						/>
-					</label>
-
-					<button type='submit' disabled={!hasChanges || isSaving}>
-						{isSaving ? "Saving..." : "Save Submission"}
-					</button>
+					</div>
+					<div className={styles.PsaSubmissionForm__actions}>
+						{!isCompleted && (
+							<Button
+								type='main'
+								variant='delete'
+								onClick={() => setIsFinishModalOpen(true)}
+								label='Finish Submission'
+								trailingIcon={isSaving ? "loading" : undefined}
+							/>
+						)}
+						<Button
+							type='main'
+							variant='add'
+							htmlType='submit'
+							label={isSaving ? "Saving..." : "Save Submission"}
+							trailingIcon={isSaving ? "loading" : undefined}
+						/>
+					</div>
 				</form>
 			) : (
 				<dl className='DevPsaInfo'>
@@ -212,20 +222,14 @@ export function PsaSubmissionForm({
 				</dl>
 			)}
 
-			{!isCompleted && (
-				<button type='button' onClick={() => setIsFinishModalOpen(true)}>
-					Finish Submission
-				</button>
-			)}
-
 			<Modal
 				isOpen={isFinishModalOpen}
-				title='Finish PSA Submission'
+				title='PSA Submission'
 				onClose={() => setIsFinishModalOpen(false)}
 			>
-				<p>
+				<h4 className={styles.PsaSubmissionForm__modal__heading}>
 					Finish PSA Submission <strong>{submission.submissionNumber}</strong>?
-				</p>
+				</h4>
 
 				<p>
 					Finishing this submission will make its grading costs part of the
@@ -233,20 +237,24 @@ export function PsaSubmissionForm({
 					PSA-controlled status.
 				</p>
 
-				<div role='group'>
-					<button
-						type='button'
+				<div role='group' className={styles.PsaSubmissionForm__modal__actions}>
+					<Button
+						type='main'
+						variant='cancel'
+						label='Cancel'
 						disabled={isFinishing}
 						onClick={() => setIsFinishModalOpen(false)}
-					>
-						Cancel
-					</button>
-
-					<button type='button' disabled={isFinishing} onClick={handleFinish}>
-						{isFinishing ? "Finishing..." : "Finish Submission"}
-					</button>
+					/>
+					<Button
+						type='main'
+						variant='add'
+						disabled={isFinishing}
+						label={isFinishing ? "Finishing..." : "Finish Submission"}
+						trailingIcon={isFinishing ? "loading" : undefined}
+						onClick={handleFinish}
+					/>
 				</div>
 			</Modal>
-		</>
+		</div>
 	);
 }

@@ -69,6 +69,21 @@ export const Icon: FC<IconInterface> = ({ icon, className }) => {
 				return <Open className={className} />;
 			case "diamond":
 				return <Diamond className={className} />;
+			case "filter":
+				return <Filter className={className} />;
+			case "hamburger":
+				return <Hamburger className={className} />;
+			case "save":
+				return <Save className={className} />;
+			case "delete":
+				return <Delete className={className} />;
+			case "charts":
+				return <Charts className={className} />;
+			case "finance":
+				return <Finance className={className} />;
+			case "stacks":
+				return <Stacks className={className} />;
+
 			default:
 				return <Moon className={className} />;
 		}
@@ -429,6 +444,93 @@ const Diamond = ({ className }: { className?: string }) => {
 			viewBox='0 -960 960 960'
 		>
 			<path d='M480-120 80-600l120-240h560l120 240zm-95-520h190l-60-120h-70zm55 347v-267H218zm80 0 222-267H520zm144-347h106l-60-120H604zm-474 0h106l60-120H250z' />
+		</svg>
+	);
+};
+
+const Filter = ({ className }: { className?: string }) => {
+	return (
+		<svg
+			xmlns='http://www.w3.org/2000/svg'
+			className={className}
+			fill='currentColor'
+			viewBox='0 -960 960 960'
+		>
+			<path d='M440-160q-17 0-28.5-11.5T400-200v-240L168-736q-15-20-4.5-42t36.5-22h560q26 0 36.5 22t-4.5 42L560-440v240q0 17-11.5 28.5T520-160zm40-308 198-252H282zm0 0' />
+		</svg>
+	);
+};
+const Hamburger = ({ className }: { className?: string }) => {
+	return (
+		<svg
+			xmlns='http://www.w3.org/2000/svg'
+			className={className}
+			fill='currentColor'
+			viewBox='0 -960 960 960'
+		>
+			<path d='M120-240v-80h720v80zm0-200v-80h720v80zm0-200v-80h720v80z' />
+		</svg>
+	);
+};
+const Save = ({ className }: { className?: string }) => {
+	return (
+		<svg
+			xmlns='http://www.w3.org/2000/svg'
+			className={className}
+			fill='currentColor'
+			viewBox='0 -960 960 960'
+		>
+			<path d='M840-680v480q0 33-23.5 56.5T760-120H200q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h480zm-80 34L646-760H200v560h560zM565-275q35-35 35-85t-35-85-85-35-85 35-35 85 35 85 85 35 85-35M240-560h360v-160H240zm-40-86v446-560z' />
+		</svg>
+	);
+};
+const Delete = ({ className }: { className?: string }) => {
+	return (
+		<svg
+			xmlns='http://www.w3.org/2000/svg'
+			className={className}
+			fill='currentColor'
+			viewBox='0 -960 960 960'
+		>
+			<path d='M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120zm400-600H280v520h400zM360-280h80v-360h-80zm160 0h80v-360h-80zM280-720v520z' />
+		</svg>
+	);
+};
+
+const Charts = ({ className }: { className?: string }) => {
+	return (
+		<svg
+			xmlns='http://www.w3.org/2000/svg'
+			className={className}
+			fill='currentColor'
+			viewBox='0 -960 960 960'
+		>
+			<path d='M280-280h80v-200h-80zm320 0h80v-400h-80zm-160 0h80v-120h-80zm0-200h80v-80h-80zM200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120zm0-80h560v-560H200zm0-560v560z' />
+		</svg>
+	);
+};
+const Finance = ({ className }: { className?: string }) => {
+	return (
+		<svg
+			xmlns='http://www.w3.org/2000/svg'
+			className={className}
+			fill='currentColor'
+			viewBox='0 -960 960 960'
+		>
+			<path d='M320-414v-306h120v306l-60-56zm200 60v-526h120v406zM120-216v-344h120v224zm0 98 258-258 142 122 224-224h-64v-80h200v200h-80v-64L524-146 382-268 232-118z' />
+		</svg>
+	);
+};
+
+const Stacks = ({ className }: { className?: string }) => {
+	return (
+		<svg
+			xmlns='http://www.w3.org/2000/svg'
+			className={className}
+			fill='currentColor'
+			viewBox='0 -960 960 960'
+		>
+			<path d='M480-400 40-640l440-240 440 240zm0 160L63-467l84-46 333 182 333-182 84 46zm0 160L63-307l84-46 333 182 333-182 84 46zm0-411 273-149-273-149-273 149zm0-149' />
 		</svg>
 	);
 };

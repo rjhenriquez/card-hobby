@@ -1,26 +1,61 @@
 @use "@/styles/utilities/all" as *;
 
 .HighlightCard {
-	--highlight-border-radius: 0.25em; //4px
-	--highlight-padding: var(--spacing-20);
-	background-color: #bada55;
-	padding-inline: var(--highlight-padding);
+	background-color: var(--bg-color-02);
+	border: 1px solid var(--border-color);
+	padding: var(--highlight-padding);
 	width: fit-content;
 	border-radius: var(--highlight-border-radius);
-	margin: 2rem;
-	&__highlight {
-		&__label {
-		}
+	display: grid;
+	grid-template-columns: var(--highlight-icon-size) auto auto;
+	grid-template-rows: 1fr 1fr;
+	gap: var(--highlight-gap-sm) var(--highlight-gap);
+	grid-template-areas:
+		"icon label sublabel"
+		"icon value subvalue";
 
-		&__value {
-		}
-	}
-
+	&__highlight,
 	&__sub {
 		&__label {
+			@include heading(h3);
+			color: var(--highlight-label-color);
+			line-height: 1;
+			text-box: trim-both cap alphabetic;
+			justify-self: end;
 		}
-
 		&__value {
+			line-height: 1;
+			text-box: trim-both cap alphabetic;
+			justify-self: end;
 		}
+	}
+	&__highlight {
+		&__value {
+			@include font-weight-chivo(semibold);
+			font-size: var(--highlight-value-font-size);
+			grid-area: value;
+			align-self: end;
+		}
+		&__label {
+			grid-area: label;
+		}
+	}
+	&__sub {
+		&__value {
+			@include font-weight-chivo(semibold);
+			font-size: var(--highlight-value-font-size-sm);
+			align-self: end;
+			grid-area: subvalue;
+		}
+		&__label {
+			grid-area: sublabel;
+		}
+	}
+	&__icon {
+		align-self: center;
+		grid-area: icon;
+		color: var(--main);
+		width: 100%;
+		height: var(--highlight-icon-size);
 	}
 }

@@ -1,2 +1,39 @@
+@use "@/styles/utilities/all" as *;
+
 .Modal {
+	--modal-padding: 1rem;
+	--modal-gap: 1rem;
+	--modal-width: 28rem; // 448px
+	--modal-border-radius: 0.625em; //10px
+	--modal-box-shadow: box-shadow: 0 0.5rem 2rem
+		color-mix(in srgb, var(--black) 20%, transparent);
+	position: fixed;
+	z-index: 200;
+	inset: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: color-mix(in srgb, var(--black) 50%, transparent);
+	&__dialog {
+		width: min(var(--modal-width), 100%);
+		padding: var(--modal-padding);
+		background: var(--bg-color);
+		border-radius: var(--modal-border-radius);
+		box-shadow: var(--modal-box-shadow);
+		display: flex;
+		flex-direction: column;
+		gap: var(--modal-gap);
+	}
+	&__header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+	}
+
+	&__heading {
+		@include heading(h2);
+	}
+	p {
+		line-height: 1.3;
+	}
 }

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import Link from "next/link";
-import { formatShortDate } from "@/lib/date";
+import { formatShortDate } from "@/lib/formatters";
 import type { PsaGemRateRow } from "@/db/queries/psaGemRate";
 
 import styles from "./GemRateTable.module.scss";

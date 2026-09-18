@@ -1,0 +1,38 @@
+@use "@/styles/utilities/all" as *;
+
+.PsaSubmissionForm {
+	&__form {
+		display: flex;
+		flex-direction: column;
+		gap: var(--form-gap-lg);
+	}
+	&__heading {
+		@include heading(h2);
+		span {
+			@include font-weight-mono(bold);
+		}
+	}
+	&__section,
+	&__actions {
+		display: flex;
+		gap: var(--form-gap-lg);
+	}
+	&__actions {
+		justify-content: space-between;
+		margin-top: var(--form-gap-lg);
+	}
+	&__input {
+		flex: 1 1 auto;
+	}
+	&__modal {
+		&__heading {
+			@include heading(h4);
+		}
+		&__actions {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			margin-top: var(--form-gap);
+		}
+	}
+}

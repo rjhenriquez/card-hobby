@@ -1,0 +1,72 @@
+@use "@/styles/utilities/all" as *;
+
+.CostHistoryChart {
+	--chart-line-color: var(--main);
+	--chart-dot-color: var(--main);
+	--chart-grid-color: var(--border-color);
+	--chart-tooltip-background-color: var(--bg-color-02);
+	--chart-tooltip-border-line: 1px solid var(--border-color);
+	--chart-tooltip-padding: 0.75rem;
+	--chart-tooltip-gap: 0.5rem;
+	--chart-tooltip-box-shadow: 0 0.2rem 0.6rem
+		color-mix(in srgb, var(--black) 20%, transparent);
+	--chart-tooltip-label-color: color-mix(
+		in srgb,
+		var(--text-color) 70%,
+		transparent
+	);
+	--chart-tooltip-item-color: var(--text-color);
+	--chart-fill-opacity-start: 0.3;
+	--chart-fill-opacity-end: 0;
+	--chart-axis-font-size: 0.75rem;
+	--chart-axis-font-opacity: 0.8;
+	--chart-axis-border-color: color-mix(
+		in srgb,
+		var(--text-color) 40%,
+		transparent
+	);
+	width: 100%;
+	display: contents;
+	&__chart {
+		@include font-weight-chivo(regular);
+		width: 100%;
+		height: 320px;
+		grid-area: 3 / 1 / 4 / 2;
+	}
+	&__header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		grid-area: 2 / 1 / 3 / 2;
+	}
+
+	&__ranges {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		margin-right: var(--chart-margin-right);
+		margin-left: auto;
+	}
+	:global(.recharts-wrapper),
+	:global(.recharts-wrapper *),
+	:global(.recharts-surface) {
+		&:focus,
+		&:focus-visible {
+			outline: none;
+		}
+	}
+	:global(.recharts-tooltip-label) {
+		@include font-weight(semibold);
+		text-box: trim-both cap alphabetic;
+	}
+	:global(.recharts-tooltip-item) {
+		@include font-weight-chivo(semibold);
+		font-size: 1.4rem;
+		text-box: trim-both cap alphabetic;
+	}
+	:global(.recharts-default-tooltip) {
+		display: flex;
+		flex-direction: column;
+		gap: var(--chart-tooltip-gap);
+	}
+}

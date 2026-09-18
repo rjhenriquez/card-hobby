@@ -1,19 +1,11 @@
 @use "@/styles/utilities/all" as *;
 
 .Header {
-	background-color: var(--bg-color);
+	background-color: var(--bg-color-02);
 	border-bottom: var(--header-border-line);
 	display: flex;
 	align-items: center;
 	min-height: var(--header-height);
-	&__left {
-		flex: 0 0 auto;
-		width: var(--sidebar-width);
-		padding-inline: calc(var(--header-padding) + var(--sidebar-item-padding));
-	}
-	&__logo {
-		@include font-weight(bold);
-	}
 	&__inner {
 		padding-inline: var(--header-padding);
 		min-width: 0;
@@ -21,7 +13,7 @@
 		width: 100%;
 		display: flex;
 		align-items: center;
-		justify-content: space-between;
+		gap: var(--header-gap);
 	}
 
 	&__list {
@@ -29,5 +21,16 @@
 		display: flex;
 		align-items: center;
 		gap: var(--header-gap);
+	}
+	&__sidebarToggle {
+		svg {
+			transition: var(--sidebar-transition);
+			transform: rotate(90deg);
+		}
+		&--open {
+			svg {
+				transform: rotate(0deg);
+			}
+		}
 	}
 }

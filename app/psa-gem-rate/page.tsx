@@ -21,6 +21,7 @@ export default async function PsaGemRatePage() {
 					highlightLabel='Gem Rate'
 					highlightValue={`${gemRate.toFixed(1)}%`}
 					subLabel='Total Cards'
+					icon='diamond'
 					subValue={totalCards}
 				/>
 

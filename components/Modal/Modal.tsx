@@ -2,6 +2,7 @@
 
 import { ReactNode, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import { Button } from "@/components/Button/Button";
 import styles from "./Modal.module.scss";
 
 interface ModalProps {
@@ -41,22 +42,27 @@ export function Modal({ isOpen, title, children, onClose }: ModalProps) {
 	}
 
 	return createPortal(
-		<div className={`${styles.Modal} DevModal`} onClick={onClose}>
+		<div className={styles.Modal} onClick={onClose}>
 			<div
-				className='DevModal__dialog'
+				className={styles.Modal__dialog}
 				role='dialog'
 				aria-modal='true'
 				aria-labelledby='modal-title'
 				onClick={(event) => event.stopPropagation()}
 			>
-				<header className='DevModal__header'>
-					<h2 id='modal-title'>{title}</h2>
+				<header className={styles.Modal__header}>
+					<h2 className={styles.Modal__heading} id='modal-title'>
+						{title}
+					</h2>
 
-					<button type='button' aria-label='Close' onClick={onClose}>
-						×
-					</button>
+					<Button
+						type='icon'
+						htmlType='button'
+						leadingIcon='close'
+						onClick={onClose}
+						ariaLabel='Close'
+					/>
 				</header>
-
 				{children}
 			</div>
 		</div>,

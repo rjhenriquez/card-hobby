@@ -7,7 +7,7 @@ import {
 } from "@/app/actions/purchasePackages";
 import { PackageDrawer, PurchasePackage } from "../PackageDrawer/PackageDrawer";
 import { Accordion } from "@/components/Accordion/Accordion";
-import { formatDayWithOrdinal } from "@/lib/date";
+import { formatDayWithOrdinal } from "@/lib/formatters";
 import { Icon } from "@/components/Icons/Icons";
 import { Button } from "@/components/Button/Button";
 import styles from "./Packages.module.scss";

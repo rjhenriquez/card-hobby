@@ -11,7 +11,7 @@ export default async function PackagesPage() {
 			<div className={styles.Page__header}>
 				<h1 className={styles.Page__heading}>Packages</h1>
 			</div>
-			<section className={styles["Page__section--dashboard"]}>
+			<section className={styles.Page__section}>
 				<Packages purchasePackages={purchasePackages} />
 			</section>
 		</div>

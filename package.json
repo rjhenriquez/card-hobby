@@ -7,7 +7,8 @@
 		"build": "next build",
 		"start": "next start",
 		"lint": "eslint",
-		"db:seed": "tsx --env-file=.env.local db/seed.ts"
+		"db:seed": "tsx --env-file=.env.local db/seed.ts",
+		"backup:db": "./scripts/backup-db.sh"
 	},
 	"dependencies": {
 		"@neondatabase/serverless": "^1.1.0",
@@ -19,6 +20,7 @@
 		"next": "16.3.4",
 		"react": "19.2.8",
 		"react-dom": "19.2.8",
+		"recharts": "^3.10.1",
 		"sass": "^1.104.0"
 	},
 	"devDependencies": {

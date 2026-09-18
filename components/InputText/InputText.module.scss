@@ -22,8 +22,8 @@
 		position: relative;
 	}
 	&__icon {
-		width: var(--sidebar-item-icon-size);
-		height: var(--sidebar-item-icon-size);
+		width: var(--button-icon-size);
+		height: var(--button-icon-size);
 		&__wrapper {
 			position: absolute;
 			top: 0;
@@ -37,6 +37,7 @@
 		}
 	}
 	input {
+		@include font-weight(regular);
 		width: 100%;
 		padding-inline: var(--input-padding);
 		height: var(--input-height);
@@ -50,12 +51,40 @@
 			border-color: var(--main);
 		}
 	}
+	input[type="search"] {
+		&::-webkit-search-cancel-button {
+			cursor: pointer;
+		}
+	}
+	input[type="number"] {
+		appearance: textfield;
+		&::-webkit-inner-spin-button,
+		&::-webkit-outer-spin-button {
+			margin: 0;
+			appearance: none;
+		}
+	}
+
 	&__field {
 		&--icon {
 			input {
 				padding-left: calc(
 					var(--sidebar-item-icon-size) + var(--input-padding) * 3
 				);
+			}
+		}
+	}
+	&--small {
+		color: red;
+		&__icon {
+			width: var(--button-icon-size-sm);
+			height: var(--button-icon-size-sm);
+		}
+		input {
+			font-size: var(--input-font-size-sm);
+			height: var(--input-height-sm);
+			&:focus {
+				border-color: var(--main);
 			}
 		}
 	}

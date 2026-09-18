@@ -14,6 +14,7 @@ import { createPurchasePackage } from "@/app/actions/purchasePackages";
 import { AddCard } from "@/components/AddCard/AddCard";
 import { InputText } from "@/components/InputText/InputText";
 import { Button } from "@/components/Button/Button";
+import { Accordion } from "@/components/Accordion/Accordion";
 import { PackageDrawer } from "../PackageDrawer/PackageDrawer";
 import type { CardFormOptions } from "@/db/queries/cardFormOptions";
 import type { Card } from "@/types/types";
@@ -267,66 +268,76 @@ export function CardPortfolio({
 								{psaError}
 							</h3>
 						)}
+					</div>
+					<form
+						className={styles.DrawerForm}
+						action={handleCreatePsaSubmission}
+					>
+						<div className={styles.DrawerForm__section}>
+							<div className={styles.DrawerForm__section__header}>
+								<hr className={styles.DrawerForm__section__hr} />
+								<h3 className={styles.DrawerForm__section__heading}>
+									Create New Submission
+								</h3>
+							</div>
+							<InputText
+								label='Submission Number'
+								name='submissionNumber'
+								required
+							/>
+						</div>
+						<div className={styles.DrawerForm__actions}>
+							<Button
+								type='main'
+								variant='add'
+								htmlType='submit'
+								label='Create New Submission'
+							/>
+							<Button
+								type='main'
+								variant='cancel'
+								htmlType='submit'
+								label='Cancel'
+								onClick={handleClosePsaDrawer}
+							/>
+						</div>
+					</form>
+					<div className={styles.DrawerInfo__section}>
 						{psaSubmissions.length >= 1 && (
-							<>
-								<div className={styles.DrawerInfo__section__header}>
-									<h4 className={styles.DrawerInfo__section__heading}>
-										Existing Submission
-									</h4>
-									<hr className={styles.DrawerInfo__section__hr} />
+							<Accordion
+								icon='arrow-down'
+								label='Existing Submissions'
+								defaultOpen={false}
+							>
+								<div
+									className={`${styles.DrawerForm__section} ${
+										styles.DrawerForm__section__accordion
+									}`}
+								>
+									<ul className={styles.DrawerInfo__list}>
+										{psaSubmissions.map((submission) => (
+											<li
+												key={submission.id}
+												className={styles.DrawerInfo__list__item}
+											>
+												<span>Submission #</span>
+												<Button
+													type='number-add'
+													htmlType='button'
+													trailingIcon='plus-sign'
+													label={submission.submissionNumber}
+													onClick={() =>
+														handleAddToPsaSubmission(submission.id)
+													}
+												/>
+											</li>
+										))}
+									</ul>
 								</div>
-								<ul className={styles.DrawerInfo__list}>
-									{psaSubmissions.map((submission) => (
-										<li
-											key={submission.id}
-											className={styles.DrawerInfo__list__item}
-										>
-											<span>Submission #</span>
-											<Button
-												type='number-add'
-												htmlType='button'
-												trailingIcon='plus-sign'
-												label={submission.submissionNumber}
-												onClick={() => handleAddToPsaSubmission(submission.id)}
-											/>
-										</li>
-									))}
-								</ul>
-							</>
+							</Accordion>
 						)}
 					</div>
 				</div>
-
-				<form className={styles.DrawerForm} action={handleCreatePsaSubmission}>
-					<div className={styles.DrawerForm__section}>
-						<div className={styles.DrawerForm__section__header}>
-							<hr className={styles.DrawerForm__section__hr} />
-							<h3 className={styles.DrawerForm__section__heading}>
-								Create New Submission
-							</h3>
-						</div>
-						<InputText
-							label='Submission Number'
-							name='submissionNumber'
-							required
-						/>
-					</div>
-					<div className={styles.DrawerForm__actions}>
-						<Button
-							type='main'
-							variant='add'
-							htmlType='submit'
-							label='Create New Submission'
-						/>
-						<Button
-							type='main'
-							variant='cancel'
-							htmlType='submit'
-							label='Cancel'
-							onClick={handleClosePsaDrawer}
-						/>
-					</div>
-				</form>
 			</Drawer>
 
 			<PackageDrawer

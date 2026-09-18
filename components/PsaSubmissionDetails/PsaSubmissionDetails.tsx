@@ -3,7 +3,9 @@
 import { useState } from "react";
 import { PsaSubmissionForm } from "@/components/PsaSubmissionForm/PsaSubmissionForm";
 import { PsaSubmissionCardRow } from "@/components/PsaSubmissionCardRow/PsaSubmissionCardRow";
-
+import styles from "./PsaSubmissionDetails.module.scss";
+import { TableInfo } from "@/components/TableInfo/TableInfo";
+import { Accordion } from "@/components/Accordion/Accordion";
 interface PsaSubmission {
 	id: number;
 	submissionNumber: string;
@@ -64,7 +66,7 @@ export function PsaSubmissionDetails({
 				}}
 			/>
 
-			<p>
+			<p className={styles.PsaSubmissionDetails__info}>
 				<strong>Total Submission Cost:</strong>{" "}
 				{`$${totalSubmissionCost.toLocaleString("en-US", {
 					minimumFractionDigits: 2,
@@ -72,29 +74,24 @@ export function PsaSubmissionDetails({
 				})}`}
 			</p>
 
-			<section className='welvnew'>
+			<section className={styles.PsaSubmissionDetails}>
 				<h2>Cards</h2>
 
 				{cards.length === 0 ? (
 					<p>No cards in this submission.</p>
 				) : (
-					<table>
-						<thead>
-							<tr>
-								<th>Player</th>
-								<th>Year</th>
-								<th>Set</th>
-								<th>Info</th>
-								<th>Base Fee</th>
-								<th>Shared Cost</th>
-								<th>Adjustment</th>
-								<th>Total Grading Cost</th>
-								<th>Grade</th>
-								<th></th>
-							</tr>
-						</thead>
-
-						<tbody>
+					<Accordion icon='arrow-down' label='Show Cards' defaultOpen={true}>
+						<TableInfo
+							headers={[
+								"Card",
+								"Base Fee",
+								"Shared Cost",
+								"Adjustment",
+								"Total Grading Cost",
+								"Grade",
+								"",
+							]}
+						>
 							{cards.map((card) => (
 								<PsaSubmissionCardRow
 									key={card.submissionCardId}
@@ -105,8 +102,8 @@ export function PsaSubmissionDetails({
 									isEditing={isEditing}
 								/>
 							))}
-						</tbody>
-					</table>
+						</TableInfo>
+					</Accordion>
 				)}
 			</section>
 		</>

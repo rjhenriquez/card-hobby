@@ -1,5 +1,6 @@
 import React from "react";
 import { Icon } from "@/components/Icons/Icons";
+import { Tooltip } from "@/components/Tooltip/Tooltip";
 import cn from "classnames";
 
 import styles from "./Button.module.scss";
@@ -7,15 +8,17 @@ import styles from "./Button.module.scss";
 export interface ButtonProps {
 	onClick?: React.MouseEventHandler<HTMLButtonElement>;
 	type?: "icon" | "main" | "number-add";
-	variant?: "default" | "add" | "continue" | "delete" | "cancel";
+	variant?: "default" | "add" | "continue" | "delete" | "cancel" | "header";
 	htmlType?: "button" | "submit" | "reset";
 	className?: string;
-	tooltip?: string;
 	leadingIcon?: string;
 	trailingIcon?: string;
+	form?: string;
 	label?: string;
 	disabled?: boolean;
 	ariaLabel?: string;
+	tooltip?: string;
+	tooltipPosition?: "left" | "right" | "top" | "bottom";
 }
 
 export const Button = ({
@@ -24,21 +27,24 @@ export const Button = ({
 	variant,
 	htmlType = "button",
 	className = "",
-	tooltip,
 	leadingIcon,
 	trailingIcon,
 	label,
 	disabled = false,
 	ariaLabel,
+	tooltip,
+	form,
+	tooltipPosition = "top",
 }: ButtonProps) => {
 	return (
 		<button
 			type={htmlType}
 			onClick={onClick}
-			className={`${styles.Button} ${styles[`Button--${type}`]} ${
+			className={`Button ${styles.Button} ${styles[`Button--${type}`]} ${
 				styles[`Button--${variant}`]
 			} ${className}`.trim()}
 			disabled={disabled}
+			form={form}
 			aria-label={tooltip || ariaLabel}
 		>
 			{leadingIcon && (
@@ -61,7 +67,9 @@ export const Button = ({
 				/>
 			)}
 
-			{tooltip && <span className={styles.Button__tooltip}>{tooltip}</span>}
+			{tooltip && (
+				<Tooltip tooltipContent={tooltip} tooltipPosition={tooltipPosition} />
+			)}
 		</button>
 	);
 };

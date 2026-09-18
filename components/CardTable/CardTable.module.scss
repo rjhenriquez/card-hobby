@@ -3,8 +3,7 @@
 .CardTable {
 	position: relative;
 	background-color: var(--bg-color);
-	padding-inline: var(--page-padding);
-
+	margin-bottom: 1rem;
 	&__header-btn {
 		width: 100%;
 		display: flex;
@@ -13,7 +12,7 @@
 		gap: 0.25rem;
 		cursor: pointer;
 		text-align: left;
-		color: var(--black);
+		color: var(--text-color);
 	}
 	&__header-icon {
 		width: var(--table-icon-size);
@@ -52,6 +51,27 @@
 			background: var(--button-border-color);
 			height: var(--button-size);
 		}
+		&__filter {
+			width: var(--button-size);
+			position: relative;
+			&--open {
+				.CardTable__actions__filter__btn {
+					border-color: var(--main);
+					border-top-left-radius: 0;
+					border-bottom-left-radius: 0;
+				}
+			}
+		}
+		&__input {
+			width: calc(var(--button-size) * 6);
+			position: absolute;
+			top: 0;
+			right: calc(var(--button-size) - 1px);
+			input {
+				border-top-right-radius: 0;
+				border-bottom-right-radius: 0;
+			}
+		}
 	}
 
 	&__header {
@@ -75,10 +95,11 @@
 			text-align: left;
 			vertical-align: middle;
 			white-space: nowrap;
-			font-size: var(--table-header-font-size);
+			font-size: calc(var(--table-font-size) - 2px);
 			text-transform: uppercase;
 			@include font-weight(bold);
 			min-width: var(--table-cell-min-width);
+			text-box: trim-both cap alphabetic;
 		}
 
 		th:first-child {
@@ -115,20 +136,16 @@
 			padding: var(--table-cell-padding);
 			border-right: 1px solid var(--table-border-color);
 			border-bottom: 1px solid var(--table-border-color);
-			text-align: left;
 			vertical-align: middle;
 			white-space: nowrap;
 			min-width: var(--table-cell-min-width);
+			text-box: trim-both cap alphabetic;
 		}
 
 		tbody {
-			tr:nth-child(odd) {
-				background-color: var(--table-bg-color-01);
-			}
-			tr:nth-child(even) {
-				background-color: var(--table-bg-color-02);
-			}
 			tr {
+				background-color: var(--table-bg-color);
+
 				&:hover {
 					background-color: var(--table-bg-color-hover);
 				}
@@ -136,9 +153,9 @@
 				&[data-selected="true"] {
 					background-color: var(--table-bg-color-selected);
 				}
-			}
-			td {
-				background-color: inherit;
+				td {
+					background-color: inherit;
+				}
 			}
 		}
 
@@ -157,23 +174,47 @@
 			left: var(--table-select-width);
 			z-index: 2;
 		}
-		td:nth-last-child(-n + 2) {
-			position: relative;
-			padding: 0;
-
-			.CardTable__value {
-				position: absolute;
-				inset: 0;
-				display: grid;
-				grid-template-columns: auto 1fr;
-				align-items: stretch;
-			}
-		}
 	}
 
 	&__cell {
 		&--selectable {
 			cursor: pointer;
+		}
+		&--value {
+			@include font-weight-chivo(regular);
+			position: relative;
+			text-align: right;
+			&--positive,
+			&--negative {
+				position: absolute;
+				padding: var(--table-cell-padding);
+				inset: 0;
+				display: flex;
+				align-items: center;
+				justify-content: flex-end;
+				width: 100%;
+				min-height: 100%;
+			}
+			&--positive {
+				color: var(--table-color-value-positive);
+				background: color-mix(
+					in srgb,
+					var(--table-color-value-positive) 10%,
+					transparent
+				);
+			}
+			&--negative {
+				color: var(--table-color-value-negative);
+				background: color-mix(
+					in srgb,
+					var(--table-color-value-negative) 10%,
+					transparent
+				);
+			}
+		}
+		&--muted {
+			@include font-weight(semibold);
+			opacity: 0.3;
 		}
 	}
 
@@ -186,52 +227,30 @@
 			white-space: nowrap;
 		}
 	}
-	&__value {
-		@include font-weight-mono(regular);
-		span {
-			&:first-of-type {
-				display: grid;
-				place-items: center;
-				padding-inline: var(--table-cell-padding);
-				color: var(--white);
-			}
-			&:nth-of-type(2) {
-				display: grid;
-				align-items: center;
-				justify-items: end;
-				padding-inline: var(--table-cell-padding);
-				font-size: var(--table-value-font-size);
-			}
-		}
-		&--positive {
-			color: var(--table-color-value-positive);
-			background: color-mix(
-				in srgb,
-				var(--table-color-value-positive) 10%,
-				var(--white)
-			);
-			span {
-				&:first-of-type {
-					background: var(--table-color-value-positive);
-				}
-			}
-		}
-		&--negative {
-			color: var(--table-color-value-negative);
-			background: color-mix(
-				in srgb,
-				var(--table-color-value-negative) 10%,
-				var(--white)
-			);
-			span {
-				&:first-of-type {
-					background: var(--table-color-value-negative);
-				}
-			}
-		}
-	}
 
 	:global(.input) {
 		transform: translateY(1px);
+	}
+	&__link {
+		@include font-weight-chivo(regular);
+		border: 1px solid var(--psa-color);
+		color: var(--psa-color);
+		font-size: 0.9em;
+		padding: var(--table-link-padding);
+		border-radius: 0.4em;
+		line-height: 1;
+		letter-spacing: 0.08em;
+		transition: var(--transition-productive);
+		text-box: trim-both cap alphabetic;
+		&:hover {
+			background: var(--psa-color);
+			color: (var(--white));
+		}
+	}
+	tfoot {
+		td {
+			background-color: var(--table-header-bg);
+			text-box: trim-both cap alphabetic;
+		}
 	}
 }

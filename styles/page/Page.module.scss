@@ -1,18 +1,37 @@
 @use "@/styles/utilities/all" as *;
 
 .Page {
+	padding: var(--page-padding);
 	&__header {
 		display: flex;
 		align-items: baseline;
 		justify-content: space-between;
-		padding: var(--page-padding);
 	}
 	&__heading {
 		@include heading(h1);
 	}
+	&__subheading {
+		@include heading(h2);
+		margin-bottom: 1em;
+	}
 	&__section {
-		&--dashboard {
-			padding: var(--page-padding);
+		margin-block: var(--page-padding);
+		display: flex;
+		gap: var(--page-padding);
+		flex-direction: column;
+	}
+	&__graphs {
+		display: grid;
+		grid-template-columns: 1fr;
+		grid-template-rows: auto 2rem auto;
+
+		&__highlight {
+			grid-area: 1 / 1 / 3 / 2;
 		}
+	}
+	&__tables {
+		display: flex;
+		gap: var(--page-padding);
+		align-items: flex-start;
 	}
 }

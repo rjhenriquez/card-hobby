@@ -73,7 +73,7 @@
 			text-transform: uppercase;
 		}
 		&__value {
-			@include font-weight-mono(bold);
+			@include font-weight-chivo(regular);
 		}
 	}
 	&__info__stacked {

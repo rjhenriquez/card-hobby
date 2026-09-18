@@ -1,0 +1,56 @@
+@use "@/styles/utilities/all" as *;
+
+.ButtonGroup {
+	align-items: center;
+	display: flex;
+	border-radius: var(--button-border-radius);
+	height: var(--button-size);
+	position: relative;
+	box-sizing: border-box;
+	&__middle {
+		align-items: center;
+		box-sizing: border-box;
+		display: flex;
+		justify-content: center;
+		border-top: var(--button-border-line);
+		border-bottom: var(--button-border-line);
+		width: var(--button-size);
+		height: 100%;
+	}
+	&__button {
+		width: var(--button-size);
+		height: 100%;
+		cursor: pointer;
+		border: var(--button-border-line);
+		box-sizing: border-box;
+		&--left {
+			border-bottom-left-radius: var(--button-border-radius);
+			border-top-left-radius: var(--button-border-radius);
+		}
+		&--right {
+			border-bottom-right-radius: var(--button-border-radius);
+			border-top-right-radius: var(--button-border-radius);
+		}
+		&:disabled {
+			color: color-mix(in srgb, var(--text-color) 40%, var(--white));
+			cursor: not-allowed;
+		}
+		&:not(:disabled) {
+			&:hover,
+			&:focus-within {
+				border-color: var(--main);
+			}
+		}
+	}
+
+	&__icon {
+		width: var(--button-icon-size);
+		height: var(--button-icon-size);
+	}
+
+	&__left,
+	&__right,
+	&__middle {
+		width: var(--button-size);
+	}
+}

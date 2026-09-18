@@ -1,5 +1,5 @@
 import { Accordion } from "@/components/Accordion/Accordion";
-
+import cn from "classnames";
 import styles from "./HighlightCardTable.module.scss";
 
 export interface HighlightCardTableRow {
@@ -27,8 +27,8 @@ export function HighlightCardTable({
 		return rowsToRender.map((row) => (
 			<tr key={row.label}>
 				<td>{row.label}</td>
-				<td>{row.count}</td>
-				<td>
+				<td className={styles.HighlightCardTable__value}>{row.count}</td>
+				<td className={styles.HighlightCardTable__value}>
 					{row.value.toLocaleString("en-US", {
 						style: "currency",
 						currency: "USD",
@@ -42,7 +42,11 @@ export function HighlightCardTable({
 		<div className={styles.HighlightCardTable}>
 			{title && <h3 className={styles.HighlightCardTable__title}>{title}</h3>}
 
-			<table className={styles.HighlightCardTable__table}>
+			<table
+				className={cn(styles.HighlightCardTable__table, {
+					[styles["HighlightCardTable__table--no-accordion"]]: !hasMoreRows,
+				})}
+			>
 				<thead>
 					<tr>
 						<th>Player</th>
@@ -55,7 +59,12 @@ export function HighlightCardTable({
 			</table>
 
 			{hasMoreRows && (
-				<Accordion icon='arrow-down' label={`Show ${hiddenRows.length} more`}>
+				<Accordion
+					className={styles.HighlightCardTable__accordion}
+					icon='arrow-down'
+					triggerLocation='below'
+					label={`Show ${hiddenRows.length} more`}
+				>
 					<table className={styles.HighlightCardTable__table}>
 						<tbody>{renderRows(hiddenRows)}</tbody>
 					</table>

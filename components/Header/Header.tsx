@@ -3,6 +3,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ThemeToggle } from "@/components/ThemeToggle/ThemeToggle";
+import { Button } from "@/components/Button/Button";
+import { useSidebar } from "@/components/Sidebar/SidebarContext";
+import cn from "classnames";
 
 import styles from "./Header.module.scss";
 
@@ -19,6 +22,7 @@ const navigation = [
 
 export function Header() {
 	const pathname = usePathname();
+	const { isOpen, toggleSidebar } = useSidebar();
 
 	const isCardsActive =
 		pathname === "/" ||
@@ -29,12 +33,19 @@ export function Header() {
 
 	return (
 		<header className={styles.Header}>
-			<div className={styles.Header__left}>
-				<Link href='/' className={styles.Header__logo}>
-					Card Hobby
-				</Link>
-			</div>
 			<div className={styles.Header__inner}>
+				<Button
+					className={cn(styles.Header__sidebarToggle, {
+						[styles["Header__sidebarToggle--open"]]: isOpen,
+					})}
+					onClick={toggleSidebar}
+					aria-expanded={isOpen}
+					aria-label={isOpen ? "Close sidebar" : "Open sidebar"}
+					leadingIcon='hamburger'
+					type='icon'
+					variant='header'
+				/>
+
 				<nav className={styles.Header__nav} aria-label='Main navigation'>
 					<ul className={styles.Header__list}>
 						{navigation.map((item) => {
@@ -59,6 +70,7 @@ export function Header() {
 						})}
 					</ul>
 				</nav>
+
 				<ThemeToggle />
 			</div>
 		</header>

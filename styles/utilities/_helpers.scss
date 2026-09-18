@@ -3,6 +3,7 @@
 @use "sass:meta";
 
 @use "mixin-media-queries" as *;
+@use "mixin-font-family-market" as *;
 @use "mixin-font-family-averta" as *;
 
 @mixin heading($size) {
