@@ -179,21 +179,21 @@ export default async function Home({ searchParams }: HomeProps) {
 					/>
 					<div className={styles.Page__tables}>
 						<HighlightCardTable
-							title='Baseball Collection'
+							title='Baseball Cards'
 							rows={getGroupedCardStats(collectionCards, {
 								groupBy: "player",
 								filter: (card) => card.category?.trim() === "Baseball",
 							})}
 						/>
 						<HighlightCardTable
-							title='Fortnite Collection'
+							title='Fortnite Cards'
 							rows={getGroupedCardStats(collectionCards, {
 								groupBy: "player",
 								filter: (card) => card.category?.trim() === "Fortnite",
 							})}
 						/>
 						<HighlightCardTable
-							title='Soccer Collection'
+							title='Soccer Cards'
 							rows={getGroupedCardStats(collectionCards, {
 								groupBy: "player",
 								filter: (card) => card.category?.trim() === "Soccer",

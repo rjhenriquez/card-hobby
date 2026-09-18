@@ -1,0 +1,126 @@
+@use "@/styles/utilities/all" as *;
+
+.Table {
+	position: relative;
+	background-color: var(--bg-color);
+	margin-bottom: 1rem;
+
+	&__top {
+		position: sticky;
+		top: 0;
+		z-index: 20;
+		min-height: var(--table-top-height);
+		display: flex;
+		align-items: center;
+		width: 100%;
+		min-width: 0;
+		background-color: var(--bg-color);
+	}
+
+	&__header {
+		position: sticky;
+		top: var(--header-top-position, var(--table-top-height));
+		z-index: 15;
+		width: 100%;
+		overflow: hidden;
+		background-color: var(--bg-color);
+
+		table {
+			border-collapse: separate;
+			border-spacing: 0;
+		}
+
+		th {
+			padding: var(--table-cell-header-padding);
+			border-top: 1px solid var(--table-border-color-header);
+			border-right: 1px solid var(--table-border-color-header);
+			border-bottom: 1px solid var(--table-border-color-header);
+			background-color: var(--table-header-bg);
+			text-align: left;
+			vertical-align: middle;
+			white-space: nowrap;
+			font-size: calc(var(--table-font-size) - 2px);
+			text-transform: uppercase;
+			@include font-weight(bold);
+			min-width: var(--column-min-width, var(--table-cell-min-width));
+			text-box: trim-both cap alphabetic;
+		}
+		th:first-child {
+			border-left: 1px solid var(--table-border-color);
+		}
+	}
+
+	&__table {
+		width: 100%;
+		overflow-x: auto;
+		padding-bottom: 1rem;
+		scrollbar-gutter: stable;
+
+		table {
+			width: max-content;
+			min-width: 100%;
+			border-collapse: separate;
+			border-spacing: 0;
+			font-size: var(--table-font-size);
+		}
+
+		td {
+			padding: var(--table-cell-padding);
+			border-right: 1px solid var(--table-border-color);
+			border-bottom: 1px solid var(--table-border-color);
+			vertical-align: middle;
+			white-space: nowrap;
+			min-width: var(--column-min-width, var(--table-cell-min-width));
+			text-box: trim-both cap alphabetic;
+		}
+		td:first-child {
+			border-left: 1px solid var(--table-border-color);
+		}
+
+		tbody {
+			tr {
+				background-color: var(--table-bg-color);
+
+				&:hover {
+					background-color: var(--table-bg-color-hover);
+				}
+
+				&[data-selected="true"] {
+					background-color: var(--table-bg-color-selected);
+				}
+
+				td {
+					background-color: inherit;
+				}
+			}
+		}
+
+		tfoot {
+			td {
+				background-color: var(--table-header-bg);
+				text-box: trim-both cap alphabetic;
+			}
+		}
+	}
+
+	&__header-btn {
+		width: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.25rem;
+		cursor: pointer;
+		text-align: left;
+		color: var(--text-color);
+	}
+
+	&__header-icon {
+		width: var(--table-icon-size);
+		height: var(--table-icon-size);
+		transform: translateX(2px);
+
+		&--all {
+			opacity: 0.3;
+		}
+	}
+}

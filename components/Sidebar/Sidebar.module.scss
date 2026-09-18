@@ -39,6 +39,7 @@
 	&__icon {
 		width: var(--sidebar-item-icon-size);
 		height: var(--sidebar-item-icon-size);
+		flex: 0 0 auto;
 	}
 	&__label {
 		max-width: 12rem;

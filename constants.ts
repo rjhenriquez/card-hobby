@@ -17,17 +17,12 @@ export const SIDEBAR_NAVIGATION = [
 	{
 		label: "PSA Submissions",
 		href: "/psa-submissions",
-		icon: "submissions",
+		icon: "psa",
 	},
 	{
 		label: "Packages",
 		href: "/packages",
 		icon: "shipping",
-	},
-	{
-		label: "PSA Gem Rate",
-		href: "/psa-gem-rate",
-		icon: "diamond",
 	},
 ] as const;
 

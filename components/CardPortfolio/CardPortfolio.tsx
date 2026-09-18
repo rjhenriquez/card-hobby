@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import type { RowSelectionState } from "@tanstack/react-table";
-import { CardTable } from "@/components/CardTable/CardTable";
+import { CardTable } from "../CardTable/CardTable";
 import { Drawer } from "@/components/Drawer/Drawer";
 import { Modal } from "@/components/Modal/Modal";
 import { moveCardToPortfolio } from "@/app/actions/cards";

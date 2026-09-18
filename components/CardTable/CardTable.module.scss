@@ -1,38 +1,22 @@
 @use "@/styles/utilities/all" as *;
 
 .CardTable {
-	position: relative;
-	background-color: var(--bg-color);
-	margin-bottom: 1rem;
-	&__header-btn {
-		width: 100%;
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		gap: 0.25rem;
-		cursor: pointer;
-		text-align: left;
-		color: var(--text-color);
-	}
-	&__header-icon {
-		width: var(--table-icon-size);
-		height: var(--table-icon-size);
-		transform: translateX(2px);
-		&--all {
-			opacity: 0.3;
+	&__table {
+		th:first-child,
+		td:first-child {
+			position: sticky;
+			left: 0;
+			z-index: 2;
+			width: var(--table-select-width);
+			min-width: var(--table-select-width);
+			max-width: var(--table-select-width);
 		}
-	}
-
-	&__top {
-		position: sticky;
-		top: 0;
-		z-index: 20;
-		min-height: var(--table-top-height);
-		display: flex;
-		align-items: center;
-		width: 100%;
-		background-color: var(--bg-color);
-		min-width: 0;
+		th:nth-child(2),
+		td:nth-child(2) {
+			position: sticky;
+			left: var(--table-select-width);
+			z-index: 2;
+		}
 	}
 	&__actions {
 		display: flex;
@@ -40,20 +24,24 @@
 		justify-content: space-between;
 		width: 100%;
 		min-width: 0;
+
 		&__group {
 			display: flex;
 			align-items: center;
 			gap: 1rem;
 		}
+
 		&__separator {
 			display: block;
 			width: 1px;
 			background: var(--button-border-color);
 			height: var(--button-size);
 		}
+
 		&__filter {
 			width: var(--button-size);
 			position: relative;
+
 			&--open {
 				.CardTable__actions__filter__btn {
 					border-color: var(--main);
@@ -62,11 +50,13 @@
 				}
 			}
 		}
+
 		&__input {
 			width: calc(var(--button-size) * 6);
 			position: absolute;
 			top: 0;
 			right: calc(var(--button-size) - 1px);
+
 			input {
 				border-top-right-radius: 0;
 				border-bottom-right-radius: 0;
@@ -74,116 +64,16 @@
 		}
 	}
 
-	&__header {
-		position: sticky;
-		top: var(--table-top-height);
-		z-index: 15;
-		width: 100%;
-		overflow: hidden;
-		background-color: var(--bg-color);
-		table {
-			border-collapse: separate;
-			border-spacing: 0;
-		}
-
-		th {
-			padding: var(--table-cell-header-padding);
-			border-top: 1px solid var(--table-border-color-header);
-			border-right: 1px solid var(--table-border-color-header);
-			border-bottom: 1px solid var(--table-border-color-header);
-			background-color: var(--table-header-bg);
-			text-align: left;
-			vertical-align: middle;
-			white-space: nowrap;
-			font-size: calc(var(--table-font-size) - 2px);
-			text-transform: uppercase;
-			@include font-weight(bold);
-			min-width: var(--table-cell-min-width);
-			text-box: trim-both cap alphabetic;
-		}
-
-		th:first-child {
-			position: sticky;
-			left: 0;
-			z-index: 2;
-			width: var(--table-select-width);
-			min-width: var(--table-select-width);
-			max-width: var(--table-select-width);
-			border-left: 1px solid var(--table-border-color);
-		}
-
-		th:nth-child(2) {
-			position: sticky;
-			left: var(--table-select-width);
-			z-index: 2;
-		}
-	}
-
-	&__table {
-		width: 100%;
-		overflow-x: auto;
-		padding-bottom: 1rem;
-		scrollbar-gutter: stable;
-		table {
-			width: max-content;
-			min-width: 100%;
-			border-collapse: separate;
-			border-spacing: 0;
-			font-size: var(--table-font-size);
-		}
-
-		td {
-			padding: var(--table-cell-padding);
-			border-right: 1px solid var(--table-border-color);
-			border-bottom: 1px solid var(--table-border-color);
-			vertical-align: middle;
-			white-space: nowrap;
-			min-width: var(--table-cell-min-width);
-			text-box: trim-both cap alphabetic;
-		}
-
-		tbody {
-			tr {
-				background-color: var(--table-bg-color);
-
-				&:hover {
-					background-color: var(--table-bg-color-hover);
-				}
-
-				&[data-selected="true"] {
-					background-color: var(--table-bg-color-selected);
-				}
-				td {
-					background-color: inherit;
-				}
-			}
-		}
-
-		td:first-child {
-			position: sticky;
-			left: 0;
-			z-index: 2;
-			width: var(--table-select-width);
-			min-width: var(--table-select-width);
-			max-width: var(--table-select-width);
-			border-left: 1px solid var(--table-border-color);
-		}
-
-		td:nth-child(2) {
-			position: sticky;
-			left: var(--table-select-width);
-			z-index: 2;
-		}
-	}
-
 	&__cell {
 		&--selectable {
 			cursor: pointer;
 		}
+
 		&--value {
 			@include font-weight-chivo(regular);
 			position: relative;
 			text-align: right;
+
 			&--positive,
 			&--negative {
 				position: absolute;
@@ -195,6 +85,7 @@
 				width: 100%;
 				min-height: 100%;
 			}
+
 			&--positive {
 				color: var(--table-color-value-positive);
 				background: color-mix(
@@ -203,6 +94,7 @@
 					transparent
 				);
 			}
+
 			&--negative {
 				color: var(--table-color-value-negative);
 				background: color-mix(
@@ -212,6 +104,7 @@
 				);
 			}
 		}
+
 		&--muted {
 			@include font-weight(semibold);
 			opacity: 0.3;
@@ -219,6 +112,22 @@
 	}
 
 	&__column {
+		&--select {
+			position: sticky;
+			left: 0;
+			z-index: 2;
+			width: var(--table-select-width);
+			min-width: var(--table-select-width);
+			max-width: var(--table-select-width);
+			border-left: 1px solid var(--table-border-color);
+			padding-left: 0;
+			padding-right: 0;
+		}
+		&--player {
+			position: sticky;
+			left: var(--table-select-width);
+			z-index: 2;
+		}
 		&--capped {
 			width: var(--column-width);
 			max-width: var(--column-width);
@@ -228,9 +137,6 @@
 		}
 	}
 
-	:global(.input) {
-		transform: translateY(1px);
-	}
 	&__link {
 		@include font-weight-chivo(regular);
 		border: 1px solid var(--psa-color);
@@ -242,15 +148,14 @@
 		letter-spacing: 0.08em;
 		transition: var(--transition-productive);
 		text-box: trim-both cap alphabetic;
+
 		&:hover {
 			background: var(--psa-color);
-			color: (var(--white));
+			color: var(--white);
 		}
 	}
-	tfoot {
-		td {
-			background-color: var(--table-header-bg);
-			text-box: trim-both cap alphabetic;
-		}
+
+	:global(.input) {
+		transform: translateY(1px);
 	}
 }

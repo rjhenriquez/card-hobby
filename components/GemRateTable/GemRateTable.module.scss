@@ -1,140 +1,51 @@
 @use "@/styles/utilities/all" as *;
 
 .GemRateTable {
-	--gem-rate-first-column-width: 110px;
-	--gem-rate-second-column-width: 130px;
-	--gem-rate-column-min-width: 75px;
-
-	--gem-rate-table-min-width: calc(
-		var(--gem-rate-first-column-width) + var(--gem-rate-second-column-width) +
-			(var(--gem-rate-column-min-width) * 9)
-	);
-
-	position: relative;
-
-	padding-inline: var(--page-padding);
-
-	background-color: var(--bg-color);
-
-	&__header {
-		position: sticky;
-		top: var(--table-top-height);
-		z-index: 15;
-
+	&__actions {
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+		gap: 1rem;
 		width: 100%;
+		min-width: 0;
 
-		overflow: hidden;
-
-		background-color: var(--bg-color);
-
-		table,
-		thead {
+		&__separator {
 			display: block;
-
-			width: 100%;
-			min-width: var(--gem-rate-table-min-width);
+			width: 1px;
+			height: var(--button-size);
+			background: var(--button-border-color);
 		}
 
-		tr {
-			display: grid;
+		&__filter {
+			position: relative;
+			width: var(--button-size);
 
-			grid-template-columns:
-				var(--gem-rate-first-column-width)
-				var(--gem-rate-second-column-width)
-				repeat(9, minmax(var(--gem-rate-column-min-width), 1fr));
-
-			width: 100%;
+			&--open {
+				.GemRateTable__actions__filter__btn {
+					border-color: var(--main);
+					border-top-left-radius: 0;
+					border-bottom-left-radius: 0;
+				}
+			}
 		}
 
-		th {
-			padding: var(--table-cell-header-padding);
+		&__input {
+			position: absolute;
+			top: 0;
+			right: calc(var(--button-size) - 1px);
+			width: calc(var(--button-size) * 6);
 
-			border-top: 1px solid var(--table-border-color-header);
-			border-right: 1px solid var(--table-border-color-header);
-			border-bottom: 1px solid var(--table-border-color-header);
-
-			background-color: var(--table-header-bg);
-
-			text-align: left;
-			vertical-align: middle;
-			white-space: nowrap;
-
-			font-size: var(--table-header-font-size);
-			text-transform: uppercase;
-
-			@include font-weight(bold);
-		}
-
-		th:first-child {
-			position: sticky;
-			left: 0;
-			z-index: 2;
-
-			border-left: 1px solid var(--table-border-color-header);
-
-			background-color: var(--table-header-bg);
+			input {
+				border-top-right-radius: 0;
+				border-bottom-right-radius: 0;
+			}
 		}
 	}
-
-	&__table {
-		width: 100%;
-
-		overflow-x: auto;
-
-		padding-bottom: 1rem;
-
-		scrollbar-gutter: stable;
-
-		table,
-		tbody {
-			display: block;
-
-			width: 100%;
-			min-width: var(--gem-rate-table-min-width);
-		}
-
-		tr {
-			display: grid;
-
-			grid-template-columns:
-				var(--gem-rate-first-column-width)
-				var(--gem-rate-second-column-width)
-				repeat(9, minmax(var(--gem-rate-column-min-width), 1fr));
-
-			width: 100%;
-		}
-
-		td {
-			padding: var(--table-cell-padding);
-
-			border-right: 1px solid var(--table-border-color);
-			border-bottom: 1px solid var(--table-border-color);
-
-			text-align: left;
-			vertical-align: middle;
-			white-space: nowrap;
-
-			font-size: var(--table-font-size);
-		}
-
-		td:first-child {
-			position: sticky;
-			left: 0;
-			z-index: 2;
-
-			border-left: 1px solid var(--table-border-color);
-
-			background-color: inherit;
-		}
-
-		tbody {
-			tr:hover {
-				background-color: var(--table-bg-color-hover);
-			}
-
-			td {
-				background-color: inherit;
-			}
+	&__cell {
+		&--value {
+			@include font-weight-chivo(regular);
+			position: relative;
+			text-align: right;
 		}
 	}
 }
