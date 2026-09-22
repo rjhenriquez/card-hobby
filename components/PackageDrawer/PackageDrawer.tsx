@@ -100,9 +100,9 @@ export function PackageDrawer({
 						</h3>
 
 						{error && (
-							<h3 className={styles.DrawerInfo__count} role='alert'>
+							<p className='alert' role='alert'>
 								{error}
-							</h3>
+							</p>
 						)}
 					</div>
 				</div>
@@ -253,6 +253,14 @@ export function PackageDrawer({
 					<div className={styles.DrawerForm__actions}>
 						<Button
 							type='main'
+							variant='cancel'
+							htmlType='button'
+							label='Cancel'
+							onClick={onClose}
+							disabled={isSaving}
+						/>
+						<Button
+							type='main'
 							variant='add'
 							htmlType='submit'
 							label={
@@ -262,14 +270,6 @@ export function PackageDrawer({
 										? "Save Package"
 										: "Create Package"
 							}
-						/>
-						<Button
-							type='main'
-							variant='cancel'
-							htmlType='button'
-							label='Cancel'
-							onClick={onClose}
-							disabled={isSaving}
 						/>
 					</div>
 				</form>

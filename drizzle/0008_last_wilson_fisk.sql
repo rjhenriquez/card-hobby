@@ -1,0 +1,1 @@
+ALTER TABLE "cards" RENAME COLUMN "historical_grade" TO "grade";

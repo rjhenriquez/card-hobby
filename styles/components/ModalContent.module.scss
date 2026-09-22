@@ -1,0 +1,8 @@
+@use "../../styles/utilities/all" as *;
+
+.ModalContent {
+	&__actions {
+		display: flex;
+		justify-content: space-between;
+	}
+}

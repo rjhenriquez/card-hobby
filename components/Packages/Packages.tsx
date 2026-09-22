@@ -120,7 +120,9 @@ export function Packages({ purchasePackages }: PackagesProps) {
 	return (
 		<>
 			{purchasePackageError && !editingPackage && (
-				<p role='alert'>{purchasePackageError}</p>
+				<p className='alert' role='alert'>
+					{purchasePackageError}
+				</p>
 			)}
 
 			<div className={styles.Packages}>
@@ -143,46 +145,46 @@ export function Packages({ purchasePackages }: PackagesProps) {
 						<div className={styles.Package} key={purchasePackage.id}>
 							<header className={styles.Package__header}>
 								<h2 className={styles.Package__heading}>
-									{purchasePackage.source
-										? `${purchasePackage.source} Package #${purchasePackage.id}`
-										: `Package #${purchasePackage.id}`}
+									{purchasePackage.cards.length === 1
+										? `${purchasePackage.cards[0].player} from ${purchasePackage.source ?? "Unknown"}.`
+										: `${purchasePackage.cards.length} cards from ${purchasePackage.source ?? "Unknown"}.`}
 									{purchasePackage.seller && (
 										<span>Seller: {purchasePackage.seller}</span>
 									)}
 								</h2>
-								<Button
-									type='icon'
-									htmlType='button'
-									leadingIcon='edit'
-									tooltip='Edit'
-									onClick={() => {
-										setPurchasePackageError(null);
-										setEditingPackage(purchasePackage);
-									}}
-								/>
+								<div className={styles.Package__header__actions}>
+									<Button
+										type='icon'
+										htmlType='button'
+										leadingIcon='edit'
+										tooltip='Edit'
+										onClick={() => {
+											setPurchasePackageError(null);
+											setEditingPackage(purchasePackage);
+										}}
+									/>
+
+									<Button
+										type='icon'
+										htmlType='button'
+										leadingIcon='received'
+										tooltip='Mark as Received'
+										onClick={() => handleMarkReceived(purchasePackage.id)}
+										disabled={isReceiving}
+									/>
+								</div>
 							</header>
 							<div className={styles.Package__content}>
 								<div className={styles.Package__content__top}>
 									<div className={styles.Package__content__info}>
 										<p className={styles.Package__content__label}>
-											Package Value:{" "}
+											Package Value:
 										</p>
 										<p className={styles.Package__content__value}>
 											<span>$</span>
 											{formatCurrency(totalValue).replace("$", "")}
 										</p>
 									</div>
-									{!purchasePackage.isDelivered && (
-										<Button
-											type='main'
-											variant='default'
-											htmlType='button'
-											leadingIcon='circle-check'
-											label={isReceiving ? "Receiving..." : "Mark Received"}
-											onClick={() => handleMarkReceived(purchasePackage.id)}
-											disabled={isReceiving}
-										/>
-									)}
 								</div>
 								<dl className={styles["Package__description-list"]}>
 									<div className={styles["Package__description-list__wrapper"]}>
@@ -228,7 +230,11 @@ export function Packages({ purchasePackages }: PackagesProps) {
 										</dd>
 									</div>
 								</dl>
-								<Accordion icon='arrow-down' label='Package Details'>
+								<Accordion
+									icon='arrow-down'
+									label='Package Details'
+									className={styles.Package__accordion}
+								>
 									<div className={styles.Package__cards}>
 										<table className={styles.Package__table}>
 											<thead>

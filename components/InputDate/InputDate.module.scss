@@ -10,6 +10,9 @@
 	&--half {
 		flex-basis: calc(50% - var(--form-gap) / 2);
 	}
+	&--third {
+		flex-basis: calc(33.333% - var(--form-gap) / 2);
+	}
 
 	&__label {
 		@include font-weight(semibold);

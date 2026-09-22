@@ -1,0 +1,31 @@
+@use "../../styles/utilities/all" as *;
+
+.Icons {
+	--icon-width: 12rem;
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(var(--icon-width), 1fr));
+	gap: 1rem;
+}
+.Icon {
+	background-color: var(--bg-color-02);
+	border: 1px solid var(--border-color);
+	border-radius: var(--package-border-radius);
+
+	&__wrapper {
+		height: 6rem;
+		width: 100%;
+		display: grid;
+		place-items: center;
+	}
+	&__icon {
+		width: 4rem;
+		height: auto;
+	}
+	&__label {
+		border-top: 1px solid var(--border-color);
+		@include font-weight-chivo(semibold);
+		text-align: center;
+		padding: 1em;
+		font-size: 12px;
+	}
+}

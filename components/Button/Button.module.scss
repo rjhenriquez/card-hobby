@@ -6,7 +6,7 @@
 	font-size: var(--font-size-14);
 	box-sizing: border-box;
 	transition: var(--transition-productive);
-	background-color: var(--bg-color);
+	background: transparent;
 	&--main {
 		@include font-weight(semibold);
 		height: var(--button-main-size-lg);
@@ -40,27 +40,29 @@
 	&--default {
 		height: var(--button-main-size);
 		padding-inline: var(--button-main-padding);
-		background: var(--bg-color);
+		background: transparent;
 		border: var(--button-border-line);
 	}
 	&--add {
 		background: var(--button-main-background);
+		border-color: var(--button-main-background);
 		@include color-light-on-dark(var(--white));
 		&:hover {
 			background: color-mix(in srgb, var(--button-main-background) 80%, black);
 		}
 	}
 	&--delete {
-		background: var(--bg-color);
+		background: transparent;
 		color: var(--red);
 		border-color: var(--red);
 		&:hover {
 			@include color-light-on-dark(var(--white));
 			background: var(--red);
+			border-color: var(--red) !important;
 		}
 	}
 	&--cancel {
-		background: var(--bg-color);
+		background: transparent;
 		border-color: var(--button-border-line);
 	}
 
@@ -96,7 +98,7 @@
 		}
 	}
 	&:disabled {
-		color: color-mix(in srgb, var(--text-color) 40%, var(--white));
+		color: color-mix(in srgb, var(--text-color) 30%, transparent);
 		cursor: not-allowed;
 	}
 }

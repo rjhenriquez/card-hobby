@@ -1,29 +1,66 @@
 @use "@/styles/utilities/all" as *;
 
 .PsaSubmissionForm {
+	display: contents;
 	&__form {
-		display: flex;
-		flex-direction: column;
-		gap: var(--form-gap-lg);
+		display: contents;
 	}
+
+	.stage {
+		grid-area: stage;
+	}
+	.sentDate {
+		grid-area: sentDate;
+	}
+	.receivedDate {
+		grid-area: receivedDate;
+	}
+	.outShipping {
+		grid-area: outShipping;
+	}
+	.returnShipping {
+		grid-area: returnShipping;
+	}
+	.actions {
+		grid-area: actions;
+	}
+	.total {
+		grid-area: total;
+	}
+
 	&__heading {
+		grid-area: header;
+		align-self: center;
 		@include heading(h2);
 		span {
-			@include font-weight-mono(bold);
+			@include font-weight-chivo(regular);
 		}
 	}
-	&__section,
+	&__input,
+	&__dl__wrapper {
+		&:nth-of-type(1) {
+			grid-area: stage;
+		}
+		&:nth-of-type(2) {
+			grid-area: sentDate;
+		}
+		&:nth-of-type(3) {
+			grid-area: receivedDate;
+		}
+		&:nth-of-type(4) {
+			grid-area: outShipping;
+		}
+		&:nth-of-type(5) {
+			grid-area: returnShipping;
+		}
+	}
 	&__actions {
+		grid-area: actions;
+		justify-self: end;
 		display: flex;
 		gap: var(--form-gap-lg);
 	}
-	&__actions {
-		justify-content: space-between;
-		margin-top: var(--form-gap-lg);
-	}
-	&__input {
-		flex: 1 1 auto;
-	}
+
 	&__modal {
 		&__heading {
 			@include heading(h4);
@@ -33,6 +70,28 @@
 			align-items: center;
 			justify-content: space-between;
 			margin-top: var(--form-gap);
+		}
+	}
+	&__dl {
+		display: contents;
+		&__wrapper {
+			display: grid;
+			grid-template-rows: auto 1fr;
+			gap: 0.25rem;
+		}
+		dt {
+			@include font-weight(semibold);
+			font-size: var(--font-size-12);
+			letter-spacing: 0.05em;
+			text-transform: uppercase;
+			margin: 0;
+		}
+		dd {
+			display: flex;
+			align-items: center;
+			font-size: var(--font-size-14);
+			min-width: 0;
+			margin: 0;
 		}
 	}
 }

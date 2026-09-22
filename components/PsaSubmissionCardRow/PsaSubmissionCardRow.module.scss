@@ -1,5 +1,18 @@
 .PsaSubmissionCardRow {
 	&__input {
-		max-width: 7.5rem;
+		max-width: var(--table-info-input-width);
+	}
+	&__truncate {
+		display: block;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+	&__actions {
+		display: flex;
+		align-items: center;
+		height: 100%;
+		width: 100%;
+		gap: var(--package-table-padding);
 	}
 }

@@ -70,10 +70,9 @@
 		}
 
 		&--value {
-			@include font-weight-chivo(regular);
+			@include font-weight-chivo(light);
 			position: relative;
 			text-align: right;
-
 			&--positive,
 			&--negative {
 				position: absolute;
@@ -87,21 +86,13 @@
 			}
 
 			&--positive {
-				color: var(--table-color-value-positive);
-				background: color-mix(
-					in srgb,
-					var(--table-color-value-positive) 10%,
-					transparent
-				);
+				color: var(--green-text);
+				background: color-mix(in srgb, var(--green) 10%, transparent);
 			}
 
 			&--negative {
-				color: var(--table-color-value-negative);
-				background: color-mix(
-					in srgb,
-					var(--table-color-value-negative) 10%,
-					transparent
-				);
+				color: var(--red);
+				background: color-mix(in srgb, var(--red) 10%, transparent);
 			}
 		}
 
@@ -139,23 +130,42 @@
 
 	&__link {
 		@include font-weight-chivo(regular);
-		border: 1px solid var(--psa-color);
-		color: var(--psa-color);
+		border: var(--input-border-line);
 		font-size: 0.9em;
 		padding: var(--table-link-padding);
 		border-radius: 0.4em;
 		line-height: 1;
-		letter-spacing: 0.08em;
+		letter-spacing: 0.05em;
 		transition: var(--transition-productive);
 		text-box: trim-both cap alphabetic;
 
 		&:hover {
-			background: var(--psa-color);
-			color: var(--white);
+			border-color: var(--psa-color);
+			color: var(--psa-color);
 		}
 	}
 
 	:global(.input) {
 		transform: translateY(1px);
+	}
+	&__label {
+		@include font-weight-chivo(light);
+
+		text-box: trim-both cap alphabetic;
+		text-transform: uppercase;
+		border-radius: 0.4em;
+		line-height: 1;
+		display: flex;
+		gap: 0.3em;
+		svg {
+			width: 1em;
+			height: 1em;
+		}
+		&--yes {
+			color: var(--green);
+		}
+		&--no {
+			color: var(--red);
+		}
 	}
 }

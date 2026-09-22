@@ -18,6 +18,7 @@ import type { CardFormOptions } from "@/db/queries/cardFormOptions";
 import type { Card } from "@/types/types";
 
 import styles from "@/styles/components/DrawerContent.module.scss";
+import modalStyles from "@/styles/components/ModalContent.module.scss";
 
 interface CardStatus {
 	id: number;
@@ -225,6 +226,15 @@ export function CardForm({
 						/>
 					)}
 					<InputText
+						name='grade'
+						label='Grade'
+						type='number'
+						width='half'
+						min={1}
+						step={0.5}
+						defaultValue={initialCard?.grade ?? ""}
+					/>
+					<InputText
 						name='purchasePrice'
 						label='Purchase Price'
 						type='number'
@@ -320,7 +330,11 @@ export function CardForm({
 							defaultChecked={card.isPaid}
 						/>
 
-						{saleError && <p role='alert'>{saleError}</p>}
+						{saleError && (
+							<p className='alert' role='alert'>
+								{saleError}
+							</p>
+						)}
 						<div className={styles.DrawerForm__actions}>
 							<Button
 								type='main'
@@ -347,25 +361,31 @@ export function CardForm({
 			>
 				<p>
 					Are you sure you want to permanently delete{" "}
-					<strong>{card?.player}</strong>?
+					<strong>{card?.player}</strong>? <br />
+					This action cannot be undone.
 				</p>
 
-				<p>This action cannot be undone.</p>
-
-				{deleteError && <p role='alert'>{deleteError}</p>}
-
-				<div>
-					<button
-						type='button'
+				{deleteError && (
+					<p className='alert' role='alert'>
+						{deleteError}
+					</p>
+				)}
+				<div className={modalStyles.ModalContent__actions}>
+					<Button
+						type='main'
+						variant='delete'
+						htmlType='button'
+						onClick={handleDelete}
+						disabled={isDeleting}
+						label={isDeleting ? "Deleting..." : "Delete Card"}
+					/>
+					<Button
+						type='main'
+						variant='cancel'
+						label='Cancel'
 						onClick={() => setIsDeleteModalOpen(false)}
 						disabled={isDeleting}
-					>
-						Cancel
-					</button>
-
-					<button type='button' onClick={handleDelete} disabled={isDeleting}>
-						{isDeleting ? "Deleting..." : "Delete Card"}
-					</button>
+					/>
 				</div>
 			</Modal>
 		</>

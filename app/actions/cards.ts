@@ -31,18 +31,15 @@ export async function createCard(formData: FormData) {
 		setName: getOptionalString(formData, "setName"),
 		info: getOptionalString(formData, "info"),
 		notes: getOptionalString(formData, "notes"),
-
 		portfolio,
 		statusId,
-
 		acquisitionType:
 			formData.get("acquisitionType") === "pulled" ? "pulled" : "purchased",
-
 		purchaseDate: getOptionalString(formData, "purchaseDate"),
 		purchasedFrom: getOptionalString(formData, "purchasedFrom"),
 		ebaySeller: getOptionalString(formData, "ebaySeller"),
 		purchasePrice: getOptionalString(formData, "purchasePrice"),
-
+		grade: getOptionalString(formData, "grade"),
 		isShared,
 	});
 
@@ -97,19 +94,15 @@ export async function updateCard(formData: FormData) {
 			setName: getOptionalString(formData, "setName"),
 			info: getOptionalString(formData, "info"),
 			notes: getOptionalString(formData, "notes"),
-
 			statusId,
-
 			acquisitionType:
 				formData.get("acquisitionType") === "pulled" ? "pulled" : "purchased",
-
 			purchaseDate: getOptionalString(formData, "purchaseDate"),
 			purchasedFrom: getOptionalString(formData, "purchasedFrom"),
 			ebaySeller: getOptionalString(formData, "ebaySeller"),
 			purchasePrice: getOptionalString(formData, "purchasePrice"),
-
+			grade: getOptionalString(formData, "grade"),
 			isShared,
-
 			updatedAt: new Date(),
 		})
 		.where(eq(cards.id, id));

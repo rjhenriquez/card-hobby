@@ -30,16 +30,12 @@
 	input {
 		width: 100%;
 		height: var(--input-height);
-
 		padding-inline: var(--input-padding);
-
 		border: var(--input-border);
 		border-radius: var(--input-border-radius);
-
 		outline: none;
-
 		font-size: var(--input-font-size);
-
+		background: transparent;
 		&:focus {
 			border-color: var(--main);
 		}

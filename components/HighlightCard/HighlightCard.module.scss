@@ -17,7 +17,8 @@
 	&__highlight,
 	&__sub {
 		&__label {
-			@include heading(h3);
+			@include font-weight(semibold);
+			font-size: 0.875rem;
 			color: var(--highlight-label-color);
 			line-height: 1;
 			text-box: trim-both cap alphabetic;

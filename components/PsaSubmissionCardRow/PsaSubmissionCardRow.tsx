@@ -9,7 +9,10 @@ import {
 	removeCardFromPsaSubmission,
 	updatePsaSubmissionCard,
 } from "@/app/actions/psaSubmissions";
+import { PSA_GRADE_DEFINITIONS } from "@/constants";
+
 import styles from "./PsaSubmissionCardRow.module.scss";
+import modalStyles from "@/styles/components/ModalContent.module.scss";
 
 interface PsaSubmissionCard {
 	submissionCardId: number;
@@ -31,6 +34,31 @@ interface PsaSubmissionCardRowProps {
 	isEditing: boolean;
 }
 
+const GRADE_OPTIONS = [
+	{
+		label: "Pending",
+		value: "pending",
+	},
+	...Object.entries(PSA_GRADE_DEFINITIONS)
+		.sort(([gradeA], [gradeB]) => Number(gradeB) - Number(gradeA))
+		.map(([grade, definition]) => ({
+			label: `${definition} ${grade}`,
+			value: grade,
+		})),
+	{
+		label: "No Grade",
+		value: "no_grade",
+	},
+];
+
+function getGradeValue(card: PsaSubmissionCard) {
+	if (card.gradeStatus === "graded" && card.grade) {
+		return card.grade;
+	}
+
+	return card.gradeStatus;
+}
+
 export function PsaSubmissionCardRow({
 	card,
 	submissionNumber,
@@ -38,8 +66,7 @@ export function PsaSubmissionCardRow({
 	isCompleted,
 	isEditing,
 }: PsaSubmissionCardRowProps) {
-	const [gradeStatus, setGradeStatus] = useState(card.gradeStatus);
-	const [grade, setGrade] = useState(card.grade ?? "");
+	const [gradeValue, setGradeValue] = useState(getGradeValue(card));
 	const [isSaving, startSavingTransition] = useTransition();
 	const [isRemoving, startRemovingTransition] = useTransition();
 	const [isRemoveModalOpen, setIsRemoveModalOpen] = useState(false);
@@ -48,6 +75,17 @@ export function PsaSubmissionCardRow({
 		event.preventDefault();
 
 		const formData = new FormData(event.currentTarget);
+
+		if (gradeValue === "pending") {
+			formData.set("gradeStatus", "pending");
+			formData.set("grade", "");
+		} else if (gradeValue === "no_grade") {
+			formData.set("gradeStatus", "no_grade");
+			formData.set("grade", "");
+		} else {
+			formData.set("gradeStatus", "graded");
+			formData.set("grade", gradeValue);
+		}
 
 		startSavingTransition(async () => {
 			await updatePsaSubmissionCard(formData);
@@ -74,7 +112,11 @@ export function PsaSubmissionCardRow({
 		<>
 			<tr>
 				<td>
-					<form id={formId} onSubmit={handleSubmit}>
+					<form
+						className={styles.PsaSubmissionCardRow__truncate}
+						id={formId}
+						onSubmit={handleSubmit}
+					>
 						<input
 							type='hidden'
 							name='submissionCardId'
@@ -110,9 +152,6 @@ export function PsaSubmissionCardRow({
 						`$${Number(card.baseGradingFee).toFixed(2)}`
 					)}
 				</td>
-
-				<td>${sharedCost.toFixed(2)}</td>
-
 				<td>
 					{isEditing ? (
 						<InputText
@@ -130,56 +169,20 @@ export function PsaSubmissionCardRow({
 					)}
 				</td>
 
+				<td>${sharedCost.toFixed(2)}</td>
+
 				<td>${totalGradingCost.toFixed(2)}</td>
 
 				<td>
 					{isEditing ? (
-						<>
-							<InputSelect
-								form={formId}
-								name='gradeStatus'
-								value={gradeStatus}
-								options={[
-									{
-										label: "Pending",
-										value: "pending",
-									},
-									{
-										label: "Graded",
-										value: "graded",
-									},
-									{
-										label: "No Grade",
-										value: "no_grade",
-									},
-								]}
-								onChange={(event) => {
-									const value = event.target.value as
-										"pending" | "graded" | "no_grade";
-
-									setGradeStatus(value);
-
-									if (value !== "graded") {
-										setGrade("");
-									}
-								}}
-							/>
-
-							<InputText
-								form={formId}
-								className={styles.PsaSubmissionCardRow__input}
-								type='number'
-								name='grade'
-								label='Grade'
-								step={0.5}
-								min={1}
-								max={10}
-								value={grade}
-								variant='small'
-								disabled={gradeStatus !== "graded"}
-								onChange={(event) => setGrade(event.target.value)}
-							/>
-						</>
+						<InputSelect
+							form={formId}
+							name='gradeSelection'
+							value={gradeValue}
+							options={GRADE_OPTIONS}
+							variant='small'
+							onChange={(event) => setGradeValue(event.target.value)}
+						/>
 					) : card.gradeStatus === "graded" ? (
 						`PSA ${card.grade}`
 					) : card.gradeStatus === "no_grade" ? (
@@ -190,28 +193,29 @@ export function PsaSubmissionCardRow({
 				</td>
 
 				<td>
-					{isEditing && (
-						<Button
-							type='icon'
-							htmlType='submit'
-							variant='add'
-							form={formId}
-							disabled={isSaving || isRemoving}
-							tooltip='Save'
-							trailingIcon='save'
-						/>
-					)}
-
-					{!isCompleted && isEditing && (
-						<Button
-							type='icon'
-							variant='delete'
-							disabled={isSaving || isRemoving}
-							onClick={() => setIsRemoveModalOpen(true)}
-							tooltip='Remove'
-							trailingIcon='delete'
-						/>
-					)}
+					<div className={styles.PsaSubmissionCardRow__actions}>
+						{!isCompleted && isEditing && (
+							<Button
+								type='icon'
+								variant='delete'
+								disabled={isSaving || isRemoving}
+								onClick={() => setIsRemoveModalOpen(true)}
+								tooltip='Remove'
+								trailingIcon='delete'
+							/>
+						)}
+						{isEditing && (
+							<Button
+								type='icon'
+								htmlType='submit'
+								variant='add'
+								form={formId}
+								disabled={isSaving || isRemoving}
+								tooltip='Save'
+								trailingIcon='save'
+							/>
+						)}
+					</div>
 				</td>
 			</tr>
 
@@ -225,18 +229,23 @@ export function PsaSubmissionCardRow({
 					PSA submission <strong>{submissionNumber}</strong>?
 				</p>
 
-				<div>
-					<button
-						type='button'
+				<div className={modalStyles.ModalContent__actions}>
+					<Button
+						type='main'
+						variant='delete'
+						htmlType='button'
+						disabled={isRemoving}
+						onClick={handleRemove}
+						label={isRemoving ? "Removing..." : "Remove"}
+					/>
+					<Button
+						type='main'
+						variant='cancel'
+						htmlType='button'
+						label='Cancel'
 						disabled={isRemoving}
 						onClick={() => setIsRemoveModalOpen(false)}
-					>
-						Cancel
-					</button>
-
-					<button type='button' disabled={isRemoving} onClick={handleRemove}>
-						{isRemoving ? "Removing..." : "Remove"}
-					</button>
+					/>
 				</div>
 			</Modal>
 		</>

@@ -29,7 +29,7 @@
 			z-index: 1;
 			justify-self: center;
 			padding-inline: 0.5em;
-			background-color: var(--bg-color);
+			background-color: var(--bg-color-03);
 		}
 		&__title {
 			display: block;
@@ -94,7 +94,7 @@
 		&__value {
 			width: 100%;
 			padding-inline: var(--input-padding);
-			background: var(--bg-color-02);
+			background: transparent;
 			height: var(--input-height);
 			display: flex;
 			align-items: center;

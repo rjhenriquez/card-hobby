@@ -28,7 +28,7 @@ export async function getCardsByPortfolio(portfolio: CardPortfolio) {
 			ebaySeller: cards.ebaySeller,
 			purchasePrice: cards.purchasePrice,
 			historicalGradingCost: cards.historicalGradingCost,
-			historicalGrade: cards.historicalGrade,
+			grade: cards.grade,
 			soldVia: cards.soldVia,
 			soldDate: cards.soldDate,
 			soldPrice: cards.soldPrice,
@@ -161,6 +161,9 @@ export async function getCardsByPortfolio(portfolio: CardPortfolio) {
 		.select({
 			cardId: psaSubmissionCards.cardId,
 			submissionNumber: psaSubmissions.submissionNumber,
+			grade: psaSubmissionCards.grade,
+			gradeStatus: psaSubmissionCards.gradeStatus,
+			completedDate: psaSubmissions.completedDate,
 		})
 		.from(psaSubmissionCards)
 		.innerJoin(
@@ -290,14 +293,29 @@ export async function getCardsByPortfolio(portfolio: CardPortfolio) {
 			row.submissionNumber,
 		]);
 	}
+	// ---------------------------------------------
 
+	// PSA Grade By Card
+
+	// ---------------------------------------------
+
+	const psaGradeByCardId = new Map<number, number>();
+
+	for (const row of psaHistoryRows) {
+		if (row.gradeStatus !== "graded" || row.grade === null) {
+			continue;
+		}
+		psaGradeByCardId.set(row.cardId, Number(row.grade));
+	}
 	// ---------------------------------------------
 	// Final Card Read Model
 	// ---------------------------------------------
 
 	return cardRows.map((card) => {
 		const activePsaSubmission = activePsaByCardId.get(card.id);
-
+		const effectiveGrade =
+			psaGradeByCardId.get(card.id) ??
+			(card.grade !== null ? Number(card.grade) : null);
 		const gradingCost =
 			gradingCostByCardId.get(card.id) ??
 			Number(card.historicalGradingCost ?? 0);
@@ -336,9 +354,8 @@ export async function getCardsByPortfolio(portfolio: CardPortfolio) {
 						activePsaSubmission.stage ? ` - ${activePsaSubmission.stage}` : ""
 					}`
 				: card.status,
-
 			psaSubmissionNumbers: psaSubmissionNumbersByCardId.get(card.id) ?? [],
-
+			grade: effectiveGrade,
 			price,
 			gradingCost,
 			totalCost,

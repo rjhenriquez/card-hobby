@@ -1,6 +1,11 @@
 @use "@/styles/utilities/all" as *;
 
 .GemRateTable {
+	&__table {
+		td {
+			padding: var(--table-cell-padding-lg);
+		}
+	}
 	&__actions {
 		display: flex;
 		align-items: center;
@@ -43,9 +48,27 @@
 	}
 	&__cell {
 		&--value {
-			@include font-weight-chivo(regular);
-			position: relative;
+			@include font-weight-chivo(light);
 			text-align: right;
+		}
+		&--mono {
+			@include font-weight-chivo(light);
+		}
+	}
+	&__link {
+		@include font-weight-chivo(regular);
+		border: var(--input-border-line);
+		font-size: 0.9em;
+		padding: var(--table-link-padding);
+		border-radius: 0.4em;
+		line-height: 1;
+		letter-spacing: 0.05em;
+		transition: var(--transition-productive);
+		text-box: trim-both cap alphabetic;
+
+		&:hover {
+			border-color: var(--psa-color);
+			color: var(--psa-color);
 		}
 	}
 }

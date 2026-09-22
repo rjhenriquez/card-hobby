@@ -8,90 +8,7 @@ export interface IconAnimatedLinkProps {
 	className?: string;
 	activeClassName?: string;
 }
-export const Icon: FC<IconInterface> = ({ icon, className }) => {
-	const renderIcon = (icon: string) => {
-		switch (icon) {
-			case "moon":
-				return <Moon className={className} />;
-			case "sun":
-				return <Sun className={className} />;
-			case "dashboard":
-				return <Dashboard className={className} />;
-			case "investments":
-				return <Investments className={className} />;
-			case "collection":
-				return <Collection className={className} />;
-			case "submissions":
-				return <Submissions className={className} />;
-			case "shipping":
-				return <Shipping className={className} />;
-			case "add-card":
-				return <AddCard className={className} />;
-			case "package":
-				return <Package className={className} />;
-			case "add-sub":
-				return <AddSub className={className} />;
-			case "copy":
-				return <Copy className={className} />;
-			case "edit":
-				return <Edit className={className} />;
-			case "move-up":
-				return <MoveUp className={className} />;
-			case "move-down":
-				return <MoveDown className={className} />;
-			case "arrow-up-down":
-				return <ArrowUpDown className={className} />;
-			case "arrow-down":
-				return <ArrowDown className={className} />;
-			case "arrow-up":
-				return <ArrowUp className={className} />;
-			case "compress":
-				return <Compress className={className} />;
-			case "expand":
-				return <Expand className={className} />;
-			case "font-size":
-				return <FontSize className={className} />;
-			case "close":
-				return <Close className={className} />;
-			case "calendar":
-				return <Calendar className={className} />;
-			case "dollar-sign":
-				return <DollarSign className={className} />;
-			case "loading":
-				return <Loading className={className} />;
-			case "checkmark":
-				return <Checkmark className={className} />;
-			case "plus-sign":
-				return <PlusSign className={className} />;
-			case "circle-check":
-				return <CircleCheck className={className} />;
-			case "open":
-				return <Open className={className} />;
-			case "diamond":
-				return <Diamond className={className} />;
-			case "filter":
-				return <Filter className={className} />;
-			case "hamburger":
-				return <Hamburger className={className} />;
-			case "save":
-				return <Save className={className} />;
-			case "delete":
-				return <Delete className={className} />;
-			case "charts":
-				return <Charts className={className} />;
-			case "finance":
-				return <Finance className={className} />;
-			case "stacks":
-				return <Stacks className={className} />;
-			case "psa":
-				return <PSA className={className} />;
 
-			default:
-				return <Moon className={className} />;
-		}
-	};
-	return renderIcon(icon);
-};
 const Moon = ({ className }: { className?: string }) => {
 	return (
 		<svg
@@ -348,6 +265,18 @@ const Close = ({ className }: { className?: string }) => {
 		</svg>
 	);
 };
+const CircleClose = ({ className }: { className?: string }) => {
+	return (
+		<svg
+			xmlns='http://www.w3.org/2000/svg'
+			className={className}
+			fill='currentColor'
+			viewBox='0 -960 960 960'
+		>
+			<path d='m336-280 144-144 144 144 56-56-144-144 144-144-56-56-144 144-144-144-56 56 144 144-144 144zM480-80q-83 0-156-31.5T197-197t-85.5-127T80-480t31.5-156T197-763t127-85.5T480-880t156 31.5T763-763t85.5 127T880-480t-31.5 156T763-197t-127 85.5T480-80m0-80q134 0 227-93t93-227-93-227-227-93-227 93-93 227 93 227 227 93m0-320' />
+		</svg>
+	);
+};
 const Calendar = ({ className }: { className?: string }) => {
 	return (
 		<svg
@@ -548,4 +477,63 @@ const PSA = ({ className }: { className?: string }) => {
 			<path d='M28.09 16.42s-.01-.08-.05-.09c-1.99-.61-3.66-1.8-3.66-4.63 0-.99.3-2.33.55-3.29.44-1.65.89-2.71 1.62-3.58.03-.03.02-.08 0-.1-1.32-1.29-3.4-2.05-6.61-2.05H.21c-.12 0-.21.1-.21.21v23.96c0 .12.09.21.21.21h6.9c.12 0 .21-.1.21-.21v-5.7c0-.12.09-.21.21-.21h14.32c3.62 0 5.46-2.04 6.24-4.51zm-7.03-4.14c0 1.45-.66 2.59-2.37 2.59H7.53c-.12 0-.21-.1-.21-.21v-5.7c0-.12.09-.21.21-.21h10.53c2.21 0 3 .94 3 2.59v.94zm42.1-9.49a.21.21 0 0 0-.18-.11h-9.27c-.08 0-.15.04-.19.11l-6.96 13.14c-.06.12-.04.27.06.36 1.08 1 1.67 2.33 1.67 3.84 0 1.95-.72 4.53-3.78 6.73-.09.06-.05.2.06.2h4.13c.08 0 .15-.05.19-.12l2.06-4.15s.04-.04.07-.04h14.74s.05.02.07.04l2.19 4.16c.04.07.11.11.19.11h7.88c.06 0 .1-.06.07-.12l-13-24.15zm-.19 14.71h-9.18s-.07-.05-.05-.08l4.52-8.99s.08-.04.1 0l4.65 8.99s0 .08-.05.08zM80 26.19c0 .73-.56 1.3-1.28 1.3s-1.29-.57-1.29-1.3.57-1.28 1.29-1.28 1.28.57 1.28 1.28zm-2.25 0c0 .57.41 1.02.98 1.02s.96-.45.96-1.01-.41-1.03-.96-1.03-.97.46-.97 1.02zm.77.67h-.29v-1.28c.11-.02.28-.04.48-.04.24 0 .34.04.44.09.07.06.12.16.12.28 0 .14-.11.25-.26.3v.02c.12.05.19.14.23.31.04.19.06.27.09.32h-.31s-.06-.16-.1-.31c-.02-.14-.1-.2-.26-.2h-.14v.51zm.01-.73h.14c.16 0 .29-.06.29-.19 0-.12-.08-.2-.27-.2-.08 0-.13 0-.16.02v.37z'></path>
 		</svg>
 	);
+};
+const Received = ({ className }: { className?: string }) => {
+	return (
+		<svg
+			xmlns='http://www.w3.org/2000/svg'
+			className={className}
+			fill='currentColor'
+			viewBox='0 -960 960 960'
+		>
+			<path d='M240-400v-160h-80v400h640v-400H400v-80h400q33 0 56.5 23.5T880-560v400q0 33-23.5 56.5T800-80H160q-33 0-56.5-23.5T80-160v-400q0-33 23.5-56.5T160-640h80v-240h320v160H320v320zm-80-160v160zv400z' />
+		</svg>
+	);
+};
+
+export const ICONS = {
+	moon: Moon,
+	sun: Sun,
+	dashboard: Dashboard,
+	investments: Investments,
+	collection: Collection,
+	submissions: Submissions,
+	shipping: Shipping,
+	"add-card": AddCard,
+	package: Package,
+	"add-sub": AddSub,
+	copy: Copy,
+	edit: Edit,
+	"move-up": MoveUp,
+	"move-down": MoveDown,
+	"arrow-up-down": ArrowUpDown,
+	"arrow-down": ArrowDown,
+	"arrow-up": ArrowUp,
+	compress: Compress,
+	expand: Expand,
+	"font-size": FontSize,
+	close: Close,
+	"circle-close": CircleClose,
+	calendar: Calendar,
+	"dollar-sign": DollarSign,
+	loading: Loading,
+	checkmark: Checkmark,
+	"plus-sign": PlusSign,
+	"circle-check": CircleCheck,
+	open: Open,
+	diamond: Diamond,
+	filter: Filter,
+	hamburger: Hamburger,
+	save: Save,
+	delete: Delete,
+	charts: Charts,
+	finance: Finance,
+	stacks: Stacks,
+	psa: PSA,
+	received: Received,
+} as const;
+
+export const Icon: FC<IconInterface> = ({ icon, className }) => {
+	const IconComponent = ICONS[icon as keyof typeof ICONS] ?? Moon;
+	return <IconComponent className={className} />;
 };

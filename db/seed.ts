@@ -1,6 +1,5 @@
-import { db } from "./index";
-import { cardStatuses } from "./schema";
 import { config } from "dotenv";
+
 config({ path: ".env.local" });
 
 const statuses = [
@@ -11,9 +10,14 @@ const statuses = [
 	"DCSports Submission",
 	"Pending Payment",
 	"Sold",
+	"Available - Raw",
+	"Available - Graded",
 ];
 
 async function seed() {
+	const { db } = await import("./index");
+	const { cardStatuses } = await import("./schema");
+
 	await db
 		.insert(cardStatuses)
 		.values(statuses.map((name) => ({ name })))

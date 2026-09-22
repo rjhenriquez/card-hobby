@@ -1,7 +1,41 @@
+@use "@/styles/utilities/all" as *;
+
 .PsaSubmissionDetails {
+	&__top {
+		display: grid;
+		grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+		grid-template-rows: repeat(auto, 4);
+		gap: var(--form-gap-lg);
+		align-content: center;
+		grid-template-areas:
+			"header header header header edit edit"
+			"stage stage sentDate sentDate receivedDate receivedDate"
+			"outShipping outShipping outShipping returnShipping returnShipping returnShipping"
+			"totals totals totals actions actions actions";
+	}
 	&__info {
-		border: 1px solid red;
-		padding: 1rem;
-		margin: 1rem;
+		display: flex;
+		align-self: center;
+		gap: var(--packages-gap);
+		align-items: baseline;
+		grid-area: totals;
+		&__label {
+			@include font-weight(semibold);
+			font-size: var(--font-size-12);
+			letter-spacing: 0.05em;
+			text-transform: uppercase;
+		}
+		&__value {
+			@include font-weight-chivo(regular);
+			font-size: var(--font-size-18);
+			span {
+				font-size: 0.8em;
+				vertical-align: top;
+			}
+		}
+	}
+	&__edit-btn {
+		justify-self: end;
+		grid-area: edit;
 	}
 }

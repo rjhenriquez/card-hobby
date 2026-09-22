@@ -1,5 +1,6 @@
 import { Accordion } from "@/components/Accordion/Accordion";
 import cn from "classnames";
+
 import styles from "./HighlightCardTable.module.scss";
 
 export interface HighlightCardTableRow {
@@ -12,12 +13,14 @@ interface HighlightCardTableProps {
 	title?: string;
 	rows: HighlightCardTableRow[];
 	rowNumber?: number;
+	headers?: [string, string, string];
 }
 
 export function HighlightCardTable({
 	title,
 	rows,
 	rowNumber = 5,
+	headers = ["Player", "Cards", "Total Cost"],
 }: HighlightCardTableProps) {
 	const visibleRows = rows.slice(0, rowNumber);
 	const hiddenRows = rows.slice(rowNumber);
@@ -49,9 +52,9 @@ export function HighlightCardTable({
 			>
 				<thead>
 					<tr>
-						<th>Player</th>
-						<th>Cards</th>
-						<th>Total Cost</th>
+						{headers.map((header) => (
+							<th key={header}>{header}</th>
+						))}
 					</tr>
 				</thead>
 

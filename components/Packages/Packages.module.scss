@@ -4,11 +4,12 @@
 	display: flex;
 	flex-wrap: wrap;
 	gap: var(--packages-gap);
+	align-items: flex-start;
 }
 .Package {
-	border: var(--package-card-border);
+	background-color: var(--bg-color-02);
+	border: 1px solid var(--border-color);
 	border-radius: var(--package-border-radius);
-	background: var(--bg-color);
 	padding: var(--package-padding);
 	flex: 0 0 calc(50% - var(--packages-gap) / 2);
 	min-width: 0;
@@ -18,8 +19,12 @@
 		gap: var(--packages-gap);
 		align-items: center;
 		justify-content: space-between;
-		padding-bottom: var(--package-padding);
-		margin-bottom: var(--package-padding);
+		padding-bottom: calc(var(--package-padding) / 2);
+		margin-bottom: calc(var(--package-padding) / 2);
+		&__actions {
+			display: flex;
+			gap: var(--packages-gap);
+		}
 	}
 	&__heading {
 		@include heading(h2);
@@ -29,13 +34,8 @@
 
 	&__content {
 		display: flex;
-		gap: var(--packages-gap);
 		flex-direction: column;
 		&__top {
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			min-height: 34px;
 			margin-bottom: var(--packages-gap);
 		}
 		&__info {
@@ -50,7 +50,7 @@
 			text-transform: uppercase;
 		}
 		&__value {
-			@include font-weight-chivo(regular);
+			@include font-weight-chivo(semibold);
 			font-size: var(--font-size-18);
 			span {
 				font-size: 0.8em;
@@ -95,6 +95,7 @@
 			font-size: var(--font-size-14);
 			min-width: 0;
 			margin: 0;
+			min-height: 2.25rem;
 		}
 	}
 
@@ -143,7 +144,6 @@
 		margin: 0;
 		padding: 0;
 		display: inline-flex;
-		background: var(--white);
 		transition: var(--transition-productive);
 		span {
 			padding: var(--button-main-padding-sm);
@@ -155,7 +155,16 @@
 			height: var(--button-icon-size);
 		}
 		&:hover {
-			background: var(--gray-02);
+			border-color: var(--main);
+			span {
+				border-color: var(--main);
+			}
 		}
+	}
+	&__accordion button {
+		margin-top: 1em;
+		@include font-weight(semibold);
+		font-size: 0.875rem;
+		justify-content: flex-start;
 	}
 }

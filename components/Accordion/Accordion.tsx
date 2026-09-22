@@ -28,7 +28,7 @@ export function Accordion({
 	const trigger = (
 		<button
 			type='button'
-			className={cn(styles.Accordion__trigger, {
+			className={cn("Accordion__trigger", styles.Accordion__trigger, {
 				[styles["Accordion__trigger--open"]]: isOpen,
 			})}
 			aria-expanded={isOpen}

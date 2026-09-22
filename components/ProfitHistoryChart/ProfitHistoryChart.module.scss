@@ -1,6 +1,6 @@
 @use "@/styles/utilities/all" as *;
 
-.CostHistoryChart {
+.ProfitHistoryChart {
 	width: 100%;
 	display: contents;
 	&__chart {
@@ -23,6 +23,7 @@
 		margin-right: var(--chart-margin-right);
 		margin-left: auto;
 	}
+
 	:global(.recharts-wrapper),
 	:global(.recharts-wrapper *),
 	:global(.recharts-surface) {

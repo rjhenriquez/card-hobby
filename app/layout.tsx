@@ -5,7 +5,6 @@ import { Sidebar } from "@/components/Sidebar/Sidebar";
 import { SidebarProvider } from "@/components/Sidebar/SidebarContext";
 
 import "@/styles/styles.scss";
-import "@/styles/temporary.scss";
 
 export const metadata: Metadata = {
 	title: "Hobby Helpers",

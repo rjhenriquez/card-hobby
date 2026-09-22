@@ -84,3 +84,51 @@ export function getCollectionCostHistory(cards: Card[]): CostHistoryPoint[] {
 		};
 	});
 }
+export interface ProfitHistoryPoint {
+	date: string;
+	value: number;
+}
+
+export function getProfitHistory(
+	cards: Card[],
+	year: string,
+): ProfitHistoryPoint[] {
+	const profitByDate = new Map<string, number>();
+
+	for (const card of cards) {
+		if (
+			!card.isPaid ||
+			!card.soldDate?.startsWith(year) ||
+			card.profit === null
+		) {
+			continue;
+		}
+
+		profitByDate.set(
+			card.soldDate,
+			(profitByDate.get(card.soldDate) ?? 0) + card.profit,
+		);
+	}
+
+	const dates = Array.from(profitByDate.keys()).sort();
+
+	let cumulativeProfit = 0;
+
+	const history: ProfitHistoryPoint[] = [
+		{
+			date: `${year}-01-01`,
+			value: 0,
+		},
+	];
+
+	for (const date of dates) {
+		cumulativeProfit += profitByDate.get(date) ?? 0;
+
+		history.push({
+			date,
+			value: cumulativeProfit,
+		});
+	}
+
+	return history;
+}

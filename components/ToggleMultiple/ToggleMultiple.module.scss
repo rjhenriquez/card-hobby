@@ -1,7 +1,6 @@
 @use "@/styles/utilities/all" as *;
 
 .ToggleMultiple {
-	--toggle-button-size: 1.6rem;
 	display: flex;
 	gap: 0.3rem;
 	background: var(--bg-color);
@@ -9,7 +8,7 @@
 	padding: 0.3em;
 	border-radius: var(--button-border-radius);
 	&__button {
-		@include font-weight-chivo(semibold);
+		@include font-weight(bold);
 		text-transform: uppercase;
 		font-size: 0.875rem;
 		letter-spacing: 0.1em;

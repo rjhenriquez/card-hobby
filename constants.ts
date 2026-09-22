@@ -70,3 +70,23 @@ export const CHART_MARGIN = {
 	bottom: 0,
 	left: 0,
 };
+export const PSA_GRADE_DEFINITIONS = {
+	10: "GEM MT",
+	9: "MINT",
+	8.5: "NM-MT+",
+	8: "NM-MT",
+	7.5: "NM+",
+	7: "NM",
+	6.5: "EX-MT+",
+	6: "EX-MT",
+	5.5: "EX+",
+	5: "EX",
+	4.5: "VG-EX+",
+	4: "VG-EX",
+	3.5: "VG+",
+	3: "VG",
+	2.5: "GOOD+",
+	2: "GOOD",
+	1.5: "FR",
+	1: "PR",
+} as const;

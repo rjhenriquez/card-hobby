@@ -1,0 +1,48 @@
+@use "@/styles/utilities/all" as *;
+
+.PsaSubmissionStats {
+	margin-top: calc(var(--form-gap-lg) * 2);
+	&__heading {
+		grid-area: header;
+		align-self: center;
+		@include heading(h2);
+		margin-bottom: var(--form-gap-lg);
+	}
+
+	&__description-list {
+		display: grid;
+		gap: var(--packages-gap);
+		grid-template-columns: repeat(
+			10,
+			minmax(var(--packages-item-min-width), auto)
+		);
+		&--financials {
+			width: 100%;
+			grid-template-columns: repeat(3, 1fr);
+		}
+		&__wrapper {
+			display: grid;
+			grid-template-rows: auto 1fr;
+			gap: 0.25rem;
+		}
+		dt,
+		dd {
+			padding-block: var(--package-table-padding);
+		}
+		dt {
+			@include font-weight(semibold);
+			font-size: var(--font-size-12);
+			letter-spacing: 0.05em;
+			text-transform: uppercase;
+			margin: 0;
+			border-bottom: 1px solid var(--table-border-color);
+		}
+		dd {
+			display: flex;
+			align-items: center;
+			min-width: 0;
+			margin: 0;
+			@include font-weight-chivo(regular);
+		}
+	}
+}

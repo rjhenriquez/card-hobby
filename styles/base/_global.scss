@@ -3,7 +3,12 @@
 html {
 	scrollbar-gutter: stable;
 }
-
+html.theme--dark {
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	text-rendering: optimizelegibility;
+	text-shadow: 1px 1px 1px rgb(0 0 0 / 0.4%);
+}
 @media (pointer: fine) {
 	*,
 	*::before,
@@ -23,11 +28,15 @@ a {
 	color: inherit;
 	text-decoration: none;
 }
+input,
+select {
+	color: var(--text-color);
+	background: transparent;
+}
 
 ::selection {
-	// TODO: Make this theme friendly
-	//   background-color: var(--black);
-	//   color: var(--white);
+	background-color: var(--text-color);
+	color: var(--bg-color);
 }
 
 .layout {
@@ -38,4 +47,15 @@ a {
 main {
 	flex: 1 1 0;
 	min-width: 0;
+}
+.alert {
+	display: block;
+	width: 100%;
+	text-align: center;
+	color: var(--red);
+	background: color-mix(in srgb, var(--red) 10%, transparent);
+	@include font-weight(semibold);
+	border-radius: var(--button-border-radius);
+	border: 1px solid var(--red);
+	padding: 0.5em 1em;
 }

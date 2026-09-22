@@ -37,12 +37,14 @@ export function GemRateTable({ submissions }: GemRateTableProps) {
 	const columns: TableColumn<PsaGemRateRow>[] = [
 		{
 			id: "submissionNumber",
-			label: "Submission #",
+			label: "Sub #",
 			sortable: true,
-			className: styles["GemRateTable__cell--value"],
-			headerClassName: styles["GemRateTable__cell--value"],
+			className: styles["GemRateTable__cell--mono"],
 			render: (submission) => (
-				<Link href={`/psa-submissions/${submission.submissionNumber}`}>
+				<Link
+					className={styles.GemRateTable__link}
+					href={`/psa-submissions/${submission.submissionNumber}`}
+				>
 					{submission.submissionNumber}
 				</Link>
 			),
@@ -51,7 +53,6 @@ export function GemRateTable({ submissions }: GemRateTableProps) {
 			id: "receivedDate",
 			label: "Received",
 			className: styles["GemRateTable__cell--value"],
-			headerClassName: styles["GemRateTable__cell--value"],
 			sortable: true,
 			render: (submission) => formatShortDate(submission.receivedDate),
 		},
@@ -59,64 +60,56 @@ export function GemRateTable({ submissions }: GemRateTableProps) {
 			id: "totalCards",
 			label: "Total Cards",
 			sortable: true,
-			className: styles["GemRateTable__cell--value"],
-			headerClassName: styles["GemRateTable__cell--value"],
+			className: styles["GemRateTable__cell--mono"],
 			render: (submission) => submission.totalCards,
 		},
 		{
 			id: "psa10",
 			label: "PSA 10",
 			sortable: true,
-			className: styles["GemRateTable__cell--value"],
-			headerClassName: styles["GemRateTable__cell--value"],
+			className: styles["GemRateTable__cell--mono"],
 			render: (submission) => submission.psa10,
 		},
 		{
 			id: "psa9",
 			label: "PSA 9",
 			sortable: true,
-			className: styles["GemRateTable__cell--value"],
-			headerClassName: styles["GemRateTable__cell--value"],
+			className: styles["GemRateTable__cell--mono"],
 			render: (submission) => submission.psa9,
 		},
 		{
 			id: "psa85",
 			label: "PSA 8.5",
 			sortable: true,
-			className: styles["GemRateTable__cell--value"],
-			headerClassName: styles["GemRateTable__cell--value"],
+			className: styles["GemRateTable__cell--mono"],
 			render: (submission) => submission.psa85,
 		},
 		{
 			id: "psa8",
 			label: "PSA 8",
 			sortable: true,
-			className: styles["GemRateTable__cell--value"],
-			headerClassName: styles["GemRateTable__cell--value"],
+			className: styles["GemRateTable__cell--mono"],
 			render: (submission) => submission.psa8,
 		},
 		{
 			id: "psa75OrLess",
 			label: "PSA 7.5",
 			sortable: true,
-			className: styles["GemRateTable__cell--value"],
-			headerClassName: styles["GemRateTable__cell--value"],
+			className: styles["GemRateTable__cell--mono"],
 			render: (submission) => submission.psa75OrLess,
 		},
 		{
 			id: "noGrade",
 			label: "No Grade",
 			sortable: true,
-			className: styles["GemRateTable__cell--value"],
-			headerClassName: styles["GemRateTable__cell--value"],
+			className: styles["GemRateTable__cell--mono"],
 			render: (submission) => submission.noGrade,
 		},
 		{
 			id: "nineOrBetter",
-			label: "9 or Better",
+			label: "Mint Rate",
 			sortable: true,
 			className: styles["GemRateTable__cell--value"],
-			headerClassName: styles["GemRateTable__cell--value"],
 			render: (submission) => `${submission.nineOrBetter.toFixed(1)}%`,
 		},
 		{
@@ -124,7 +117,6 @@ export function GemRateTable({ submissions }: GemRateTableProps) {
 			label: "Gem Rate",
 			sortable: true,
 			className: styles["GemRateTable__cell--value"],
-			headerClassName: styles["GemRateTable__cell--value"],
 			render: (submission) => `${submission.gemRate.toFixed(1)}%`,
 		},
 	];
@@ -219,6 +211,7 @@ export function GemRateTable({ submissions }: GemRateTableProps) {
 				sortColumn={sortColumn}
 				sortDirection={sortDirection}
 				onSort={handleSort}
+				className={styles.GemRateTable__table}
 				top={
 					<div className={styles.GemRateTable__actions}>
 						<div

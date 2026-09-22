@@ -3,10 +3,12 @@
 .HighlightCardTable {
 	background-color: var(--bg-color-02);
 	border: 1px solid var(--border-color);
+	border-radius: var(--package-border-radius);
 	padding: var(--highlight-padding);
 	width: 100%;
 	&__title {
-		@include heading(h3);
+		@include font-weight(semibold);
+		font-size: 0.875rem;
 		margin-bottom: 0.5em;
 	}
 

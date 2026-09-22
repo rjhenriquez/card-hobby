@@ -7,6 +7,9 @@ $fonts-chivo-path: "/fonts/chivo";
 @each $font-name,
 	$map
 		in (
+			ChivoMonoLight: (
+					filehandle: ChivoMono-Light,
+				),
 			ChivoMonoRegular: (
 					filehandle: ChivoMono-Regular,
 				),
@@ -40,6 +43,7 @@ $fonts-chivo-path: "/fonts/chivo";
 
 @mixin font-weight-chivo($family-shorthand) {
 	$weight-stacks: (
+		light: ("ChivoMonoLight"),
 		regular: ("ChivoMonoRegular"),
 		medium: ("ChivoMonoMedium"),
 		semibold: ("ChivoMonoSemiBold"),

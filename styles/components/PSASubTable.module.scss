@@ -1,0 +1,50 @@
+@use "../../styles/utilities/all" as *;
+
+.PSASubsTable {
+	width: min(60rem, 100%);
+	table-layout: fixed;
+	border-collapse: collapse;
+	thead {
+		th {
+			@include font-weight(semibold);
+			font-size: var(--font-size-12);
+			letter-spacing: 0.05em;
+			text-transform: uppercase;
+			margin: 0;
+			padding-bottom: var(--package-table-padding);
+			border-bottom: 1px solid var(--table-border-color);
+		}
+	}
+	tbody {
+		td {
+			font-size: var(--font-size-14);
+			padding-block: var(--package-table-padding);
+			border-bottom: 1px solid var(--table-border-color);
+		}
+	}
+	th,
+	td {
+		padding-block: var(--table-padding);
+		text-align: left;
+	}
+	td {
+		&:not(:nth-child(2)) {
+			@include font-weight-chivo(light);
+		}
+	}
+	&__link {
+		@include font-weight-chivo(regular);
+		border: var(--input-border-line);
+		font-size: 0.9em;
+		padding: var(--table-link-padding);
+		border-radius: 0.4em;
+		line-height: 1;
+		letter-spacing: 0.05em;
+		transition: var(--transition-productive);
+		text-box: trim-both cap alphabetic;
+		&:hover {
+			border-color: var(--psa-color);
+			color: var(--psa-color);
+		}
+	}
+}

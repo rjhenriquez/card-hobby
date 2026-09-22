@@ -27,7 +27,8 @@
 		gap: var(--highlight-gap-md);
 		position: relative;
 		&__label {
-			@include heading(h3);
+			@include font-weight(semibold);
+			font-size: 0.875rem;
 			grid-area: label;
 			justify-self: end;
 			color: var(--highlight-label-color);

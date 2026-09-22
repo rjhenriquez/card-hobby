@@ -75,17 +75,18 @@
 		}
 	}
 	&--small {
-		color: red;
-		&__icon {
+		.InputText__icon {
 			width: var(--button-icon-size-sm);
 			height: var(--button-icon-size-sm);
+			&__wrapper {
+				width: calc(var(--button-icon-size-sm) + var(--input-padding-sm) * 2);
+				// padding-inline: 0.3em;
+			}
 		}
 		input {
-			font-size: var(--input-font-size-sm);
-			height: var(--input-height-sm);
-			&:focus {
-				border-color: var(--main);
-			}
+			padding-left: calc(
+				var(--button-icon-size-sm) + var(--input-padding-sm) * 3
+			);
 		}
 	}
 }

@@ -43,4 +43,10 @@
 			border-color: var(--main);
 		}
 	}
+	&--small {
+		font-size: var(--font-size-14);
+		select {
+			font-size: var(--input-font-size-sm);
+		}
+	}
 }

@@ -26,6 +26,7 @@ import {
 	CARD_TABLE_COLUMN_WIDTHS,
 	CARD_TABLE_HIDDEN_COLUMNS,
 	CARD_TABLE_VALUE_COLUMNS,
+	PSA_GRADE_DEFINITIONS,
 } from "@/constants";
 import {
 	getStoredCardTableExpanded,
@@ -40,6 +41,7 @@ import type { Card } from "@/types/types";
 import { Button } from "@/components/Button/Button";
 import { ButtonGroup } from "@/components/ButtonGroup/ButtonGroup";
 import { InputCheckbox } from "@/components/InputCheckbox/InputCheckbox";
+import { Icon } from "@/components/Icons/Icons";
 import { InputText } from "@/components/InputText/InputText";
 import { Table } from "@/components/Table/Table";
 import type { TableColumn, TableSortDirection } from "@/components/Table/Table";
@@ -256,6 +258,22 @@ export function CardTable({
 			},
 		},
 		{
+			accessorKey: "grade",
+			header: "Grade",
+			cell: ({ getValue }) => {
+				const value = getValue() as number | null;
+				if (value === null && portfolio === "collection") {
+					return <span className={styles["CardTable__cell--muted"]}>RAW</span>;
+				}
+				if (value === null) {
+					return <span className={styles["CardTable__cell--muted"]}>--</span>;
+				}
+				const definition =
+					PSA_GRADE_DEFINITIONS[value as keyof typeof PSA_GRADE_DEFINITIONS];
+				return definition ? `${definition} ${value}` : value;
+			},
+		},
+		{
 			accessorKey: "price",
 			header: "Cost",
 			cell: ({ getValue }) => {
@@ -341,7 +359,8 @@ export function CardTable({
 							[styles["CardTable__cell--value--negative"]]: value < 0,
 						})}
 					>
-						{value < 0 ? "-" : ""}%{Math.abs(value).toFixed(2)}
+						{value < 0 ? "-" : ""}
+						{Math.abs(value).toFixed(2)}%
 					</span>
 				);
 			},
@@ -352,7 +371,21 @@ export function CardTable({
 			cell: ({ getValue }) => {
 				const value = getValue() as boolean;
 
-				return value ? "Yes" : "No";
+				return value ? (
+					<span
+						className={`${styles.CardTable__label} ${styles["CardTable__label--yes"]}`}
+					>
+						<Icon icon='circle-check' />
+						Yes
+					</span>
+				) : (
+					<span
+						className={`${styles.CardTable__label} ${styles["CardTable__label--no"]}`}
+					>
+						<Icon icon='circle-close' />
+						No
+					</span>
+				);
 			},
 		},
 	];
@@ -463,7 +496,8 @@ export function CardTable({
 							[styles["CardTable__cell--value--negative"]]: totalRoi < 0,
 						})}
 					>
-						{totalRoi < 0 ? "-" : ""}%{Math.abs(totalRoi).toFixed(2)}
+						{totalRoi < 0 ? "-" : ""}
+						{Math.abs(totalRoi).toFixed(2)}%
 					</span>
 				);
 
@@ -597,6 +631,7 @@ export function CardTable({
 				sortDirection={sortDirection}
 				onSort={handleSort}
 				columnClasses={columnClasses}
+				className={styles.CardTable__table}
 				top={
 					<div className={styles.CardTable__actions}>
 						<div className={styles.CardTable__actions__group}>
@@ -778,7 +813,6 @@ export function CardTable({
 						))}
 					</tr>
 				}
-				className={styles.CardTable__table}
 			/>
 		</div>
 	);

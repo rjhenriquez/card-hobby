@@ -12,9 +12,8 @@
 	}
 
 	&__label {
-		@include font-weight(bold);
+		@include font-weight(semibold);
 		font-size: var(--tabs-font-size);
-		letter-spacing: 0.05em;
 		border-bottom: var(--tabs-border-width-lg) solid transparent;
 		text-transform: uppercase;
 		cursor: pointer;

@@ -35,5 +35,8 @@
 	}
 	p {
 		line-height: 1.3;
+		strong {
+			@include font-weight(semibold);
+		}
 	}
 }

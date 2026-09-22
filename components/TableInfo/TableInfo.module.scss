@@ -1,8 +1,15 @@
 @use "@/styles/utilities/all" as *;
 
 .TableInfo {
-	--tableInfo-margin: 1rem;
-	margin-block: var(--tableInfo-margin);
+	width: 100%;
+	margin-top: var(--packages-gap);
+	border-collapse: collapse;
+	table-layout: fixed;
+	min-width: 70rem;
+	&__scroll {
+		width: 100%;
+		overflow-x: auto;
+	}
 	thead {
 		th {
 			@include font-weight(semibold);
@@ -10,15 +17,56 @@
 			letter-spacing: 0.05em;
 			text-transform: uppercase;
 			margin: 0;
-			text-align: left;
+			padding-bottom: var(--package-table-padding);
+			border-bottom: 1px solid var(--table-border-color);
 		}
 	}
 	tbody {
-		tr {
-			border-bottom: 1px solid var(--border-color);
-		}
 		td {
 			font-size: var(--font-size-14);
+			border-bottom: 1px solid var(--table-border-color);
+			vertical-align: middle;
+			&:not(:first-of-type) {
+				@include font-weight-chivo(regular);
+			}
+		}
+		tr:last-child td {
+			border-bottom: 0;
+		}
+	}
+
+	th,
+	td {
+		text-align: left;
+		padding: var(--package-table-padding);
+		text-align: left;
+		&:last-child {
+			padding-right: 0;
+		}
+
+		&:nth-child(1) {
+			width: var(--table-info-cell-width-first);
+			padding-left: 0;
+		}
+
+		&:nth-child(2) {
+			width: var(--table-info-cell-width);
+		}
+
+		&:nth-child(3) {
+			width: var(--table-info-cell-width);
+		}
+		&:nth-child(4) {
+			width: var(--table-info-cell-width);
+		}
+		&:nth-child(5) {
+			width: var(--table-info-cell-width);
+		}
+		&:nth-child(6) {
+			width: var(--table-info-cell-width);
+		}
+		&:nth-child(7) {
+			width: var(--table-info-cell-width-last);
 		}
 	}
 }

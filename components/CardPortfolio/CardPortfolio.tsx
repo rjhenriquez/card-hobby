@@ -20,6 +20,7 @@ import type { CardFormOptions } from "@/db/queries/cardFormOptions";
 import type { Card } from "@/types/types";
 
 import styles from "@/styles/components/DrawerContent.module.scss";
+import modalStyles from "@/styles/components/ModalContent.module.scss";
 
 interface CardStatus {
 	id: number;
@@ -193,6 +194,15 @@ export function CardPortfolio({
 		setPurchasePackageError(null);
 	}
 
+	function handleCloseEdit() {
+		setEditingCard(null);
+		clearSelection();
+	}
+
+	function handleCloseCopy() {
+		setCopyingCard(null);
+		clearSelection();
+	}
 	return (
 		<div className={styles.CardPortfolio}>
 			<CardTable
@@ -213,7 +223,7 @@ export function CardPortfolio({
 					portfolio={portfolio}
 					options={options}
 					card={editingCard}
-					onCloseEdit={() => setEditingCard(null)}
+					onCloseEdit={handleCloseEdit}
 					editOnly
 				/>
 			)}
@@ -224,7 +234,7 @@ export function CardPortfolio({
 					portfolio={portfolio}
 					options={options}
 					copyFrom={copyingCard}
-					onCloseCopy={() => setCopyingCard(null)}
+					onCloseCopy={handleCloseCopy}
 					copyOnly
 				/>
 			)}
@@ -241,14 +251,21 @@ export function CardPortfolio({
 					{destination === "investment" ? "Investment" : "Collection"}?
 				</p>
 
-				<div>
-					<button type='button' onClick={() => setCardToMove(null)}>
-						Cancel
-					</button>
-
-					<button type='button' onClick={handleMove}>
-						Move
-					</button>
+				<div className={modalStyles.ModalContent__actions}>
+					<Button
+						type='main'
+						variant='delete'
+						htmlType='button'
+						onClick={() => setCardToMove(null)}
+						label='Cancel'
+					/>
+					<Button
+						type='main'
+						variant='add'
+						htmlType='button'
+						onClick={handleMove}
+						label='Move'
+					/>
 				</div>
 			</Modal>
 
@@ -264,9 +281,9 @@ export function CardPortfolio({
 							{selectedCardIds.length === 1 ? "" : "s"} selected
 						</h3>
 						{psaError && (
-							<h3 className={styles.DrawerInfo__count} role='alert'>
+							<p className='alert' role='alert'>
 								{psaError}
-							</h3>
+							</p>
 						)}
 					</div>
 					<form

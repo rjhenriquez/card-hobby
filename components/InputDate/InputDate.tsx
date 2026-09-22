@@ -8,7 +8,7 @@ interface InputDateProps {
 	value?: string;
 	name: string;
 	label: string;
-	width?: "full" | "half";
+	width?: "full" | "half" | "third";
 	onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
 	className?: string;
 }

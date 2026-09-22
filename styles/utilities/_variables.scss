@@ -5,7 +5,8 @@
 	--white: #ffffff;
 	--black: #000000;
 	--main: #7066ff;
-	--red: #ff5976;
+	--red: #ff5f6d;
+	--green: #35c98b;
 
 	--psa-color: var(--main);
 
@@ -15,14 +16,24 @@
 	--gray-04: #e6e7e8;
 	--gray-05: #98999b;
 	--gray-06: #707172;
-	--gray-07: #616161;
-	--gray-08: #242b39;
-	--gray-08: #1e2229;
-	--gray-09: #090a0f;
+	--gray-07: #1a1a28;
+	--gray-08: #0c0c1e;
+	--gray-09: #000000;
+
+	--text-color-dark: #282828;
 
 	--input-border-color: var(--gray-05);
 
 	--transition-productive: 0.2s all ease;
+
+	--expressive-timing-all: 0.12s;
+	--expressive-timing-width: 0.3s;
+	--expressive-ease-all: ease-in-out;
+	--expressive-ease-width: cubic-bezier(0.075, 0.82, 0.165, 1);
+
+	--sidebar-transition:
+		all var(--expressive-timing-all) var(--expressive-ease-all),
+		width var(--expressive-timing-width) var(--expressive-ease-width);
 
 	// ------- Spacing -------
 
@@ -50,7 +61,7 @@
 	// ------- Button Component -------
 	--button-border-radius: 0.25em; //4px
 	--button-icon-size: 1.25rem; //20px
-	--button-icon-size-sm: 0.875rem; // 14px
+	--button-icon-size-sm: 1rem; // 14px
 	--button-size: 34px;
 	--button-border-line: var(--button-border-color) 1px solid;
 
@@ -87,7 +98,6 @@
 		all 0.12s ease-in-out, width 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
 
 	// ------- Table -------
-	--table-border-radius: 0.625em; //10px
 	--table-padding: 0.625em; //10px
 	--table-actions-gap: 0.75rem; //12px
 	--table-select-width: 30px;
@@ -101,13 +111,19 @@
 
 	--table-cell-min-width: 7.5em;
 	--table-cell-padding: 0.5em 0.4em;
+	--table-cell-padding-lg: 0.7em 0.4em;
 	--table-cell-header-padding: 0.5em 0.4em;
 	--table-header-font-size: 10px;
 	--table-value-font-size: 14px;
 
-	--table-color-value-positive: var(--green);
-	--table-color-value-negative: var(--red);
 	--table-link-padding: 0.1em 0.4em;
+
+	// ------- TableInfo -------
+	--table-info-cell-width-first: 31.5rem;
+	--table-info-cell-width: 8rem;
+	--table-info-cell-width-last: 8rem;
+	--table-info-cell-padding-inline: 0.4em; //10px
+	--table-info-input-width: 6.5rem; //10px
 
 	// ------- Drawer -------
 	--drawer-dialog-width: 460px;
@@ -131,6 +147,7 @@
 	--input-border: 1px solid var(--input-border-color);
 	--input-border-radius: 0.25em; //4px
 	--input-padding: 0.4em; //10px
+	--input-padding-sm: 0.3em; //10px
 	--input-font-size: 1rem;
 	--input-font-sm: 0.875rem; // 14px
 
@@ -142,7 +159,7 @@
 	--packages-card-gap: 0.25em; //4px
 	--packages-item-min-width: 4rem;
 	--packages-item-price-width: 5rem;
-	--package-table-padding: 0.25rem;
+	--package-table-padding: 0.75rem;
 
 	// ------- Accordion -------
 	--accordion-transition: var(--transition-productive);
@@ -182,19 +199,49 @@
 	// ------- HighlightCard -------
 	--highlight-border-radius: 0.25em; //4px
 	--highlight-padding: var(--spacing-20);
-	--highlight-value-font-size: 1.6rem;
-	--highlight-value-font-size-sm: 1.4rem;
+	--highlight-value-font-size: 1.25rem;
+	--highlight-value-font-size-sm: 1rem;
 	--highlight-sub-font-size: 14px;
 	--highlight-gap: 1.2rem;
 	--highlight-gap-sm: 0.4rem;
 	--highlight-gap-md: 0.6em;
 	--highlight-gap-lg: 3rem;
-	--highlight-icon-size: 2.4rem;
+	--highlight-icon-size: 2rem;
 	--highlight-label-color: color-mix(
 		in srgb,
 		var(--text-color) 70%,
 		transparent
 	);
+
+	// ------- Chart -------
+	--chart-line-color: var(--main);
+	--chart-dot-color: var(--main);
+	--chart-grid-color: var(--border-color);
+	--chart-tooltip-background-color: var(--bg-color-02);
+	--chart-tooltip-border-line: 1px solid var(--border-color);
+	--chart-tooltip-padding: 0.75rem;
+	--chart-tooltip-gap: 0.5rem;
+	--chart-tooltip-box-shadow: 0 0.2rem 0.6rem
+		color-mix(in srgb, var(--black) 20%, transparent);
+	--chart-tooltip-label-color: color-mix(
+		in srgb,
+		var(--text-color) 70%,
+		transparent
+	);
+	--chart-tooltip-item-color: var(--text-color);
+	--chart-fill-opacity-start: 0.3;
+	--chart-fill-opacity-end: 0;
+	--chart-axis-font-size: 0.75rem;
+	--chart-axis-font-opacity: 0.8;
+	--chart-axis-border-color: color-mix(
+		in srgb,
+		var(--text-color) 40%,
+		transparent
+	);
+	--chart-zero-line-color: var(--chart-axis-border-color);
+
+	// ------- Toggle -------
+	--toggle-button-size: 1.6rem;
 
 	@include media-query(medium-up) {
 	}
@@ -208,18 +255,17 @@
 	--text-color: var(--gray-09);
 	--border-color: #d6d7d8;
 	--button-border-color: #dbdbdb;
-	--table-header-bg: var(--gray-03);
-	--green: #58a500;
+	--table-header-bg: var(--gray-02);
+	--green-text: color-mix(in srgb, #35c98b 70%, black);
 }
 
 .theme--dark {
 	--bg-color: var(--gray-09);
 	--bg-color-02: var(--gray-08);
 	--bg-color-03: var(--gray-07);
-	--text-color: var(--gray-01);
-	--border-color: color-mix(in srgb, #a8b3ce, transparent 80%);
-	--border-color: #3a3d48;
+	--text-color: var(--white);
+	--border-color: #1d2430;
 	--button-border-color: #4f535f;
-	--table-header-bg: #2c313b;
-	--green: #a0d664;
+	--table-header-bg: var(--gray-08);
+	--green-text: #35c98b;
 }

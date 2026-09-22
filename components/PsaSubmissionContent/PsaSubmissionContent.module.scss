@@ -1,0 +1,19 @@
+@use "@/styles/utilities/all" as *;
+
+.PsaSubmissionContent {
+	background-color: var(--bg-color-02);
+	border: 1px solid var(--border-color);
+	border-radius: var(--package-border-radius);
+	padding: var(--highlight-padding);
+	width: min(80rem, 100%);
+	&__accordion {
+		:global(.Accordion__trigger) {
+			margin-top: 1em;
+			justify-content: flex-start;
+		}
+		button {
+			@include font-weight(semibold);
+			font-size: 0.875rem;
+		}
+	}
+}

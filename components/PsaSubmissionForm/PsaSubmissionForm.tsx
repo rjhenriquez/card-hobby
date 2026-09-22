@@ -115,55 +115,59 @@ export function PsaSubmissionForm({
 					<h2 className={styles.PsaSubmissionForm__heading}>
 						Submission Number: <span>{submission.submissionNumber}</span>
 					</h2>
-					<div className={styles.PsaSubmissionForm__section}>
-						<InputText
-							className={styles.PsaSubmissionForm__input}
-							name='stage'
-							label='Stage'
-							value={stage}
-							onChange={(event) => setStage(event.target.value)}
-						/>
-						<InputDate
-							className={styles.PsaSubmissionForm__input}
-							name='sentDate'
-							label='Sent Date'
-							value={sentDate}
-							onChange={(event) => setSentDate(event.target.value)}
-						/>
-						<InputDate
-							className={styles.PsaSubmissionForm__input}
-							name='receivedDate'
-							label='Received Date'
-							value={receivedDate}
-							onChange={(event) => setReceivedDate(event.target.value)}
-						/>
-					</div>
-					<div className={styles.PsaSubmissionForm__section}>
-						<InputText
-							className={styles.PsaSubmissionForm__input}
-							type='number'
-							name='outboundShippingCost'
-							label='Outbound Shipping'
-							leadingIcon='dollar-sign'
-							step={0.01}
-							min={0}
-							value={outboundShippingCost}
-							onChange={(event) => setOutboundShippingCost(event.target.value)}
-						/>
-						<InputText
-							className={styles.PsaSubmissionForm__input}
-							type='number'
-							name='insuredReturnShippingCost'
-							label='Insured Return Shipping'
-							leadingIcon='dollar-sign'
-							step={0.01}
-							min={0}
-							value={insuredReturnShippingCost}
-							onChange={(event) =>
-								setInsuredReturnShippingCost(event.target.value)
-							}
-						/>
-					</div>
+
+					<InputText
+						className={styles.PsaSubmissionForm__input}
+						name='stage'
+						label='Stage'
+						value={stage}
+						width='third'
+						onChange={(event) => setStage(event.target.value)}
+					/>
+					<InputDate
+						className={styles.PsaSubmissionForm__input}
+						name='sentDate'
+						label='Sent Date'
+						width='third'
+						value={sentDate}
+						onChange={(event) => setSentDate(event.target.value)}
+					/>
+					<InputDate
+						className={styles.PsaSubmissionForm__input}
+						name='receivedDate'
+						width='third'
+						label='Received Date'
+						value={receivedDate}
+						onChange={(event) => setReceivedDate(event.target.value)}
+					/>
+
+					<InputText
+						className={styles.PsaSubmissionForm__input}
+						type='number'
+						name='outboundShippingCost'
+						label='Outbound Shipping'
+						leadingIcon='dollar-sign'
+						step={0.01}
+						min={0}
+						width='half'
+						value={outboundShippingCost}
+						onChange={(event) => setOutboundShippingCost(event.target.value)}
+					/>
+					<InputText
+						className={styles.PsaSubmissionForm__input}
+						type='number'
+						name='insuredReturnShippingCost'
+						label='Insured Return Shipping'
+						leadingIcon='dollar-sign'
+						width='half'
+						step={0.01}
+						min={0}
+						value={insuredReturnShippingCost}
+						onChange={(event) =>
+							setInsuredReturnShippingCost(event.target.value)
+						}
+					/>
+
 					<div className={styles.PsaSubmissionForm__actions}>
 						{!isCompleted && (
 							<Button
@@ -184,38 +188,32 @@ export function PsaSubmissionForm({
 					</div>
 				</form>
 			) : (
-				<dl className='DevPsaInfo'>
-					<div>
-						<dt>Submission Number</dt>
-						<dd>{submission.submissionNumber}</dd>
-					</div>
+				<dl className={styles.PsaSubmissionForm__dl}>
+					<h2 className={styles.PsaSubmissionForm__heading}>
+						Submission Number: <span>{submission.submissionNumber}</span>
+					</h2>
 
-					<div>
+					<div className={styles.PsaSubmissionForm__dl__wrapper}>
 						<dt>Stage</dt>
 						<dd>{submission.stage ?? "—"}</dd>
 					</div>
 
-					<div>
+					<div className={styles.PsaSubmissionForm__dl__wrapper}>
 						<dt>Sent Date</dt>
 						<dd>{submission.sentDate ?? "—"}</dd>
 					</div>
 
-					<div>
+					<div className={styles.PsaSubmissionForm__dl__wrapper}>
 						<dt>Received Date</dt>
 						<dd>{submission.receivedDate ?? "—"}</dd>
 					</div>
 
-					<div>
-						<dt>Completed Date</dt>
-						<dd>{submission.completedDate ?? "—"}</dd>
-					</div>
-
-					<div>
+					<div className={styles.PsaSubmissionForm__dl__wrapper}>
 						<dt>Outbound Shipping</dt>
 						<dd>${Number(submission.outboundShippingCost).toFixed(2)}</dd>
 					</div>
 
-					<div>
+					<div className={styles.PsaSubmissionForm__dl__wrapper}>
 						<dt>Insured Return Shipping</dt>
 						<dd>${Number(submission.insuredReturnShippingCost).toFixed(2)}</dd>
 					</div>

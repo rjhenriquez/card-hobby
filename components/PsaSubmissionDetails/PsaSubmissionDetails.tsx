@@ -1,11 +1,10 @@
 "use client";
 
-import { useState } from "react";
 import { PsaSubmissionForm } from "@/components/PsaSubmissionForm/PsaSubmissionForm";
-import { PsaSubmissionCardRow } from "@/components/PsaSubmissionCardRow/PsaSubmissionCardRow";
+import { Button } from "@/components/Button/Button";
+
 import styles from "./PsaSubmissionDetails.module.scss";
-import { TableInfo } from "@/components/TableInfo/TableInfo";
-import { Accordion } from "@/components/Accordion/Accordion";
+
 interface PsaSubmission {
 	id: number;
 	submissionNumber: string;
@@ -17,95 +16,58 @@ interface PsaSubmission {
 	insuredReturnShippingCost: string;
 }
 
-interface PsaSubmissionCard {
-	submissionCardId: number;
-	player: string;
-	year: string | null;
-	setName: string | null;
-	info: string | null;
-	baseGradingFee: string;
-	gradingAdjustment: string;
-	grade: string | null;
-	gradeStatus: "pending" | "graded" | "no_grade";
-}
-
 interface PsaSubmissionDetailsProps {
 	submission: PsaSubmission;
-	cards: PsaSubmissionCard[];
-	sharedCost: number;
 	totalSubmissionCost: number;
+	isEditing: boolean;
+	onEditingChange: (isEditing: boolean) => void;
 }
 
 export function PsaSubmissionDetails({
 	submission,
-	cards,
-	sharedCost,
 	totalSubmissionCost,
+	isEditing,
+	onEditingChange,
 }: PsaSubmissionDetailsProps) {
 	const isCompleted = submission.completedDate !== null;
-	const [isEditing, setIsEditing] = useState(!isCompleted);
 
 	return (
-		<>
-			{isCompleted && (
-				<button
-					type='button'
-					onClick={() => setIsEditing((current) => !current)}
-				>
-					{isEditing ? "Cancel Editing" : "Edit Submission"}
-				</button>
-			)}
-
-			<PsaSubmissionForm
-				submission={submission}
-				isEditing={isEditing}
-				onSaved={() => {
-					if (isCompleted) {
-						setIsEditing(false);
-					}
-				}}
-			/>
-
-			<p className={styles.PsaSubmissionDetails__info}>
-				<strong>Total Submission Cost:</strong>{" "}
-				{`$${totalSubmissionCost.toLocaleString("en-US", {
-					minimumFractionDigits: 2,
-					maximumFractionDigits: 2,
-				})}`}
-			</p>
-
-			<section className={styles.PsaSubmissionDetails}>
-				<h2>Cards</h2>
-
-				{cards.length === 0 ? (
-					<p>No cards in this submission.</p>
-				) : (
-					<Accordion icon='arrow-down' label='Show Cards' defaultOpen={true}>
-						<TableInfo
-							headers={[
-								"Card",
-								"Base Fee",
-								"Shared Cost",
-								"Adjustment",
-								"Total Grading Cost",
-								"Grade",
-								"",
-							]}
-						>
-							{cards.map((card) => (
-								<PsaSubmissionCardRow
-									key={card.submissionCardId}
-									card={card}
-									submissionNumber={submission.submissionNumber}
-									sharedCost={sharedCost}
-									isCompleted={isCompleted}
-									isEditing={isEditing}
-								/>
-							))}
-						</TableInfo>
-					</Accordion>
+		<div className={styles.PsaSubmissionDetails}>
+			<div className={styles.PsaSubmissionDetails__top}>
+				{isCompleted && (
+					<Button
+						type='main'
+						variant='cancel'
+						htmlType='button'
+						leadingIcon='edit'
+						className={styles["PsaSubmissionDetails__edit-btn"]}
+						label={isEditing ? "Cancel Editing" : "Edit Submission"}
+						onClick={() => onEditingChange(!isEditing)}
+					/>
 				)}
-			</section>
-		</>
+
+				<PsaSubmissionForm
+					submission={submission}
+					isEditing={isEditing}
+					onSaved={() => {
+						if (isCompleted) {
+							onEditingChange(false);
+						}
+					}}
+				/>
+
+				<div className={styles.PsaSubmissionDetails__info}>
+					<p className={styles.PsaSubmissionDetails__info__label}>
+						Total Submission Cost:
+					</p>
+					<p className={styles.PsaSubmissionDetails__info__value}>
+						{`$${totalSubmissionCost.toLocaleString("en-US", {
+							minimumFractionDigits: 2,
+							maximumFractionDigits: 2,
+						})}`}
+					</p>
+				</div>
+			</div>
+		</div>
 	);
 }

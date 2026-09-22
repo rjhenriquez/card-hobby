@@ -19,6 +19,7 @@ interface InputSelectProps {
 	form?: string;
 	onChange?: (event: ChangeEvent<HTMLSelectElement>) => void;
 	className?: string;
+	variant?: "small";
 }
 
 export function InputSelect({
@@ -30,6 +31,7 @@ export function InputSelect({
 	width = "full",
 	form,
 	onChange,
+	variant,
 	className,
 }: InputSelectProps) {
 	return (
@@ -37,6 +39,7 @@ export function InputSelect({
 			className={cn(
 				styles.InputSelect,
 				width && styles[`InputSelect--${width}`],
+				variant && styles[`InputSelect--${variant}`],
 				className,
 			)}
 		>

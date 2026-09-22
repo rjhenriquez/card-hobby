@@ -25,4 +25,5 @@ export interface Card {
 	isPaid: boolean;
 	roi: number | null;
 	isShared: boolean;
+	grade: number | null;
 }

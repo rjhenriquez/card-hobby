@@ -71,7 +71,7 @@ export const cards = pgTable("cards", {
 		precision: 10,
 		scale: 2,
 	}),
-	historicalGrade: numeric("historical_grade", {
+	grade: numeric("grade", {
 		precision: 3,
 		scale: 1,
 	}),

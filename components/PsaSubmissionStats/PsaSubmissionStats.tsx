@@ -1,3 +1,4 @@
+import styles from "./PsaSubmissionStats.module.scss";
 interface PsaSubmissionCard {
 	grade: string | null;
 	gradeStatus: "pending" | "graded" | "no_grade";
@@ -80,60 +81,78 @@ export function PsaSubmissionStats({
 		completedCards > 0 ? ((psa10 + psa9) / completedCards) * 100 : 0;
 
 	return (
-		<section className='DevPsaStats'>
-			<h2>Grading Summary</h2>
-
-			<dl>
-				<div>
+		<div className={styles.PsaSubmissionStats}>
+			<h2 className={styles.PsaSubmissionStats__heading}>Grading Summary</h2>
+			<dl className={styles["PsaSubmissionStats__description-list"]}>
+				<div
+					className={styles["PsaSubmissionStats__description-list__wrapper"]}
+				>
 					<dt>Total Cards</dt>
 					<dd>{totalCards}</dd>
 				</div>
 
-				<div>
+				<div
+					className={styles["PsaSubmissionStats__description-list__wrapper"]}
+				>
 					<dt>Completed</dt>
 					<dd>{completedCards}</dd>
 				</div>
 
-				<div>
+				<div
+					className={styles["PsaSubmissionStats__description-list__wrapper"]}
+				>
 					<dt>PSA 10</dt>
 					<dd>{psa10}</dd>
 				</div>
 
-				<div>
+				<div
+					className={styles["PsaSubmissionStats__description-list__wrapper"]}
+				>
 					<dt>PSA 9</dt>
 					<dd>{psa9}</dd>
 				</div>
 
-				<div>
+				<div
+					className={styles["PsaSubmissionStats__description-list__wrapper"]}
+				>
 					<dt>PSA 8.5</dt>
 					<dd>{psa85}</dd>
 				</div>
 
-				<div>
+				<div
+					className={styles["PsaSubmissionStats__description-list__wrapper"]}
+				>
 					<dt>PSA 8</dt>
 					<dd>{psa8}</dd>
 				</div>
 
-				<div>
+				<div
+					className={styles["PsaSubmissionStats__description-list__wrapper"]}
+				>
 					<dt>PSA 7.5 or Less</dt>
 					<dd>{psa75OrLess}</dd>
 				</div>
 
-				<div>
+				<div
+					className={styles["PsaSubmissionStats__description-list__wrapper"]}
+				>
 					<dt>No Grade</dt>
 					<dd>{noGrade}</dd>
 				</div>
 
-				<div>
+				<div
+					className={styles["PsaSubmissionStats__description-list__wrapper"]}
+				>
+					<dt>Mint Rate</dt>
+					<dd>{nineOrBetter.toFixed(1)}%</dd>
+				</div>
+				<div
+					className={styles["PsaSubmissionStats__description-list__wrapper"]}
+				>
 					<dt>Gem Rate</dt>
 					<dd>{gemRate.toFixed(1)}%</dd>
 				</div>
-
-				<div>
-					<dt>9 or Better</dt>
-					<dd>{nineOrBetter.toFixed(1)}%</dd>
-				</div>
 			</dl>
-		</section>
+		</div>
 	);
 }

@@ -9,16 +9,18 @@ interface TableInfoProps {
 
 export function TableInfo({ headers, children }: TableInfoProps) {
 	return (
-		<table className={styles.TableInfo}>
-			<thead>
-				<tr>
-					{headers.map((header, index) => (
-						<th key={`${header}-${index}`}>{header}</th>
-					))}
-				</tr>
-			</thead>
+		<div className={styles.TableInfo__scroll}>
+			<table className={styles.TableInfo}>
+				<thead>
+					<tr>
+						{headers.map((header, index) => (
+							<th key={`${header}-${index}`}>{header}</th>
+						))}
+					</tr>
+				</thead>
 
-			<tbody>{children}</tbody>
-		</table>
+				<tbody>{children}</tbody>
+			</table>
+		</div>
 	);
 }
