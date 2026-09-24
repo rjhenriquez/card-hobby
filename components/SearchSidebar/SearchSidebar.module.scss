@@ -1,0 +1,80 @@
+@use "@/styles/utilities/all" as *;
+
+.SearchSidebar {
+	--search-sidebar-font-size: 0.875rem;
+	background-color: var(--bg-color-02);
+	position: relative;
+	width: var(--sidebar-search-width);
+	flex: 0 0 auto;
+	display: flex;
+	flex-direction: column;
+	transition: var(--sidebar-transition);
+	overflow: hidden;
+	height: 100vh;
+	&--closed {
+		width: var(--sidebar-width-closed);
+	}
+	&__header {
+		margin-bottom: calc(var(--sidebar-padding) / 2);
+		h2 {
+			@include heading(h3);
+			@include font-weight(regular);
+			text-transform: uppercase;
+		}
+	}
+	&__top {
+		min-height: var(--header-height);
+		border-bottom: var(--header-border-line);
+		border-right: var(--header-border-line);
+		display: flex;
+		align-items: center;
+		padding-inline: calc(var(--header-padding) + var(--sidebar-item-padding));
+	}
+	&__bottom {
+		border-right: var(--header-border-line);
+		padding: var(--sidebar-padding);
+		flex: 1;
+		max-height: calc(
+			100vh - var(--header-height) - var(--sidebar-admin-height)
+		);
+		overflow-y: scroll;
+	}
+	&__logo {
+		@include font-weight(bold);
+	}
+	&__admin {
+		width: 100%;
+		border-top: var(--header-border-line);
+		border-right: var(--header-border-line);
+		height: var(--sidebar-admin-height);
+		padding-inline: var(--sidebar-padding);
+		box-shadow: 0px -2px 8px 0px rgba(0, 0, 0, 0.2);
+		text-align: center;
+		position: absolute;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		bottom: 0;
+		left: 0;
+		font-size: 1rem;
+		gap: 0.5em;
+		&__icon {
+			width: 1.2em;
+		}
+	}
+
+	// FROM HERE DOWN ---------
+
+	&__groups {
+		display: flex;
+		flex-direction: column;
+		gap: 0.2rem;
+	}
+	&__section {
+		&:not(:last-of-type) {
+			border-bottom: var(--button-border-color) 1px solid;
+		}
+		padding-bottom: calc(var(--sidebar-padding) / 2);
+		margin-bottom: var(--sidebar-padding);
+	}
+}

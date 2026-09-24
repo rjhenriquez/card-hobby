@@ -80,7 +80,7 @@
 
 	// ------- Sidebar Component -------
 	--sidebar-width: 14.375rem; //230px
-	--sidebar-width: 230px; //230px
+	--sidebar-search-width: 17rem; //230px
 	--sidebar-width-closed: 100px; //230px
 	--sidebar-width-closed: calc(
 		(var(--sidebar-padding) * 2) + var(--sidebar-item-icon-size) +
@@ -96,6 +96,7 @@
 	--sidebar-border-line: var(--border-color) 1px solid;
 	--sidebar-transition:
 		all 0.12s ease-in-out, width 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
+	--sidebar-admin-height: 3.5rem;
 
 	// ------- Table -------
 	--table-padding: 0.625em; //10px
@@ -150,6 +151,7 @@
 	--input-padding-sm: 0.3em; //10px
 	--input-font-size: 1rem;
 	--input-font-sm: 0.875rem; // 14px
+	--input-number-max-width: 5rem;
 
 	// ------- Packages-------
 	--package-card-border: var(--button-border-color) 1px solid;
@@ -195,6 +197,7 @@
 	--tabs-border-width-lg: 3px;
 	--tabs-border-width: 1px;
 	--tabs-font-size: 0.875rem; // 14px
+	--tabs-logo-height: 1.5rem;
 
 	// ------- HighlightCard -------
 	--highlight-border-radius: 0.25em; //4px
@@ -242,6 +245,19 @@
 
 	// ------- Toggle -------
 	--toggle-button-size: 1.6rem;
+
+	// ------- ToggleSmall -------
+	--toggle-small-font-size: 0.875rem;
+	--toggle-small-button-size: 1.25rem;
+	--toggle-small-padding: 0.125rem;
+	--toggle-small-icon-size: 1.5rem;
+	--toggle-small-background-color: var(--button-border-color);
+
+	// ------- GeneratedUrls -------
+	--generated-urls-space: 1rem;
+
+	// ------- Filters -------
+	--filters-space: 1rem;
 
 	@include media-query(medium-up) {
 	}

@@ -194,6 +194,61 @@ export async function updatePurchasePackage(formData: FormData) {
 		throw new Error("Purchase package not found.");
 	}
 
+	const submittedCardIds = formData
+		.getAll("cardId")
+		.map((value) => Number(value))
+		.filter((value) => Number.isInteger(value));
+
+	if (submittedCardIds.length === 0) {
+		throw new Error("At least one card is required.");
+	}
+
+	if (new Set(submittedCardIds).size !== submittedCardIds.length) {
+		throw new Error("A card cannot be added to a package more than once.");
+	}
+
+	const existingPackageCards = await db
+		.select({
+			cardId: purchasePackageCards.cardId,
+		})
+		.from(purchasePackageCards)
+		.where(eq(purchasePackageCards.purchasePackageId, id));
+
+	const existingCardIds = existingPackageCards.map((card) => card.cardId);
+
+	const addedCardIds = submittedCardIds.filter(
+		(cardId) => !existingCardIds.includes(cardId),
+	);
+
+	const removedCardIds = existingCardIds.filter(
+		(cardId) => !submittedCardIds.includes(cardId),
+	);
+
+	if (addedCardIds.length > 0) {
+		const existingAssignments = await db
+			.select({
+				cardId: purchasePackageCards.cardId,
+			})
+			.from(purchasePackageCards)
+			.where(inArray(purchasePackageCards.cardId, addedCardIds));
+
+		if (existingAssignments.length > 0) {
+			throw new Error(
+				"One or more selected cards already belong to another package.",
+			);
+		}
+	}
+
+	for (const cardId of submittedCardIds) {
+		const hammerPrice = String(formData.get(`hammerPrice-${cardId}`) ?? "");
+
+		const parsedHammerPrice = Number(hammerPrice);
+
+		if (!Number.isFinite(parsedHammerPrice) || parsedHammerPrice < 0) {
+			throw new Error("One or more hammer prices are invalid.");
+		}
+	}
+
 	await db
 		.update(purchasePackages)
 		.set({
@@ -211,23 +266,29 @@ export async function updatePurchasePackage(formData: FormData) {
 		})
 		.where(eq(purchasePackages.id, id));
 
-	const packageCards = await db
-		.select({
-			cardId: purchasePackageCards.cardId,
-		})
-		.from(purchasePackageCards)
-		.where(eq(purchasePackageCards.purchasePackageId, id));
+	if (removedCardIds.length > 0) {
+		await db
+			.delete(purchasePackageCards)
+			.where(
+				and(
+					eq(purchasePackageCards.purchasePackageId, id),
+					inArray(purchasePackageCards.cardId, removedCardIds),
+				),
+			);
+	}
 
-	for (const packageCard of packageCards) {
-		const hammerPrice = String(
-			formData.get(`hammerPrice-${packageCard.cardId}`) ?? "",
+	if (addedCardIds.length > 0) {
+		await db.insert(purchasePackageCards).values(
+			addedCardIds.map((cardId) => ({
+				purchasePackageId: id,
+				cardId,
+				hammerPrice: String(formData.get(`hammerPrice-${cardId}`) ?? ""),
+			})),
 		);
+	}
 
-		const parsedHammerPrice = Number(hammerPrice);
-
-		if (!Number.isFinite(parsedHammerPrice) || parsedHammerPrice < 0) {
-			throw new Error("One or more hammer prices are invalid.");
-		}
+	for (const cardId of submittedCardIds) {
+		const hammerPrice = String(formData.get(`hammerPrice-${cardId}`) ?? "");
 
 		await db
 			.update(purchasePackageCards)
@@ -238,14 +299,14 @@ export async function updatePurchasePackage(formData: FormData) {
 			.where(
 				and(
 					eq(purchasePackageCards.purchasePackageId, id),
-					eq(purchasePackageCards.cardId, packageCard.cardId),
+					eq(purchasePackageCards.cardId, cardId),
 				),
 			);
 	}
 
 	const wasJustReceived = !existingPackage.isDelivered && isDelivered;
 
-	if (wasJustReceived && packageCards.length > 0) {
+	if (wasJustReceived && submittedCardIds.length > 0) {
 		const [inTransitStatus] = await db
 			.select({
 				id: cardStatuses.id,
@@ -274,10 +335,7 @@ export async function updatePurchasePackage(formData: FormData) {
 			})
 			.where(
 				and(
-					inArray(
-						cards.id,
-						packageCards.map((card) => card.cardId),
-					),
+					inArray(cards.id, submittedCardIds),
 					eq(cards.statusId, inTransitStatus.id),
 				),
 			);
@@ -362,6 +420,108 @@ export async function markPurchasePackageReceived(id: number) {
 				),
 			);
 	}
+
+	revalidatePath("/packages");
+	revalidatePath("/investment");
+	revalidatePath("/collection");
+}
+export async function removeCardFromPurchasePackage(
+	purchasePackageId: number,
+	cardId: number,
+) {
+	if (!Number.isInteger(purchasePackageId)) {
+		throw new Error("Purchase package ID is invalid.");
+	}
+
+	if (!Number.isInteger(cardId)) {
+		throw new Error("Card ID is invalid.");
+	}
+
+	const [packageCard] = await db
+		.select({
+			id: purchasePackageCards.id,
+		})
+		.from(purchasePackageCards)
+		.where(
+			and(
+				eq(purchasePackageCards.purchasePackageId, purchasePackageId),
+				eq(purchasePackageCards.cardId, cardId),
+			),
+		)
+		.limit(1);
+
+	if (!packageCard) {
+		throw new Error("Card does not belong to this package.");
+	}
+
+	await db
+		.delete(purchasePackageCards)
+		.where(eq(purchasePackageCards.id, packageCard.id));
+
+	revalidatePath("/packages");
+	revalidatePath("/investment");
+	revalidatePath("/collection");
+}
+export async function addCardToPurchasePackage(
+	purchasePackageId: number,
+	cardId: number,
+	hammerPrice: string,
+) {
+	if (!Number.isInteger(purchasePackageId)) {
+		throw new Error("Purchase package ID is invalid.");
+	}
+
+	if (!Number.isInteger(cardId)) {
+		throw new Error("Card ID is invalid.");
+	}
+
+	const parsedHammerPrice = Number(hammerPrice);
+
+	if (!Number.isFinite(parsedHammerPrice) || parsedHammerPrice < 0) {
+		throw new Error("Hammer price is invalid.");
+	}
+
+	const [purchasePackage] = await db
+		.select({
+			id: purchasePackages.id,
+		})
+		.from(purchasePackages)
+		.where(eq(purchasePackages.id, purchasePackageId))
+		.limit(1);
+
+	if (!purchasePackage) {
+		throw new Error("Purchase package not found.");
+	}
+
+	const [card] = await db
+		.select({
+			id: cards.id,
+		})
+		.from(cards)
+		.where(eq(cards.id, cardId))
+		.limit(1);
+
+	if (!card) {
+		throw new Error("Card not found.");
+	}
+
+	const [existingAssignment] = await db
+		.select({
+			purchasePackageId: purchasePackageCards.purchasePackageId,
+		})
+		.from(purchasePackageCards)
+		.where(eq(purchasePackageCards.cardId, cardId))
+		.limit(1);
+
+	if (existingAssignment) {
+		throw new Error("Card already belongs to a package.");
+	}
+
+	await db.insert(purchasePackageCards).values({
+		purchasePackageId,
+		cardId,
+		hammerPrice,
+	});
 
 	revalidatePath("/packages");
 	revalidatePath("/investment");

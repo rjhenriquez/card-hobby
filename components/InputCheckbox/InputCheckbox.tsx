@@ -12,7 +12,7 @@ interface InputCheckboxProps {
 	disabled?: boolean;
 	onChange?: React.ChangeEventHandler<HTMLInputElement>;
 	isHeader?: boolean;
-	type?: "circle" | "square";
+	type?: "circle" | "square" | "sidebar";
 	width?: "full" | "half";
 	ref?: React.Ref<HTMLInputElement>;
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { PsaSubmissionForm } from "@/components/PsaSubmissionForm/PsaSubmissionForm";
+import { PsaSubmissionFormNew } from "../PsaSubmissionForm/PsaSubmissionFormNew";
 import { Button } from "@/components/Button/Button";
 
 import styles from "./PsaSubmissionDetails.module.scss";
@@ -46,7 +46,7 @@ export function PsaSubmissionDetails({
 					/>
 				)}
 
-				<PsaSubmissionForm
+				<PsaSubmissionFormNew
 					submission={submission}
 					isEditing={isEditing}
 					onSaved={() => {

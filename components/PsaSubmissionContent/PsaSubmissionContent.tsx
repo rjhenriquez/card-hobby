@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { PsaSubmissionDetails } from "@/components/PsaSubmissionDetails/PsaSubmissionDetails";
+import { PsaSubmissionDetailsNew } from "@/components/PsaSubmissionDetails/PsaSubmissionDetailsNew";
 import { PsaSubmissionStats } from "@/components/PsaSubmissionStats/PsaSubmissionStats";
 import { PsaSubmissionCardRow } from "@/components/PsaSubmissionCardRow/PsaSubmissionCardRow";
 import { TableInfo } from "@/components/TableInfo/TableInfo";
@@ -60,7 +60,7 @@ export function PsaSubmissionContent({
 
 	return (
 		<div className={styles.PsaSubmissionContent}>
-			<PsaSubmissionDetails
+			<PsaSubmissionDetailsNew
 				submission={submission}
 				totalSubmissionCost={totalSubmissionCost}
 				isEditing={isEditing}

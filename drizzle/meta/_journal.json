@@ -64,6 +64,20 @@
       "when": 1789748409903,
       "tag": "0008_last_wilson_fisk",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1790091340490,
+      "tag": "0009_petite_radioactive_man",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1790190414003,
+      "tag": "0010_sturdy_masked_marvel",
+      "breakpoints": true
     }
   ]
 }

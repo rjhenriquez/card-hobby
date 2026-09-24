@@ -117,6 +117,26 @@
 			}
 		}
 	}
+	&--sidebar {
+		gap: 0.2rem;
+		.InputCheckbox {
+			&__indicator {
+				width: var(--input-outer-circle-size);
+				height: var(--input-outer-circle-size);
+				@include input-indicator;
+			}
+			&__label {
+				@include font-weight(light);
+				transform: translateY(0.1em);
+				text-transform: none;
+				font-size: var(--font-size-14);
+			}
+		}
+		input:checked + .InputCheckbox__indicator::after {
+			opacity: 1;
+			transform: translate(-50%, -50%) scale(1);
+		}
+	}
 
 	&--disabled {
 		cursor: not-allowed;

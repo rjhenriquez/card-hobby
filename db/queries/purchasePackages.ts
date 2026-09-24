@@ -1,4 +1,4 @@
-import { desc, eq } from "drizzle-orm";
+import { desc, eq, isNull } from "drizzle-orm";
 
 import { db } from "@/db";
 import { cards, purchasePackageCards, purchasePackages } from "@/db/schema";
@@ -45,4 +45,19 @@ export async function getPurchasePackages() {
 			(card) => card.purchasePackageId === purchasePackage.id,
 		),
 	}));
+}
+export async function getCardsWithoutPurchasePackage() {
+	return db
+		.select({
+			id: cards.id,
+			player: cards.player,
+			category: cards.category,
+			year: cards.year,
+			setName: cards.setName,
+			info: cards.info,
+		})
+		.from(cards)
+		.leftJoin(purchasePackageCards, eq(cards.id, purchasePackageCards.cardId))
+		.where(isNull(purchasePackageCards.cardId))
+		.orderBy(desc(cards.createdAt));
 }

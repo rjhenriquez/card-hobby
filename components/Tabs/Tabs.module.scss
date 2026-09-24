@@ -31,7 +31,8 @@
 			}
 		}
 	}
-
-	&__content {
+	&__logo {
+		width: 100%;
+		height: var(--tabs-logo-height);
 	}
 }

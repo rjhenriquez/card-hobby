@@ -2,7 +2,9 @@
 
 import { useState, Fragment } from "react";
 import {
+	addCardToPurchasePackage,
 	markPurchasePackageReceived,
+	removeCardFromPurchasePackage,
 	updatePurchasePackage,
 } from "@/app/actions/purchasePackages";
 import { PackageDrawer, PurchasePackage } from "../PackageDrawer/PackageDrawer";
@@ -61,6 +63,14 @@ export function Packages({ purchasePackages }: PackagesProps) {
 		string | null
 	>(null);
 
+	const [addingToPackageId, setAddingToPackageId] = useState<number | null>(
+		null,
+	);
+
+	const [selectedCardId, setSelectedCardId] = useState("");
+
+	const [hammerPrice, setHammerPrice] = useState("");
+
 	function toggleExpanded(packageId: number) {
 		setExpandedPackageIds((currentIds) =>
 			currentIds.includes(packageId)
@@ -115,6 +125,18 @@ export function Packages({ purchasePackages }: PackagesProps) {
 
 	if (purchasePackages.length === 0) {
 		return <p>No packages yet.</p>;
+	}
+	async function handleRemoveCard(packageId: number, cardId: number) {
+		setPurchasePackageError(null);
+		try {
+			await removeCardFromPurchasePackage(packageId, cardId);
+		} catch (error) {
+			setPurchasePackageError(
+				error instanceof Error
+					? error.message
+					: "Unable to remove card from package.",
+			);
+		}
 	}
 
 	return (

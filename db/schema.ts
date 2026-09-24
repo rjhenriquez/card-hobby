@@ -249,10 +249,77 @@ export const purchasePackageCards = pgTable(
 		createdAt: timestamp("created_at").notNull().defaultNow(),
 		updatedAt: timestamp("updated_at").notNull().defaultNow(),
 	},
+	(table) => [unique("purchase_package_cards_card_unique").on(table.cardId)],
+);
+
+// ---------------------------------------------
+// Search Sections
+// ---------------------------------------------
+
+export const searchSections = pgTable("search_sections", {
+	id: serial("id").primaryKey(),
+
+	name: text("name").notNull().unique(),
+	sortOrder: integer("sort_order").notNull().default(0),
+
+	createdAt: timestamp("created_at").notNull().defaultNow(),
+	updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+// ---------------------------------------------
+// Search Categories
+// ---------------------------------------------
+
+export const searchCategories = pgTable(
+	"search_categories",
+	{
+		id: serial("id").primaryKey(),
+
+		sectionId: integer("section_id")
+			.notNull()
+			.references(() => searchSections.id, {
+				onDelete: "cascade",
+			}),
+
+		name: text("name").notNull(),
+		sortOrder: integer("sort_order").notNull().default(0),
+
+		createdAt: timestamp("created_at").notNull().defaultNow(),
+		updatedAt: timestamp("updated_at").notNull().defaultNow(),
+	},
 	(table) => [
-		unique("purchase_package_cards_package_card_unique").on(
-			table.purchasePackageId,
-			table.cardId,
+		unique("search_categories_section_name_unique").on(
+			table.sectionId,
+			table.name,
+		),
+	],
+);
+
+// ---------------------------------------------
+// Search Terms
+// ---------------------------------------------
+
+export const searchTerms = pgTable(
+	"search_terms",
+	{
+		id: serial("id").primaryKey(),
+
+		categoryId: integer("category_id")
+			.notNull()
+			.references(() => searchCategories.id, {
+				onDelete: "cascade",
+			}),
+
+		value: text("value").notNull(),
+		sortOrder: integer("sort_order").notNull().default(0),
+
+		createdAt: timestamp("created_at").notNull().defaultNow(),
+		updatedAt: timestamp("updated_at").notNull().defaultNow(),
+	},
+	(table) => [
+		unique("search_terms_category_value_unique").on(
+			table.categoryId,
+			table.value,
 		),
 	],
 );

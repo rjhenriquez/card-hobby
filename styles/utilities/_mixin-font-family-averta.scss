@@ -1,10 +1,18 @@
 $fonts-path: "/fonts/averta";
+$fonts-chivo-variable-path: "/fonts/chivo-sans";
+$fonts-inter-variable-path: "/fonts/inter";
+
+// TEMP FONT SWITCH
+// Options: "averta" | "chivo" | "inter"
+$active-font: "chivo";
 
 @use "sass:map";
-
 @use "sass:list";
-
 @use "sass:string";
+
+// --------------------------------------------------
+// Averta
+// --------------------------------------------------
 
 @each $font-name,
 	$map
@@ -46,15 +54,45 @@ $fonts-path: "/fonts/averta";
 	}
 }
 
-@mixin font-weight($family-shorthand) {
-	$weight-stacks: (
-		light: ("AvertaLight"),
-		regular: ("AvertaRegular"),
-		semibold: ("AvertaSemiBold"),
-		bold: ("AvertaBold"),
-		black: ("AvertaBlack"),
-		regularitalic: ("AvertaRegularItalic"),
+// --------------------------------------------------
+// Chivo Variable
+// --------------------------------------------------
+
+@font-face {
+	font-display: swap;
+	font-family: "ChivoVariable";
+	font-style: normal;
+	font-weight: 100 900;
+	src: url("#{$fonts-chivo-variable-path}/Chivo-VariableFont_wght.woff2")
+		format("woff2");
+}
+
+// --------------------------------------------------
+// Inter Variable
+// --------------------------------------------------
+
+@font-face {
+	font-family: "InterVariable";
+	src: url("/fonts/inter/Inter-VariableFont_opsz,wght.woff2") format("woff2");
+	font-style: normal;
+	font-weight: 100 900;
+	font-display: swap;
+}
+
+// --------------------------------------------------
+// Chivo Variable Weight Mixin
+// --------------------------------------------------
+
+@mixin font-weight-chivo-variable-test($family-shorthand) {
+	$weights: (
+		light: 300,
+		regular: 400,
+		semibold: 600,
+		bold: 700,
+		black: 900,
+		regularitalic: 400,
 	);
+
 	$fallback-stack: (
 		"HelveticaNeue",
 		"Helvetica Neue",
@@ -64,15 +102,90 @@ $fonts-path: "/fonts/averta";
 		sans-serif
 	);
 
-	@if map.has-key($weight-stacks, $family-shorthand) {
-		font-family: list.join(
-			map.get($weight-stacks, $family-shorthand),
-			$fallback-stack
-		);
+	@if map.has-key($weights, $family-shorthand) {
+		font-family: list.join(("ChivoVariable"), $fallback-stack);
+		font-weight: map.get($weights, $family-shorthand);
+
+		@if $family-shorthand == regularitalic {
+			font-style: italic;
+		} @else {
+			font-style: normal;
+		}
 	} @else {
-		@error 'Unable to find a breakpoint with name `#{$family-shorthand}`. Expected one of: (#{map-keys($weight-stacks)})';
+		@error 'Unable to find a font weight with name `#{$family-shorthand}`. Expected one of: (#{map-keys($weights)})';
 	}
 }
+
+// --------------------------------------------------
+// Inter Variable Weight Mixin
+// --------------------------------------------------
+
+@mixin font-weight-inter-variable-test($family-shorthand) {
+	$weights: (
+		light: 300,
+		regular: 400,
+		semibold: 600,
+		bold: 700,
+		black: 900,
+		regularitalic: 400,
+	);
+	@if map.has-key($weights, $family-shorthand) {
+		font-family:
+			"InterVariable", "HelveticaNeue", "Helvetica Neue", helvetica, arial,
+			roboto, sans-serif;
+		font-weight: map.get($weights, $family-shorthand);
+		@if $family-shorthand == regularitalic {
+			font-style: italic;
+		} @else {
+			font-style: normal;
+		}
+	} @else {
+		@error 'Unable to find a font weight with name `#{$family-shorthand}`. Expected one of: (#{map-keys($weights)})';
+	}
+}
+
+// --------------------------------------------------
+// Font Weight
+// --------------------------------------------------
+
+@mixin font-weight($family-shorthand) {
+	@if $active-font == "chivo" {
+		@include font-weight-chivo-variable-test($family-shorthand);
+	} @else if $active-font == "inter" {
+		@include font-weight-inter-variable-test($family-shorthand);
+	} @else {
+		$weight-stacks: (
+			light: ("AvertaLight"),
+			regular: ("AvertaRegular"),
+			semibold: ("AvertaSemiBold"),
+			bold: ("AvertaBold"),
+			black: ("AvertaBlack"),
+			regularitalic: ("AvertaRegularItalic"),
+		);
+
+		$fallback-stack: (
+			"HelveticaNeue",
+			"Helvetica Neue",
+			helvetica,
+			arial,
+			roboto,
+			sans-serif
+		);
+
+		@if map.has-key($weight-stacks, $family-shorthand) {
+			font-family: list.join(
+				map.get($weight-stacks, $family-shorthand),
+				$fallback-stack
+			);
+		} @else {
+			@error 'Unable to find a font weight with name `#{$family-shorthand}`. Expected one of: (#{map-keys($weight-stacks)})';
+		}
+	}
+}
+
+// --------------------------------------------------
+// Font Rendering
+// --------------------------------------------------
 
 @mixin color-dark-on-light($color, $important: "") {
 	color: $color string.unquote($important);

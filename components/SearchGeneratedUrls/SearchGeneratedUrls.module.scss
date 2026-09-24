@@ -1,0 +1,40 @@
+@use "../../styles/utilities/all" as *;
+
+.SearchGeneratedUrls {
+	margin-block: var(--generated-urls-space);
+	width: 100%;
+	box-sizing: border-box;
+	&__header {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		margin-bottom: calc(var(--generated-urls-space) / 2);
+		border-bottom: var(--button-border-color) 1px solid;
+		padding-bottom: calc(var(--generated-urls-space) / 2);
+	}
+	// &__heading {
+	// 	&--inactive {
+	// 		opacity: 0.4;
+	// 	}
+	// }
+	&__actions {
+		display: flex;
+		gap: var(--generated-urls-space);
+	}
+	&__list {
+		display: flex;
+		flex-direction: column;
+		gap: 0.3em;
+	}
+	&__link {
+		color: red;
+		border: var(--button-border-color) 1px solid;
+		&:hover {
+			background: blue;
+			border-color: green;
+		}
+		&--visited {
+			color: var(--secondary);
+		}
+	}
+}

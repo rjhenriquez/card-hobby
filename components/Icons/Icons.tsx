@@ -490,6 +490,77 @@ const Received = ({ className }: { className?: string }) => {
 		</svg>
 	);
 };
+const OpenAll = ({ className }: { className?: string }) => {
+	return (
+		<svg
+			xmlns='http://www.w3.org/2000/svg'
+			className={className}
+			fill='currentColor'
+			viewBox='0 -960 960 960'
+		>
+			<path d='M520-400h80v-120h120v-80H600v-120h-80v120H400v80h120v120ZM320-240q-33 0-56.5-23.5T240-320v-480q0-33 23.5-56.5T320-880h480q33 0 56.5 23.5T880-800v480q0 33-23.5 56.5T800-240H320Zm0-80h480v-480H320v480ZM160-80q-33 0-56.5-23.5T80-160v-560h80v560h560v80H160Zm160-720v480-480Z' />
+		</svg>
+	);
+};
+
+const Clear = ({ className }: { className?: string }) => {
+	return (
+		<svg
+			xmlns='http://www.w3.org/2000/svg'
+			className={className}
+			fill='currentColor'
+			viewBox='0 -960 960 960'
+		>
+			<path d='M690-240h190v80H610l80-80Zm-500 80-85-85q-23-23-23.5-57t22.5-58l440-456q23-24 56.5-24t56.5 23l199 199q23 23 23 57t-23 57L520-160H190Zm296-80 314-322-198-198-442 456 64 64h262Zm-6-240Z' />
+		</svg>
+	);
+};
+
+const Add = ({ className }: { className?: string }) => {
+	return (
+		<svg
+			xmlns='http://www.w3.org/2000/svg'
+			viewBox='0 0 24 24'
+			className={className}
+		>
+			<path
+				d='M12,2c5.51,0,10,4.49,10,10s-4.49,10-10,10S2,17.51,2,12,6.49,2,12,2h0ZM12,0C5.37,0,0,5.37,0,12s5.37,12,12,12,12-5.37,12-12S18.63,0,12,0h0Z'
+				fill='currentColor'
+			/>
+			<line
+				stroke='currentColor'
+				strokeLinecap='round'
+				strokeWidth='2'
+				x1='12'
+				y1='16.5'
+				x2='12'
+				y2='7.5'
+			/>
+			<line
+				stroke='currentColor'
+				strokeLinecap='round'
+				strokeWidth='2'
+				x1='16.5'
+				y1='12'
+				x2='7.5'
+				y2='12'
+			/>
+		</svg>
+	);
+};
+
+const Settings = ({ className }: { className?: string }) => {
+	return (
+		<svg
+			xmlns='http://www.w3.org/2000/svg'
+			className={className}
+			fill='currentColor'
+			viewBox='0 -960 960 960'
+		>
+			<path d='m370-80-16-128q-13-5-24.5-12T307-235l-119 50L78-375l103-78q-1-7-1-13.5v-27q0-6.5 1-13.5L78-585l110-190 119 50q11-8 23-15t24-12l16-128h220l16 128q13 5 24.5 12t22.5 15l119-50 110 190-103 78q1 7 1 13.5v27q0 6.5-2 13.5l103 78-110 190-118-50q-11 8-23 15t-24 12L590-80H370Zm70-80h79l14-106q31-8 57.5-23.5T639-327l99 41 39-68-86-65q5-14 7-29.5t2-31.5q0-16-2-31.5t-7-29.5l86-65-39-68-99 42q-22-23-48.5-38.5T533-694l-13-106h-79l-14 106q-31 8-57.5 23.5T321-633l-99-41-39 68 86 64q-5 15-7 30t-2 32q0 16 2 31t7 30l-86 65 39 68 99-42q22 23 48.5 38.5T427-266l13 106Zm42-180q58 0 99-41t41-99q0-58-41-99t-99-41q-59 0-99.5 41T342-480q0 58 40.5 99t99.5 41Zm-2-140Z' />
+		</svg>
+	);
+};
 
 export const ICONS = {
 	moon: Moon,
@@ -502,6 +573,7 @@ export const ICONS = {
 	"add-card": AddCard,
 	package: Package,
 	"add-sub": AddSub,
+	add: Add,
 	copy: Copy,
 	edit: Edit,
 	"move-up": MoveUp,
@@ -513,6 +585,7 @@ export const ICONS = {
 	expand: Expand,
 	"font-size": FontSize,
 	close: Close,
+	clear: Clear,
 	"circle-close": CircleClose,
 	calendar: Calendar,
 	"dollar-sign": DollarSign,
@@ -521,6 +594,8 @@ export const ICONS = {
 	"plus-sign": PlusSign,
 	"circle-check": CircleCheck,
 	open: Open,
+	"open-all": OpenAll,
+	settings: Settings,
 	diamond: Diamond,
 	filter: Filter,
 	hamburger: Hamburger,

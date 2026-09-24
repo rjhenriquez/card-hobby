@@ -1,6 +1,9 @@
-import { Packages } from "@/components/Packages/Packages";
+import { PackagesNew } from "@/components/Packages/PackagesNew";
 import { Tabs } from "@/components/Tabs/Tabs";
-import { getPurchasePackages } from "@/db/queries/purchasePackages";
+import {
+	getCardsWithoutPurchasePackage,
+	getPurchasePackages,
+} from "@/db/queries/purchasePackages";
 
 import styles from "@/styles/page/Page.module.scss";
 
@@ -15,7 +18,10 @@ export default async function PackagesPage({
 }: PackagesPageProps) {
 	const { tab } = await searchParams;
 
-	const purchasePackages = await getPurchasePackages();
+	const [purchasePackages, availableCards] = await Promise.all([
+		getPurchasePackages(),
+		getCardsWithoutPurchasePackage(),
+	]);
 
 	const activePackages = purchasePackages.filter(
 		(purchasePackage) => !purchasePackage.isDelivered,
@@ -38,12 +44,22 @@ export default async function PackagesPage({
 						{
 							label: "Active",
 							value: "active",
-							children: <Packages purchasePackages={activePackages} />,
+							children: (
+								<PackagesNew
+									purchasePackages={activePackages}
+									availableCards={availableCards}
+								/>
+							),
 						},
 						{
 							label: "Received",
 							value: "received",
-							children: <Packages purchasePackages={receivedPackages} />,
+							children: (
+								<PackagesNew
+									purchasePackages={receivedPackages}
+									availableCards={availableCards}
+								/>
+							),
 						},
 					]}
 				/>

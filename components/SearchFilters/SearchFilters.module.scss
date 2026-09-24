@@ -1,0 +1,35 @@
+@use "@/styles/utilities/all" as *;
+
+.SearchFilters {
+	&__section {
+		margin-top: var(--filters-space);
+		display: flex;
+		align-items: center;
+		min-height: var(--filters-height);
+		gap: var(--filters-space);
+		align-items: center;
+		&__divider {
+			display: flex;
+			flex-direction: column;
+			gap: var(--filters-space);
+			flex: 0 0 calc(50% - (var(--filters-space) / 2));
+		}
+	}
+	&__input {
+		flex-direction: row;
+		align-items: center;
+		> span:first-of-type {
+			@include font-weight(regular);
+			order: 1;
+			text-transform: none;
+			font-size: var(--toggle-small-font-size);
+		}
+		input[type="number"] {
+			max-width: var(--input-number-max-width);
+			&::-webkit-inner-spin-button,
+			&::-webkit-outer-spin-button {
+				appearance: auto;
+			}
+		}
+	}
+}

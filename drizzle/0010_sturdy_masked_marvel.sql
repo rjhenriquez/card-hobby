@@ -1,0 +1,2 @@
+ALTER TABLE "purchase_package_cards" DROP CONSTRAINT "purchase_package_cards_package_card_unique";--> statement-breakpoint
+ALTER TABLE "purchase_package_cards" ADD CONSTRAINT "purchase_package_cards_card_unique" UNIQUE("card_id");

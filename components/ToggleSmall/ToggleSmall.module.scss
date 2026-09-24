@@ -1,0 +1,50 @@
+@use "@/styles/utilities/all" as *;
+
+.ToggleSmall {
+	font-size: var(--toggle-small-font-size);
+	input {
+		display: none;
+	}
+	label {
+		display: inline-flex;
+		align-items: center;
+		cursor: pointer;
+		width: calc(
+			(var(--toggle-small-button-size) * 2) + (var(--toggle-small-padding) * 2)
+		);
+		height: calc(
+			var(--toggle-small-button-size) + (var(--toggle-small-padding) * 2)
+		);
+		border-radius: calc(
+			var(--toggle-small-button-size) + (var(--toggle-small-padding))
+		);
+		position: relative;
+		transition: var(--transition-productive);
+		background: var(--toggle-small-background-color);
+	}
+
+	label > span {
+		margin-left: calc(
+			(var(--toggle-small-button-size) * 2) +
+				(var(--toggle-small-padding) * 2) + 0.5rem
+		);
+		white-space: nowrap;
+	}
+	label::after {
+		content: "";
+		width: var(--toggle-small-button-size);
+		height: var(--toggle-small-button-size);
+		position: absolute;
+		top: var(--toggle-small-padding);
+		left: var(--toggle-small-padding);
+		border-radius: 50%;
+		transition: var(--transition-productive);
+		background: var(--white);
+	}
+	input:checked + label {
+		background: var(--main);
+	}
+	input:checked + label::after {
+		transform: translateX(var(--toggle-small-button-size));
+	}
+}

@@ -4,10 +4,13 @@ import { ReactNode } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import cn from "classnames";
 
+import { Logo } from "@/components/Logos/Logos";
+
 import styles from "./Tabs.module.scss";
 
 interface Tab {
-	label: string;
+	label?: string;
+	logo?: string;
 	value: string;
 	children: ReactNode;
 }
@@ -39,12 +42,17 @@ export function Tabs({ tabs, activeTab }: TabsProps) {
 							type='button'
 							role='tab'
 							aria-selected={isActive}
+							aria-label={tab.label ?? tab.value}
 							className={cn(styles.Tabs__label, {
 								[styles["Tabs__label--active"]]: isActive,
 							})}
 							onClick={() => handleTabChange(tab.value)}
 						>
-							{tab.label}
+							{tab.logo ? (
+								<Logo className={styles.Tabs__logo} logo={tab.logo} />
+							) : (
+								tab.label
+							)}
 						</button>
 					);
 				})}

@@ -48,6 +48,14 @@ export interface PurchasePackage {
 	cards: PurchasePackageCard[];
 }
 
+export interface AvailableCard {
+	id: number;
+	player: string;
+	category: string | null;
+	year: string | null;
+	setName: string | null;
+	info: string | null;
+}
 interface PackageDrawerProps {
 	isOpen: boolean;
 	mode: "create" | "edit";
