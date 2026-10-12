@@ -1,44 +1,47 @@
 @use "@/styles/utilities/all" as *;
 
 .HighlightCardTable {
-	background-color: var(--bg-color-02);
-	border: 1px solid var(--border-color);
-	border-radius: var(--package-border-radius);
-	padding: var(--highlight-padding);
-	width: 100%;
-	&__title {
-		@include font-weight(semibold);
-		font-size: 0.875rem;
-		margin-bottom: 0.5em;
+	@include panel;
+	&__header {
+		background-color: var(--panel-header-background);
+		padding: var(--panel-padding);
+		display: grid;
+		grid-template-rows: auto auto;
+		grid-template-columns: auto auto;
+		gap: 0 var(--panel-header-gap);
+		grid-template-areas:
+			"eyebrow trigger"
+			"title trigger";
 	}
 
+	&__eyebrow,
+	&__title {
+		@include text-box;
+		align-self: end;
+	}
+	&__title {
+		@include panel-header-sm;
+		grid-area: title;
+		align-self: center;
+	}
+	&__eyebrow {
+		@include label-styles;
+		grid-area: eyebrow;
+		margin-bottom: var(--panel-header-gap);
+	}
+	&__body {
+		padding: var(--panel-padding);
+	}
+	&__trigger {
+		@include trigger-styles(HighlightCardTable, small);
+		grid-area: trigger;
+		justify-self: end;
+		align-self: center;
+	}
 	&__table {
-		width: 100%;
-		table-layout: fixed;
-		border-collapse: collapse;
-		thead {
-			th {
-				@include font-weight(semibold);
-				font-size: var(--font-size-12);
-				letter-spacing: 0.05em;
-				text-transform: uppercase;
-				margin: 0;
-				padding-bottom: var(--package-table-padding);
-				border-bottom: 1px solid var(--table-border-color);
-			}
-		}
-		tbody {
-			td {
-				font-size: var(--font-size-14);
-				padding-block: var(--package-table-padding);
-				border-bottom: 1px solid var(--table-border-color);
-			}
-		}
+		@include table-small;
 		th,
 		td {
-			padding-block: var(--table-padding);
-			text-align: left;
-
 			&:nth-child(1) {
 				width: 50%;
 			}
@@ -53,25 +56,40 @@
 				width: 35%;
 			}
 		}
-
-		&--no-accordion {
-			tbody tr {
-				&:last-of-type {
-					td {
-						border-bottom: none;
-						padding-bottom: 0;
-					}
+		tr {
+			@include transition(padding);
+		}
+	}
+	&__body:not(&__body--expanded) {
+		> .HighlightCardTable__table {
+			tbody tr:last-of-type td {
+				border-bottom: none;
+				padding-bottom: 0;
+			}
+		}
+	}
+	&__body--expanded {
+		.HighlightCardTable__expandable {
+			.HighlightCardTable__table {
+				tbody tr:last-of-type td {
+					border-bottom: none;
+					padding-bottom: 0;
 				}
 			}
 		}
 	}
-	&__accordion button {
-		margin-top: 1em;
-		@include font-weight(semibold);
-		font-size: 0.875rem;
-		justify-content: flex-end;
-	}
-	&__value {
-		@include font-weight-chivo(regular);
+	&__expandable {
+		display: grid;
+		grid-template-rows: 0fr;
+		opacity: 0;
+		@include transition(grid-template-rows, opacity);
+		&--expanded {
+			grid-template-rows: 1fr;
+			opacity: 1;
+		}
+		&__inner {
+			min-height: 0;
+			overflow: hidden;
+		}
 	}
 }

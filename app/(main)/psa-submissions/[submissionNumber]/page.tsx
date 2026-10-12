@@ -1,9 +1,10 @@
 import { notFound } from "next/navigation";
-import { PsaSubmissionContent } from "@/components/PsaSubmissionContent/PsaSubmissionContent";
+import { PsaSubmission } from "@/components/PsaSubmission/PsaSubmission";
 import {
 	getCardsForPsaSubmission,
 	getPsaSubmissionByNumber,
 } from "@/db/queries/psaSubmissionCards";
+import { getCardsByPortfolio } from "@/db/queries/cards";
 
 import styles from "@/styles/page/Page.module.scss";
 
@@ -24,7 +25,10 @@ export default async function PsaSubmissionPage({
 		notFound();
 	}
 
-	const cards = await getCardsForPsaSubmission(submission.id);
+	const [cards, investmentCards] = await Promise.all([
+		getCardsForPsaSubmission(submission.id),
+		getCardsByPortfolio("investment"),
+	]);
 
 	const sharedCost =
 		cards.length > 0
@@ -42,6 +46,16 @@ export default async function PsaSubmissionPage({
 		Number(submission.outboundShippingCost) +
 		Number(submission.insuredReturnShippingCost);
 
+	const submissionInvestmentCards = investmentCards.filter((card) =>
+		card.psaSubmissionNumbers.includes(submission.submissionNumber),
+	);
+
+	const cardsInvestment = submissionInvestmentCards.reduce(
+		(total, card) => total + (card.totalCost ?? 0),
+		0,
+	);
+
+	const totalInvestment = cardsInvestment + totalSubmissionCost;
 	const hasGradedCards = cards.some(
 		(card) => card.gradeStatus === "graded" || card.gradeStatus === "no_grade",
 	);
@@ -55,12 +69,15 @@ export default async function PsaSubmissionPage({
 			</div>
 
 			<section className={styles.Page__section}>
-				<PsaSubmissionContent
+				<PsaSubmission
+					key={submission.id}
 					submission={submission}
 					cards={cards}
 					sharedCost={sharedCost}
 					totalSubmissionCost={totalSubmissionCost}
+					totalInvestment={totalInvestment}
 					showStats={showStats}
+					alwaysOpen
 				/>
 			</section>
 		</div>

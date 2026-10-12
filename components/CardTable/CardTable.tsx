@@ -19,6 +19,7 @@ import {
 	globalFilteringFeature,
 	rowSelectionFeature,
 	rowSortingFeature,
+	sortFn_alphanumeric,
 	tableFeatures,
 	useTable,
 } from "@tanstack/react-table";
@@ -27,6 +28,7 @@ import {
 	CARD_TABLE_HIDDEN_COLUMNS,
 	CARD_TABLE_VALUE_COLUMNS,
 	PSA_GRADE_DEFINITIONS,
+	STATUS_CLASSES,
 } from "@/constants";
 import {
 	getStoredCardTableExpanded,
@@ -68,6 +70,9 @@ const features = tableFeatures({
 	globalFilteringFeature,
 	sortedRowModel: createSortedRowModel(),
 	filteredRowModel: createFilteredRowModel(),
+	sortFns: {
+		alphanumeric: sortFn_alphanumeric,
+	},
 	filterFns: {
 		includesString: filterFn_includesString,
 	},
@@ -211,10 +216,39 @@ export function CardTable({
 		{
 			accessorKey: "effectiveStatus",
 			header: "Status",
+			cell: ({ getValue }) => {
+				const value = getValue() as string | null;
+				if (!value) {
+					return "—";
+				}
+				const statusClass = STATUS_CLASSES.find(({ term }) =>
+					value.toLowerCase().includes(term.toLowerCase()),
+				)?.className;
+				return (
+					<span
+						className={cn(
+							styles.CardTable__status,
+							statusClass && styles[`CardTable__${statusClass}`],
+						)}
+					>
+						{value}
+					</span>
+				);
+			},
 		},
 		{
 			accessorKey: "purchasedFrom",
 			header: "Seller",
+			cell: ({ row }) => {
+				const card = row.original;
+				if (card.acquisitionType === "pulled") {
+					return "Pulled";
+				}
+				if (!card.purchasedFrom?.trim()) {
+					return <span className={styles["CardTable__cell--muted"]}>N/A</span>;
+				}
+				return card.purchasedFrom;
+			},
 		},
 		{
 			accessorKey: "ebaySeller",
@@ -266,7 +300,7 @@ export function CardTable({
 					return <span className={styles["CardTable__cell--muted"]}>RAW</span>;
 				}
 				if (value === null) {
-					return <span className={styles["CardTable__cell--muted"]}>--</span>;
+					return;
 				}
 				const definition =
 					PSA_GRADE_DEFINITIONS[value as keyof typeof PSA_GRADE_DEFINITIONS];
@@ -279,7 +313,11 @@ export function CardTable({
 			cell: ({ getValue }) => {
 				const value = getValue() as number | null;
 
-				return value !== null ? formatCurrency(value) : "—";
+				return value !== null ? (
+					formatCurrency(value)
+				) : (
+					<span className={styles["CardTable__cell--muted"]}>—</span>
+				);
 			},
 		},
 		{
@@ -288,7 +326,11 @@ export function CardTable({
 			cell: ({ getValue }) => {
 				const value = getValue() as number;
 
-				return value > 0 ? formatCurrency(value) : "—";
+				return value > 0 ? (
+					formatCurrency(value)
+				) : (
+					<span className={styles["CardTable__cell--muted"]}>—</span>
+				);
 			},
 		},
 		{
@@ -297,7 +339,11 @@ export function CardTable({
 			cell: ({ getValue }) => {
 				const value = getValue() as number | null;
 
-				return value !== null ? formatCurrency(value) : "Unknown";
+				return value !== null ? (
+					formatCurrency(value)
+				) : (
+					<span className={styles["CardTable__cell--muted"]}>Unknown</span>
+				);
 			},
 		},
 		{
@@ -308,7 +354,7 @@ export function CardTable({
 			cell: ({ getValue }) => {
 				const value = getValue() as number | null;
 
-				return value !== null ? formatCurrency(value) : "—";
+				return value !== null ? formatCurrency(value) : "";
 			},
 		},
 		{

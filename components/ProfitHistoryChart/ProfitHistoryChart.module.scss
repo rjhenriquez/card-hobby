@@ -4,7 +4,8 @@
 	width: 100%;
 	display: contents;
 	&__chart {
-		@include font-weight-chivo(regular);
+		@include font-family(mono);
+		@include font-weight(regular);
 		width: 100%;
 		height: 320px;
 		grid-area: 3 / 1 / 4 / 2;
@@ -37,7 +38,8 @@
 		text-box: trim-both cap alphabetic;
 	}
 	:global(.recharts-tooltip-item) {
-		@include font-weight-chivo(semibold);
+		@include font-family(mono);
+		@include font-weight(semibold);
 		font-size: 1.4rem;
 		text-box: trim-both cap alphabetic;
 	}

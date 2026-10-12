@@ -2,169 +2,126 @@
 
 .Packages {
 	display: flex;
-	flex-wrap: wrap;
-	gap: var(--packages-gap);
-	align-items: flex-start;
+	flex-direction: column;
+	gap: var(--spacing-20);
 }
 .Package {
-	background-color: var(--bg-color-02);
-	border: 1px solid var(--border-color);
-	border-radius: var(--package-border-radius);
-	padding: var(--package-padding);
-	flex: 0 0 calc(50% - var(--packages-gap) / 2);
-	min-width: 0;
+	@include panel;
 	&__header {
-		border-bottom: var(--package-card-border);
+		background-color: var(--panel-header-background);
+		padding: var(--panel-padding);
 		display: flex;
-		gap: var(--packages-gap);
-		align-items: center;
 		justify-content: space-between;
-		padding-bottom: calc(var(--package-padding) / 2);
-		margin-bottom: calc(var(--package-padding) / 2);
-		&__actions {
-			display: flex;
-			gap: var(--packages-gap);
-		}
-	}
-	&__heading {
-		@include heading(h2);
-		display: flex;
-		gap: var(--packages-gap);
+		align-items: flex-end;
 	}
 
-	&__content {
+	&__heading {
+		min-width: 0;
 		display: flex;
 		flex-direction: column;
-		&__top {
-			margin-bottom: var(--packages-gap);
-		}
-		&__info {
+		gap: var(--panel-header-gap);
+	}
+	&__eyebrow,
+	&__title,
+	&__subhead {
+		@include text-box;
+	}
+	&__title {
+		@include panel-header;
+	}
+	&__eyebrow {
+		@include label-styles;
+	}
+	&__subhead {
+		@include panel-sub-header;
+	}
+	&__actions {
+		display: flex;
+		justify-content: flex-end;
+		gap: 1rem;
+		&__section {
 			display: flex;
-			gap: var(--packages-gap);
-			align-items: baseline;
+			gap: 1rem;
 		}
-		&__label {
-			@include font-weight(semibold);
-			font-size: var(--font-size-12);
-			letter-spacing: 0.05em;
-			text-transform: uppercase;
+		&__divider {
+			background: var(--button-border-color-main);
+			width: 1px;
+			height: var(--button-size);
+			display: block;
 		}
-		&__value {
-			@include font-weight-chivo(semibold);
-			font-size: var(--font-size-18);
-			span {
-				font-size: 0.8em;
-				vertical-align: top;
+	}
+	&__trigger {
+		:global(.Button__icon) {
+			@include transition(transform);
+			transform: rotate(270deg);
+		}
+		&--open {
+			:global(.Button__icon) {
+				transform: rotate(90deg);
 			}
 		}
 	}
-	&__cards,
-	&__financials {
-		margin-top: var(--packages-gap);
-		&__number {
-			@include font-weight-chivo(regular);
+
+	&__summary {
+		@include description-list(4);
+		border-bottom: var(--panel-border-line);
+		&__wrapper {
+			&:not(:last-of-type) {
+				border-right: var(--panel-border-line);
+			}
 		}
 	}
-
-	&__description-list {
+	&__financials {
+		@include description-list(4);
+		border-top: var(--panel-border-line);
+		margin-top: var(--panel-padding);
+		&__wrapper {
+			&:not(:last-of-type) {
+				border-right: var(--panel-border-line);
+			}
+		}
+	}
+	&__content {
+		@include transition(grid-template-rows);
 		display: grid;
-		gap: var(--packages-gap);
-		grid-template-columns: repeat(
-			4,
-			minmax(var(--packages-item-min-width), max-content)
-		);
-		&--financials {
-			width: 100%;
-			grid-template-columns: repeat(3, 1fr);
+		grid-template-rows: 0fr;
+		&__inner {
+			min-height: 0;
+			overflow: hidden;
+		}
+		&--open {
+			grid-template-rows: 1fr;
 		}
 		&__wrapper {
-			display: grid;
-			grid-template-rows: auto 1fr;
-			gap: 0.25rem;
-		}
-		dt {
-			@include font-weight(semibold);
-			font-size: var(--font-size-12);
-			letter-spacing: 0.05em;
-			text-transform: uppercase;
-			margin: 0;
-		}
-		dd {
-			display: flex;
-			align-items: center;
-			font-size: var(--font-size-14);
-			min-width: 0;
-			margin: 0;
-			min-height: 2.25rem;
+			margin-block: var(--panel-padding);
+			padding-inline: var(--panel-padding);
 		}
 	}
-
 	&__table {
-		width: 100%;
-		table-layout: fixed;
-		border-collapse: collapse;
-		thead {
-			th {
-				@include font-weight(semibold);
-				font-size: var(--font-size-12);
-				letter-spacing: 0.05em;
-				text-transform: uppercase;
-				margin: 0;
-				padding-bottom: var(--package-table-padding);
-				border-bottom: 1px solid var(--table-border-color);
-			}
-		}
-		tbody {
-			td {
-				font-size: var(--font-size-14);
-				padding-block: var(--package-table-padding);
-				border-bottom: 1px solid var(--table-border-color);
-			}
-			tr:last-child td {
-				border-bottom: 0;
-			}
-		}
+		@include table-small;
 		th,
 		td {
-			text-align: left;
 			&:last-child {
-				width: 80px;
 				text-align: right;
 			}
 		}
 	}
-	&__link {
-		border: var(--button-border-line);
-		border-radius: var(--button-border-radius);
-		@include font-weight-chivo(regular);
-		font-size: var(--font-size-14);
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		margin: 0;
-		padding: 0;
-		display: inline-flex;
-		transition: var(--transition-productive);
-		span {
-			padding: var(--button-main-padding-sm);
-			border-right: var(--button-border-line);
+	&__add-card {
+		width: 100%;
+		padding-block: var(--small-table-padding);
+		&__form {
+			display: grid;
+			grid-template-columns: minmax(0, 1fr) 160px auto auto;
+			gap: 0.5rem;
+			align-items: center;
 		}
-		&__icon {
-			margin-inline: var(--button-main-padding-sm);
-			width: var(--button-icon-size);
-			height: var(--button-icon-size);
-		}
-		&:hover {
-			border-color: var(--main);
-			span {
-				border-color: var(--main);
-			}
+		&__main {
+			display: flex;
+			margin-left: auto;
 		}
 	}
-	&__accordion button {
-		margin-top: 1em;
-		@include font-weight(semibold);
-		font-size: 0.875rem;
-		justify-content: flex-start;
+
+	&__link {
+		@include external-link;
 	}
 }

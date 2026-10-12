@@ -1,28 +1,28 @@
+@use "@/styles/utilities/all" as *;
+
 .Accordion {
 	width: 100%;
 	&__trigger {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		transition: var(--accordion-transition);
-		gap: var(--accordion-trigger-gap);
-		width: 100%;
+		@include trigger-styles(Accordion);
+		justify-content: var(--accordion-label-justify);
 		cursor: pointer;
-		svg {
-			width: var(--accordion-icon-size);
-			height: var(--accordion-icon-size);
+		&--full {
+			width: 100%;
+		}
+		&--end {
+			margin-left: auto;
 		}
 		&--open {
-			svg {
-				transform: rotate(180deg);
+			.Accordion__trigger__icon {
+				transform: rotate(90deg);
 			}
 		}
 	}
 
 	&__content {
+		@include transition(grid-template-rows);
 		display: grid;
 		grid-template-rows: 0fr;
-		transition: var(--accordion-transition);
 		&__inner {
 			min-height: 0;
 			overflow: hidden;

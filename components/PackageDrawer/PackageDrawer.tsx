@@ -101,18 +101,16 @@ export function PackageDrawer({
 		<Drawer isOpen={isOpen} title={title} onClose={onClose}>
 			<div className={styles.PackageDrawer}>
 				<div className={styles.DrawerInfo}>
-					<div className={styles.DrawerInfo__section}>
-						<h3 className={styles.DrawerInfo__count}>
-							{cards.length} card
-							{cards.length === 1 ? "" : "s"} selected
-						</h3>
+					<h3 className={styles.DrawerInfo__count}>
+						{cards.length} card
+						{cards.length === 1 ? "" : "s"} selected
+					</h3>
 
-						{error && (
-							<p className='alert' role='alert'>
-								{error}
-							</p>
-						)}
-					</div>
+					{error && (
+						<p className='alert' role='alert'>
+							{error}
+						</p>
+					)}
 				</div>
 
 				<form className={styles.DrawerForm} action={onSubmit}>
@@ -131,14 +129,12 @@ export function PackageDrawer({
 								{ value: "DHL", label: "DHL" },
 								{ value: "Other", label: "Other" },
 							]}
-							width='half'
 						/>
 
 						<InputText
 							name='trackingNumber'
 							label='Tracking Number'
 							defaultValue={purchasePackage?.trackingNumber ?? ""}
-							width='half'
 						/>
 
 						<InputDate
@@ -153,124 +149,117 @@ export function PackageDrawer({
 								name='isDelivered'
 								label='Received'
 								type='square'
-								width='half'
+
 								defaultChecked={purchasePackage?.isDelivered ?? false}
 							/>
 						)}
-
-						<Accordion
-							icon='arrow-down'
-							label='Edit Financials'
-							defaultOpen={location !== "packages"}
-						>
-							<div
-								className={`${styles.DrawerForm__section} ${
-									styles.DrawerForm__section__accordion
-								}`}
-							>
-								<InputText
-									name='itemsSubtotal'
-									label='Items Subtotal'
-									type='number'
-									leadingIcon='dollar-sign'
-									min={0}
-									step={0.01}
-									defaultValue={purchasePackage?.itemsSubtotal ?? ""}
-								/>
-
-								<InputText
-									label='Shipping Total'
-									name='shippingTotal'
-									type='number'
-									leadingIcon='dollar-sign'
-									width='half'
-									min={0}
-									step={0.01}
-									defaultValue={purchasePackage?.shippingTotal ?? ""}
-									required
-								/>
-
-								<InputText
-									label='Taxes Total'
-									name='taxesTotal'
-									type='number'
-									leadingIcon='dollar-sign'
-									width='half'
-									min={0}
-									step={0.01}
-									defaultValue={purchasePackage?.taxesTotal ?? ""}
-									required
-								/>
-
-								<h4 className={styles.DrawerForm__section__title}>Cards</h4>
-
-								{isEditing
-									? purchasePackage?.cards.map((card) => (
-											<div
-												key={card.cardId}
-												className={styles.DrawerForm__section__card}
-											>
-												<p className={styles.DrawerForm__section__card__name}>
-													{card.player}
-													{card.year && ` ${card.year}`}
-													{card.setName && ` ${card.setName}`}
-													{card.info && ` ${card.info}`}
-												</p>
-
-												<InputText
-													label='Hammer Price'
-													type='number'
-													name={`hammerPrice-${card.cardId}`}
-													leadingIcon='dollar-sign'
-													min={0}
-													step={0.01}
-													defaultValue={card.hammerPrice}
-													required
-													width='third'
-												/>
-											</div>
-										))
-									: selectedCards.map((card) => (
-											<div
-												key={card.id}
-												className={styles.DrawerForm__section__card}
-											>
-												<p className={styles.DrawerForm__section__card__name}>
-													{card.player}
-													{card.category && ` ${card.category}`}
-													{card.year && ` ${card.year}`}
-													{card.setName && ` ${card.setName}`}
-													{card.info && ` ${card.info}`}
-												</p>
-
-												<InputText
-													label='Hammer Price'
-													type='number'
-													name={`hammerPrice-${card.id}`}
-													leadingIcon='dollar-sign'
-													min={0}
-													step={0.01}
-													required
-													width='third'
-												/>
-											</div>
-										))}
-							</div>
-						</Accordion>
 					</div>
+					<Accordion
+						icon='arrow-left'
+						labelSize='large'
+						label='Edit Financials'
+						defaultOpen={location !== "packages"}
+					>
+						<div
+							className={`${styles.DrawerForm__section} ${
+								styles.DrawerForm__section__accordion
+							}`}
+						>
+							<InputText
+								name='itemsSubtotal'
+								label='Items Subtotal'
+								type='number'
+								leadingIcon='dollar-sign'
+								min={0}
+								step={0.01}
+								defaultValue={purchasePackage?.itemsSubtotal ?? ""}
+							/>
+
+							<InputText
+								label='Shipping Total'
+								name='shippingTotal'
+								type='number'
+								leadingIcon='dollar-sign'
+								min={0}
+								step={0.01}
+								defaultValue={purchasePackage?.shippingTotal ?? ""}
+								required
+							/>
+
+							<InputText
+								label='Taxes Total'
+								name='taxesTotal'
+								type='number'
+								leadingIcon='dollar-sign'
+								min={0}
+								step={0.01}
+								defaultValue={purchasePackage?.taxesTotal ?? ""}
+								required
+							/>
+						</div>
+						<h4 className={styles.DrawerForm__section__title}>Cards</h4>
+						<div className={styles.DrawerForm__cards}>
+							{isEditing
+								? purchasePackage?.cards.map((card) => (
+										<div key={card.cardId} className={styles.DrawerForm__card}>
+											<p className={styles.DrawerForm__card__name}>
+												{card.player}
+												{card.year && ` ${card.year}`}
+												{card.setName && ` ${card.setName}`}
+												{card.info && ` ${card.info}`}
+											</p>
+
+											<InputText
+												label='Hammer Price'
+												type='number'
+												name={`hammerPrice-${card.cardId}`}
+												leadingIcon='dollar-sign'
+												min={0}
+												step={0.01}
+												defaultValue={card.hammerPrice}
+												required
+											/>
+										</div>
+									))
+								: selectedCards.map((card) => (
+										<div key={card.id} className={styles.DrawerForm__card}>
+											<p className={styles.DrawerForm__card__name}>
+												{card.player}
+												{card.category && ` ${card.category}`}
+												{card.year && ` ${card.year}`}
+												{card.setName && ` ${card.setName}`}
+												{card.info && ` ${card.info}`}
+											</p>
+
+											<InputText
+												label='Hammer Price'
+												type='number'
+												name={`hammerPrice-${card.id}`}
+												leadingIcon='dollar-sign'
+												min={0}
+												step={0.01}
+												required
+											/>
+										</div>
+									))}
+						</div>
+					</Accordion>
 					<div className={styles.DrawerForm__actions}>
 						<Button
-							type='main'
-							variant='cancel'
+							type='main-lg'
 							htmlType='button'
 							label='Cancel'
+							variant='delete'
+							leadingIcon='circle-close'
 							onClick={onClose}
 							disabled={isSaving}
 						/>
+
 						<Button
-							type='main'
-							variant='add'
+							type='main-lg'
+							variant='primary'
 							htmlType='submit'
+							leadingIcon='package'
 							label={
 								isSaving
 									? "Saving..."

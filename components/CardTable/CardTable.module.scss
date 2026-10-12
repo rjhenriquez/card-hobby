@@ -10,6 +10,10 @@
 			width: var(--table-select-width);
 			min-width: var(--table-select-width);
 			max-width: var(--table-select-width);
+			label {
+				margin-inline: auto;
+				width: fit-content;
+			}
 		}
 		th:nth-child(2),
 		td:nth-child(2) {
@@ -34,7 +38,7 @@
 		&__separator {
 			display: block;
 			width: 1px;
-			background: var(--button-border-color);
+			background: var(--button-border-color-main);
 			height: var(--button-size);
 		}
 
@@ -70,7 +74,7 @@
 		}
 
 		&--value {
-			@include font-weight-chivo(light);
+			@include font-family(mono);
 			position: relative;
 			text-align: right;
 			&--positive,
@@ -129,19 +133,32 @@
 	}
 
 	&__link {
-		@include font-weight-chivo(regular);
-		border: var(--input-border-line);
-		font-size: 0.9em;
-		padding: var(--table-link-padding);
-		border-radius: 0.4em;
-		line-height: 1;
-		letter-spacing: 0.05em;
-		transition: var(--transition-productive);
-		text-box: trim-both cap alphabetic;
-
+		@include table-tag;
+		@include font-family(mono);
+		@include transition(border-color, color);
 		&:hover {
 			border-color: var(--psa-color);
 			color: var(--psa-color);
+		}
+	}
+	&__status {
+		&--yellow {
+			@include status-color(var(--color-yellow));
+		}
+		&--green {
+			@include status-color(var(--color-green));
+		}
+		&--red {
+			@include status-color(var(--color-red));
+		}
+		&--blue {
+			@include status-color(var(--color-main));
+		}
+		&--blue-light {
+			@include status-color(var(--color-blue));
+		}
+		&--gray {
+			@include status-color(var(--text-color));
 		}
 	}
 
@@ -149,8 +166,7 @@
 		transform: translateY(1px);
 	}
 	&__label {
-		@include font-weight-chivo(light);
-
+		@include font-family(mono);
 		text-box: trim-both cap alphabetic;
 		text-transform: uppercase;
 		border-radius: 0.4em;

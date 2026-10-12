@@ -4,76 +4,45 @@
 	display: flex;
 	flex-direction: column;
 	gap: var(--input-gap);
-	flex: 0 0 100%;
 	min-width: 0;
-
-	&--half {
-		flex-basis: calc(50% - var(--form-gap) / 2);
-	}
-
-	&--third {
-		flex-basis: calc(33.333% - var(--form-gap) / 2);
-	}
-
 	&__label {
-		@include font-weight(semibold);
-
-		font-size: var(--font-size-12);
-		letter-spacing: 0.05em;
-		text-transform: uppercase;
+		@include label-styles;
 	}
-
 	&__field {
 		position: relative;
 	}
 
 	input {
-		width: 100%;
-		height: var(--input-height);
-		padding-inline: var(--input-padding);
-		border: var(--input-border);
-		border-radius: var(--input-border-radius);
-		outline: none;
-		font-size: var(--input-font-size);
-		background: transparent;
-		&:focus {
-			border-color: var(--main);
-		}
+		@include input-styles;
 	}
 
 	&__options {
 		position: absolute;
-		top: 100%;
+		top: calc(100% - 2px);
 		left: 0;
 		z-index: 20;
-
 		width: 100%;
-
 		background: var(--bg-color);
-
-		border: var(--input-border);
-		border-radius: var(--input-border-radius);
-
+		border: 1px solid var(--main);
+		border-top-color: transparent;
+		border-radius: 0 0 var(--input-border-radius) var(--input-border-radius);
 		overflow: hidden;
 	}
 
 	&__option {
 		width: 100%;
-
 		padding: var(--input-padding);
-
 		text-align: left;
 		justify-content: flex-start;
-
 		text-align: left;
+		font-size: var(--input-font-size);
 
 		cursor: pointer;
-
 		&:hover {
-			background: var(--bg-color-02);
+			background: var(--bg-color-03);
 		}
 		&--active {
-			background: var(--bg-color-02);
+			background: var(--bg-color-03);
 		}
 	}
 }

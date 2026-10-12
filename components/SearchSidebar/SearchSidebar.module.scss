@@ -17,8 +17,8 @@
 	&__header {
 		margin-bottom: calc(var(--sidebar-padding) / 2);
 		h2 {
-			@include heading(h3);
-			@include font-weight(regular);
+			@include font-weight(medium);
+			font-size: var(--font-size-14);
 			text-transform: uppercase;
 		}
 	}

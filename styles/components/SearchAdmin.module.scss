@@ -1,0 +1,110 @@
+@use "@/styles/utilities/all" as *;
+
+.SearchAdmin {
+	&__section {
+		@include panel;
+		&__header {
+			background-color: var(--panel-header-background);
+			padding: var(--panel-padding);
+			display: flex;
+			justify-content: space-between;
+			align-items: flex-end;
+			&--nested {
+				background-color: var(--bg-color-02);
+			}
+		}
+		&__heading {
+			min-width: 0;
+			display: flex;
+			flex-direction: column;
+			gap: var(--panel-header-gap);
+		}
+
+		&__eyebrow,
+		&__title,
+		&__subhead {
+			@include text-box;
+		}
+		&__title {
+			@include panel-header;
+		}
+		&__eyebrow {
+			@include label-styles;
+		}
+		&__subhead {
+			@include panel-sub-header;
+		}
+		&__content {
+			padding: var(--panel-padding);
+		}
+		&__edits {
+			display: flex;
+			align-items: flex-end;
+			justify-content: flex-end;
+			border-bottom: var(--panel-border-line);
+			padding: var(--panel-padding);
+			&__form {
+				display: flex;
+				align-items: flex-end;
+				gap: var(--panel-header-gap);
+				&:not(:last-of-type) {
+					margin-right: var(--panel-header-gap);
+				}
+			}
+			label {
+				flex: 1;
+			}
+		}
+		&:not(:last-of-type) {
+			margin-bottom: calc(var(--search-admin-space) * 2);
+		}
+	}
+	&__input {
+		&__sort {
+			max-width: var(--input-sort-size);
+			&--stacked {
+				max-width: var(--input-sort-size-stacked);
+			}
+		}
+	}
+	&__terms {
+		&__header {
+			@include font-weight(regular);
+			font-size: var(--font-size-14);
+			margin-bottom: var(--search-admin-space);
+		}
+		&__list {
+			display: flex;
+			flex-direction: column;
+			gap: var(--search-admin-space);
+			margin-top: var(--search-admin-space);
+		}
+		&__term {
+			display: flex;
+			align-items: flex-end;
+			gap: var(--search-admin-space);
+			padding: var(--search-admin-space);
+			background-color: var(--bg-color-02);
+			border: var(--panel-border-line);
+			border-radius: var(--panel-border-radius);
+
+			> form:first-child {
+				display: flex;
+				align-items: flex-end;
+				gap: 6px;
+				flex: 1;
+			}
+		}
+		&__form {
+			display: flex;
+			align-items: flex-end;
+			gap: var(--search-admin-space);
+			label {
+				flex: 1;
+			}
+			&--add {
+				margin-top: calc((var(--search-admin-space) * 2));
+			}
+		}
+	}
+}

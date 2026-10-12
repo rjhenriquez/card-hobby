@@ -1,4 +1,4 @@
-import { PackagesNew } from "@/components/Packages/PackagesNew";
+import { Packages } from "@/components/Packages/Packages";
 import { Tabs } from "@/components/Tabs/Tabs";
 import {
 	getCardsWithoutPurchasePackage,
@@ -45,17 +45,19 @@ export default async function PackagesPage({
 							label: "Active",
 							value: "active",
 							children: (
-								<PackagesNew
-									purchasePackages={activePackages}
-									availableCards={availableCards}
-								/>
+								<>
+									<Packages
+										purchasePackages={activePackages}
+										availableCards={availableCards}
+									/>
+								</>
 							),
 						},
 						{
 							label: "Received",
 							value: "received",
 							children: (
-								<PackagesNew
+								<Packages
 									purchasePackages={receivedPackages}
 									availableCards={availableCards}
 								/>

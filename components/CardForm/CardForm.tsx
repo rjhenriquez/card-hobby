@@ -105,7 +105,7 @@ export function CardForm({
 						label='Player'
 						defaultValue={initialCard?.player ?? ""}
 						options={options.players}
-						width='half'
+
 						required
 					/>
 
@@ -114,12 +114,10 @@ export function CardForm({
 						label='Category'
 						defaultValue={initialCard?.category ?? ""}
 						options={options.categories}
-						width='half'
 					/>
 
 					<InputText
 						name='year'
-						width='half'
 						label='Year'
 						defaultValue={initialCard?.year ?? ""}
 					/>
@@ -128,29 +126,25 @@ export function CardForm({
 						name='setName'
 						label='Set'
 						defaultValue={initialCard?.setName ?? ""}
-						width='half'
 					/>
 
 					<InputText
 						name='info'
 						label='Info'
 						defaultValue={initialCard?.info ?? ""}
-						width='half'
 					/>
 
 					<InputText
 						name='notes'
 						label='Notes'
 						defaultValue={initialCard?.notes ?? ""}
-						width='half'
 					/>
 				</div>
+				<div className={styles.DrawerForm__section__header}>
+					<hr className={styles.DrawerForm__section__hr} />
+					<h3 className={styles.DrawerForm__section__heading}>Acquisition</h3>
+				</div>
 				<div className={styles.DrawerForm__section}>
-					<div className={styles.DrawerForm__section__header}>
-						<hr className={styles.DrawerForm__section__hr} />
-						<h3 className={styles.DrawerForm__section__heading}>Acquisition</h3>
-					</div>
-
 					<InputSelect
 						name='acquisitionType'
 						label='Acquisition Type'
@@ -165,7 +159,6 @@ export function CardForm({
 								value: "pulled",
 							},
 						]}
-						width='half'
 					/>
 
 					<InputDate
@@ -179,14 +172,12 @@ export function CardForm({
 						name='purchasedFrom'
 						label='Purchased From'
 						defaultValue={initialCard?.purchasedFrom ?? ""}
-						width='half'
 					/>
 
 					<InputText
 						name='ebaySeller'
 						label='eBay Seller'
 						defaultValue={initialCard?.ebaySeller ?? ""}
-						width='half'
 					/>
 
 					{card?.soldPrice !== null && card?.soldPrice !== undefined ? (
@@ -217,19 +208,18 @@ export function CardForm({
 											status.name !== "Sold" &&
 											status.name !== "Pending Payment",
 									)
+									.sort((a, b) => a.name.localeCompare(b.name))
 									.map((status) => ({
 										label: status.name,
 										value: status.id.toString(),
 									})),
 							]}
-							width='half'
 						/>
 					)}
 					<InputText
 						name='grade'
 						label='Grade'
 						type='number'
-						width='half'
 						min={1}
 						step={0.5}
 						defaultValue={initialCard?.grade ?? ""}
@@ -239,13 +229,11 @@ export function CardForm({
 						label='Purchase Price'
 						type='number'
 						leadingIcon='dollar-sign'
-						width='half'
+
 						min={0}
 						step={0.01}
 						defaultValue={initialCard?.purchasePrice ?? ""}
 					/>
-				</div>
-				<div className={styles.DrawerForm__section}>
 					<InputCheckbox
 						name='isShared'
 						label='Shared on IG'
@@ -254,17 +242,12 @@ export function CardForm({
 					/>
 				</div>
 				<div className={styles.DrawerForm__actions}>
-					<Button
-						type='main'
-						variant='add'
-						htmlType='submit'
-						label={isEditing ? "Save Changes" : "Add Card"}
-					/>
 					{card && (
 						<Button
-							type='main'
+							type='main-lg'
 							variant='delete'
 							htmlType='button'
+							leadingIcon='delete'
 							onClick={() => {
 								setDeleteError(null);
 								setIsDeleteModalOpen(true);
@@ -272,42 +255,46 @@ export function CardForm({
 							label='Delete Card'
 						/>
 					)}
+					<Button
+						className={styles["DrawerForm__action--right"]}
+						type='main-lg'
+						variant='primary'
+						htmlType='submit'
+						leadingIcon='add-card'
+						label={isEditing ? "Save Changes" : "Add Card"}
+					/>
 				</div>
 			</form>
 			{card && portfolio === "investment" && (
 				<form action={handleSale}>
+					<div className={styles.DrawerForm__section__header}>
+						<hr className={styles.DrawerForm__section__hr} />
+						<h3 className={styles.DrawerForm__section__heading}>Sale</h3>
+					</div>
+					<p className={styles.DrawerForm__info}>
+						<span className={styles.DrawerForm__info__label}>Total Cost:</span>
+						<span className={styles.DrawerForm__info__value}>
+							{card.totalCost !== null
+								? `$${card.totalCost.toLocaleString("en-US", {
+										minimumFractionDigits: 2,
+										maximumFractionDigits: 2,
+									})}`
+								: "Unknown"}
+						</span>
+					</p>
 					<div className={styles.DrawerForm__section}>
-						<div className={styles.DrawerForm__section__header}>
-							<hr className={styles.DrawerForm__section__hr} />
-							<h3 className={styles.DrawerForm__section__heading}>Sale</h3>
-						</div>
-
 						<input type='hidden' name='id' value={card.id} />
 
-						<p className={styles.DrawerForm__info}>
-							<span className={styles.DrawerForm__info__label}>
-								Total Cost:
-							</span>
-							<span className={styles.DrawerForm__info__value}>
-								{card.totalCost !== null
-									? `$${card.totalCost.toLocaleString("en-US", {
-											minimumFractionDigits: 2,
-											maximumFractionDigits: 2,
-										})}`
-									: "Unknown"}
-							</span>
-						</p>
 						<InputText
 							name='soldVia'
 							label='Sold Via'
 							defaultValue={card.soldVia ?? ""}
-							width='half'
 						/>
 
 						<InputDate
 							name='soldDate'
-							label='		Sold Date'
-							width='half'
+							label='Sold Date'
+
 							defaultValue={card.soldDate ?? ""}
 						/>
 						<InputText
@@ -315,7 +302,6 @@ export function CardForm({
 							label='Sold Price'
 							type='number'
 							leadingIcon='dollar-sign'
-							width='half'
 							min={0}
 							step={0.01}
 							defaultValue={card.soldPrice ?? ""}
@@ -326,7 +312,6 @@ export function CardForm({
 							name='isPaid'
 							label='Payment Received'
 							type='square'
-							width='half'
 							defaultChecked={card.isPaid}
 						/>
 
@@ -335,22 +320,24 @@ export function CardForm({
 								{saleError}
 							</p>
 						)}
-						<div className={styles.DrawerForm__actions}>
-							<Button
-								type='main'
-								variant='add'
-								htmlType='submit'
-								disabled={isSavingSale}
-								label={
-									isSavingSale
-										? "Saving..."
-										: card.soldPrice !== null
-											? "Save Changes"
-											: "Sell Card"
-								}
-								trailingIcon={isSavingSale ? "loading" : undefined}
-							/>
-						</div>
+					</div>
+					<div className={styles.DrawerForm__actions}>
+						<Button
+							className={styles["DrawerForm__action--right"]}
+							type='main-lg'
+							variant='primary'
+							leadingIcon='investments'
+							htmlType='submit'
+							disabled={isSavingSale}
+							label={
+								isSavingSale
+									? "Saving..."
+									: card.soldPrice !== null
+										? "Save Changes"
+										: "Sell Card"
+							}
+							trailingIcon={isSavingSale ? "loading" : undefined}
+						/>
 					</div>
 				</form>
 			)}
@@ -373,7 +360,6 @@ export function CardForm({
 				<div className={modalStyles.ModalContent__actions}>
 					<Button
 						type='main'
-						variant='delete'
 						htmlType='button'
 						onClick={handleDelete}
 						disabled={isDeleting}
@@ -381,7 +367,6 @@ export function CardForm({
 					/>
 					<Button
 						type='main'
-						variant='cancel'
 						label='Cancel'
 						onClick={() => setIsDeleteModalOpen(false)}
 						disabled={isDeleting}

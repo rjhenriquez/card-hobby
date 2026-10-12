@@ -251,3 +251,21 @@ export async function moveCardToPortfolio(
 	revalidatePath("/investment");
 	revalidatePath("/collection");
 }
+
+export async function markCardAsShared(cardId: number) {
+	if (!Number.isInteger(cardId)) {
+		throw new Error("Invalid card ID");
+	}
+
+	await db
+		.update(cards)
+		.set({
+			isShared: true,
+			updatedAt: new Date(),
+		})
+		.where(eq(cards.id, cardId));
+
+	revalidatePath("/");
+	revalidatePath("/investment");
+	revalidatePath("/collection");
+}

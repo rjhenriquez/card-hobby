@@ -7,8 +7,8 @@ import styles from "./Button.module.scss";
 
 export interface ButtonProps {
 	onClick?: React.MouseEventHandler<HTMLButtonElement>;
-	type?: "icon" | "main" | "number-add";
-	variant?: "default" | "add" | "continue" | "delete" | "cancel" | "header";
+	type?: "icon" | "main" | "number-add" | "main-lg" | "icon-sm";
+	variant?: "primary" | "delete";
 	htmlType?: "button" | "submit" | "reset";
 	className?: string;
 	leadingIcon?: string;
@@ -50,8 +50,8 @@ export const Button = ({
 			{leadingIcon && (
 				<Icon
 					icon={leadingIcon}
-					className={cn(styles.Button__icon, {
-						[styles["Button__icon--loading"]]: leadingIcon === "loading",
+					className={cn("Button__icon", styles.Button__icon, {
+						[styles["Button__icon--loading"]]: trailingIcon === "loading",
 					})}
 				/>
 			)}
@@ -61,7 +61,7 @@ export const Button = ({
 			{trailingIcon && (
 				<Icon
 					icon={trailingIcon}
-					className={cn(styles.Button__icon, {
+					className={cn("Button__icon", styles.Button__icon, {
 						[styles["Button__icon--loading"]]: trailingIcon === "loading",
 					})}
 				/>

@@ -90,3 +90,15 @@ export const PSA_GRADE_DEFINITIONS = {
 	1.5: "FR",
 	1: "PR",
 } as const;
+
+export const STATUS_CLASSES = [
+	{ term: "Transit", className: "status--yellow" },
+	{ term: "PSA", className: "status--red" },
+	{ term: "Received", className: "status--blue" },
+	{ term: "In Hand", className: "status--blue" },
+	{ term: "Available", className: "status--green" },
+	{ term: "Ebay", className: "status--green" },
+	{ term: "Pending", className: "status--yellow" },
+	{ term: "Redemption", className: "status--gray" },
+	{ term: "DCSports", className: "status--blue-light" },
+];

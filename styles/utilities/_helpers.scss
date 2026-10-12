@@ -3,21 +3,279 @@
 @use "sass:meta";
 
 @use "mixin-media-queries" as *;
-@use "mixin-font-family-market" as *;
-@use "mixin-font-family-averta" as *;
+@use "mixin-fonts" as *;
+// --------------------------------
+// --------------------------------
+// ---------- TYPOGRAPHY ----------
+// --------------------------------
+// --------------------------------
 
 @mixin heading($size) {
 	@include font-weight(semibold);
 	@if $size == h1 {
+		// Used in PAge header
 		font-size: var(--font-size-26);
+		color: var(--header-color);
 	} @else if $size == h2 {
+		// Used in Drawer Header
 		@include font-weight(semibold);
 		font-size: var(--font-size-18);
+		color: var(--header-color);
 	} @else if $size == h3 {
+		// Used in Drawer Divider
 		@include font-weight(semibold);
+		color: var(--header-color);
 		font-size: 1rem;
 	} @else if $size == h4 {
 		@include font-weight(semibold);
+		color: var(--header-color);
 		font-size: 1rem;
+	}
+}
+
+@mixin panel-header {
+	font-size: var(--font-size-20);
+	&__number {
+		@include font-family(mono);
+	}
+}
+@mixin panel-header-sm {
+	font-size: var(--font-size-18);
+}
+@mixin panel-sub-header {
+	font-size: var(--font-size-14);
+	&__number {
+		@include font-family(mono);
+		@include font-weight(regular);
+	}
+	span {
+		@include text-box;
+	}
+}
+
+@mixin label-styles {
+	@include font-weight(semibold);
+	font-size: var(--font-size-12);
+	text-transform: uppercase;
+}
+
+// ---------- OTHER ----------
+
+@mixin table-tag {
+	@include text-box;
+	@include font-weight(regular);
+	text-transform: uppercase;
+	font-size: var(--font-size-12);
+	font-size: 12px;
+	padding: var(--table-link-padding);
+	border: var(--input-border-line);
+	border-radius: var(--border-radius);
+}
+@mixin status-color($color) {
+	@include table-tag;
+	color: color-mix(in srgb, #{$color} 70%, var(--bg-color-inverted));
+	border-color: color-mix(in srgb, #{$color} 70%, var(--bg-color-inverted));
+	background: color-mix(
+		in srgb,
+		#{$color} var(--color-mix-percentage),
+		var(--bg-color)
+	);
+}
+
+@mixin button-hover($color) {
+	color: color-mix(in srgb, #{$color} 70%, var(--bg-color-inverted));
+	border-color: color-mix(in srgb, #{$color} 70%, var(--bg-color-inverted));
+	background: color-mix(
+		in srgb,
+		#{$color} var(--color-mix-percentage),
+		var(--bg-color)
+	);
+}
+@mixin transition($properties...) {
+	$transitions: ();
+
+	@each $property in $properties {
+		$transitions: list.append(
+			$transitions,
+			$property
+				var(--transition-productive-timing)
+				var(--transition-productive-ease),
+			comma
+		);
+	}
+
+	transition: $transitions;
+}
+
+@mixin transition-expressive($properties...) {
+	$transitions: ();
+
+	@each $property in $properties {
+		$transitions: list.append(
+			$transitions,
+			$property
+				var(--transition-expressive-timing)
+				var(--transition-expressive-ease),
+			comma
+		);
+	}
+
+	transition: $transitions;
+}
+
+@mixin input-styles {
+	@include font-family(sans);
+	@include font-weight(regular);
+	width: 100%;
+	padding-inline: var(--input-padding);
+	height: var(--input-height);
+	display: flex;
+	align-items: center;
+	border: var(--input-border-line);
+	border-radius: var(--input-border-radius);
+	outline: none;
+	font-size: var(--input-font-size);
+	background: var(--bg-color);
+	&:focus {
+		border-color: var(--main);
+	}
+	&[type="search"] {
+		&::-webkit-search-cancel-button {
+			cursor: pointer;
+		}
+	}
+	&[type="number"] {
+		@include font-family(mono);
+		appearance: textfield;
+		&::-webkit-inner-spin-button,
+		&::-webkit-outer-spin-button {
+			margin: 0;
+			appearance: none;
+		}
+	}
+}
+@mixin panel {
+	background-color: var(--bg-color);
+	border: var(--panel-border-line);
+	border-radius: var(--panel-border-radius);
+}
+@mixin text-box {
+	text-box: trim-both cap alphabetic;
+}
+@mixin description-list($number-of-items) {
+	display: grid;
+	grid-template-columns: repeat(
+		$number-of-items,
+		minmax(var(--description-list-min-width), 1fr)
+	);
+	dd,
+	dt {
+		@include text-box;
+	}
+	dd {
+		font-size: var(--font-size-18);
+	}
+	dt {
+		@include label-styles;
+	}
+	&__wrapper {
+		display: grid;
+		grid-template-rows: auto 1fr;
+		gap: var(--panel-header-gap);
+		padding: var(--panel-padding);
+		&--highlight {
+			background-color: var(--bg-color-02);
+			dd {
+				@include font-family(mono);
+				@include font-weight(bold);
+			}
+		}
+	}
+	&__number {
+		@include font-family(mono);
+	}
+}
+@mixin table-small {
+	width: 100%;
+	border-collapse: collapse;
+	thead {
+		th {
+			@include label-styles;
+			padding-bottom: var(--small-table-padding);
+			border-bottom: var(--panel-border-line);
+		}
+	}
+	tbody {
+		td {
+			font-size: var(--font-size-14);
+			padding-block: var(--small-table-padding);
+			border-bottom: var(--panel-border-line);
+		}
+	}
+	th,
+	td {
+		text-align: left;
+	}
+	&__number {
+		@include font-family(mono);
+		@include font-weight(regular);
+	}
+}
+@mixin external-link {
+	@include font-family(mono);
+	@include transition(color);
+	display: inline-flex;
+	align-items: center;
+	width: fit-content;
+	&__icon {
+		margin-inline: var(--button-main-padding-sm);
+		width: var(--button-icon-size);
+		height: var(--button-icon-size);
+	}
+	&:hover {
+		color: var(--main);
+	}
+}
+
+@mixin trigger-styles($class-base, $size: "Regular") {
+	$size-suffix: if($size == small, "-sm", "");
+	cursor: pointer;
+	align-items: center;
+	display: inline-flex;
+	gap: var(--trigger-button-gap);
+	&__label {
+		@include font-weight(medium);
+		font-size: var(--font-size-12);
+		&--large {
+			font-size: var(--font-size-14);
+		}
+	}
+	&__icon {
+		@include transition(transform, background, border-color);
+		border-radius: 50%;
+		border: var(--button-border-line);
+		width: var(--trigger-button-size#{$size-suffix});
+		height: var(--trigger-button-size#{$size-suffix});
+		display: grid;
+		place-items: center;
+		transform: rotate(270deg);
+	}
+	svg {
+		width: calc(var(--trigger-button-size#{$size-suffix}) / 1.5);
+	}
+	&:hover,
+	&:focus-within {
+		.#{$class-base}__trigger__icon {
+			border-color: color-mix(
+				in srgb,
+				var(--color-main) 70%,
+				var(--bg-color-inverted)
+			);
+			background: color-mix(
+				in srgb,
+				var(--color-main) var(--color-mix-percentage),
+				var(--bg-color)
+			);
+		}
 	}
 }

@@ -1,11 +1,10 @@
 @use "@/styles/utilities/all" as *;
 
 .HighlightCard {
+	@include panel;
 	background-color: var(--bg-color-02);
-	border: 1px solid var(--border-color);
-	padding: var(--highlight-padding);
+	padding: var(--panel-padding);
 	width: fit-content;
-	border-radius: var(--highlight-border-radius);
 	display: grid;
 	grid-template-columns: var(--highlight-icon-size) auto auto;
 	grid-template-rows: 1fr 1fr;
@@ -17,23 +16,21 @@
 	&__highlight,
 	&__sub {
 		&__label {
-			@include font-weight(semibold);
-			font-size: 0.875rem;
-			color: var(--highlight-label-color);
-			line-height: 1;
-			text-box: trim-both cap alphabetic;
+			@include label-styles;
+			@include text-box;
 			justify-self: end;
 		}
 		&__value {
-			line-height: 1;
-			text-box: trim-both cap alphabetic;
+			@include text-box;
+			@include font-family(mono);
+			@include font-weight(medium);
+			font-size: var(--font-size-18);
 			justify-self: end;
+			align-self: end;
 		}
 	}
 	&__highlight {
 		&__value {
-			@include font-weight-chivo(semibold);
-			font-size: var(--highlight-value-font-size);
 			grid-area: value;
 			align-self: end;
 		}
@@ -43,9 +40,6 @@
 	}
 	&__sub {
 		&__value {
-			@include font-weight-chivo(semibold);
-			font-size: var(--highlight-value-font-size-sm);
-			align-self: end;
 			grid-area: subvalue;
 		}
 		&__label {

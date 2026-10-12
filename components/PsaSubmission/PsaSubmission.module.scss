@@ -1,0 +1,142 @@
+@use "@/styles/utilities/all" as *;
+
+.PsaSubmission {
+	@include panel;
+	&__header {
+		background-color: var(--panel-header-background);
+		padding: var(--panel-padding);
+		display: flex;
+		justify-content: space-between;
+		align-items: flex-end;
+	}
+
+	&__heading {
+		min-width: 0;
+		display: flex;
+		flex-direction: column;
+		gap: var(--panel-header-gap);
+	}
+	&__eyebrow,
+	&__title,
+	&__subhead {
+		@include text-box;
+	}
+	&__title {
+		@include panel-header;
+	}
+	&__eyebrow {
+		@include label-styles;
+	}
+	&__subhead {
+		@include panel-sub-header;
+	}
+	&__trigger {
+		:global(.Button__icon) {
+			@include transition(transform);
+			transform: rotate(270deg);
+		}
+		&--open {
+			:global(.Button__icon) {
+				transform: rotate(90deg);
+			}
+		}
+	}
+	&__content {
+		@include transition(grid-template-rows);
+		display: grid;
+		grid-template-rows: 0fr;
+		&__inner {
+			min-height: 0;
+			overflow: hidden;
+		}
+		&--open {
+			grid-template-rows: 1fr;
+		}
+		&__wrapper {
+			margin-block: var(--panel-padding);
+			padding-inline: var(--panel-padding);
+			display: flex;
+			flex-direction: column;
+			gap: var(--panel-padding);
+		}
+	}
+	&__summary {
+		@include description-list(3);
+		&__wrapper {
+			&:not(:last-of-type) {
+				border-right: var(--panel-border-line);
+			}
+		}
+		&--bottom {
+			border-top: var(--panel-border-line);
+		}
+		&--top {
+			border-bottom: var(--panel-border-line);
+		}
+	}
+}
+.PsaSubmissionForm {
+	background: var(--bg-color-02);
+	padding: var(--panel-padding);
+	border: var(--panel-border-line);
+	border-radius: var(--panel-border-radius);
+	display: flex;
+	flex-direction: column;
+	gap: var(--panel-padding);
+	&__fields {
+		display: grid;
+		gap: var(--panel-padding);
+		grid-template-columns: repeat(3, 1fr) repeat(
+				2,
+				var(--input-min-width)
+			) 200px;
+		width: 100%;
+		align-items: self-end;
+	}
+	&__actions {
+		display: grid;
+		gap: var(--panel-padding);
+		grid-template-columns: repeat(2, 1fr);
+		width: 100%;
+	}
+}
+.PsaSubmissionFormRow {
+	&__input {
+		max-width: var(--table-info-input-width);
+	}
+	&__truncate {
+		display: block;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+	&__actions {
+		display: flex;
+		align-items: center;
+		height: 100%;
+		width: 100%;
+		gap: var(--package-table-padding);
+		justify-content: flex-end;
+	}
+}
+.PsaSubmissionSummary {
+	@include description-list(9);
+	border-bottom: var(--panel-border-line);
+	&__wrapper {
+		&:not(:last-of-type) {
+			border-right: var(--panel-border-line);
+		}
+	}
+}
+.PsaSubmissionDetails {
+	background: var(--bg-color-02);
+	padding: var(--panel-padding);
+	border: var(--panel-border-line);
+	border-radius: var(--panel-border-radius);
+	@include description-list(5);
+	&__wrapper {
+		&:not(:last-of-type) {
+			border-right: var(--panel-border-line);
+		}
+	}
+}

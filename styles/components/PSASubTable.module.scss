@@ -29,11 +29,12 @@
 	}
 	td {
 		&:not(:nth-child(2)) {
-			@include font-weight-chivo(light);
+			@include font-family(mono);
 		}
 	}
 	&__link {
-		@include font-weight-chivo(regular);
+		@include font-family(mono);
+		@include font-weight(regular);
 		border: var(--input-border-line);
 		font-size: 0.9em;
 		padding: var(--table-link-padding);

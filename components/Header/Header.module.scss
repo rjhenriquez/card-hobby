@@ -7,7 +7,7 @@
 	align-items: center;
 	min-height: var(--header-height);
 	&__inner {
-		padding-inline: var(--header-padding);
+		padding-inline: var(--page-padding);
 		min-width: 0;
 		max-width: 100%;
 		width: 100%;
@@ -22,15 +22,13 @@
 		align-items: center;
 		gap: var(--header-gap);
 	}
-	&__sidebarToggle {
-		svg {
-			transition: var(--sidebar-transition);
-			transform: rotate(90deg);
-		}
-		&--open {
-			svg {
-				transform: rotate(0deg);
-			}
+	&__link {
+		text-transform: uppercase;
+		@include font-weight(medium);
+		&:hover,
+		&:focus-within {
+			@include transition(color);
+			color: var(--main);
 		}
 	}
 }

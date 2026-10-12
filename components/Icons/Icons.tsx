@@ -561,6 +561,18 @@ const Settings = ({ className }: { className?: string }) => {
 		</svg>
 	);
 };
+const ArrowLeft = ({ className }: { className?: string }) => {
+	return (
+		<svg
+			xmlns='http://www.w3.org/2000/svg'
+			className={className}
+			fill='currentColor'
+			viewBox='0 -960 960 960'
+		>
+			<path d='M640-80 240-480l400-400 71 71-329 329 329 329-71 71Z' />
+		</svg>
+	);
+};
 
 export const ICONS = {
 	moon: Moon,
@@ -581,6 +593,7 @@ export const ICONS = {
 	"arrow-up-down": ArrowUpDown,
 	"arrow-down": ArrowDown,
 	"arrow-up": ArrowUp,
+	"arrow-left": ArrowLeft,
 	compress: Compress,
 	expand: Expand,
 	"font-size": FontSize,

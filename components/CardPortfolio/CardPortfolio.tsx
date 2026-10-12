@@ -254,14 +254,12 @@ export function CardPortfolio({
 				<div className={modalStyles.ModalContent__actions}>
 					<Button
 						type='main'
-						variant='delete'
 						htmlType='button'
 						onClick={() => setCardToMove(null)}
 						label='Cancel'
 					/>
 					<Button
 						type='main'
-						variant='add'
 						htmlType='button'
 						onClick={handleMove}
 						label='Move'
@@ -275,28 +273,28 @@ export function CardPortfolio({
 				onClose={handleClosePsaDrawer}
 			>
 				<div className={styles.DrawerInfo}>
-					<div className={styles.DrawerInfo__section}>
-						<h3 className={styles.DrawerInfo__count}>
-							{selectedCardIds.length} card
-							{selectedCardIds.length === 1 ? "" : "s"} selected
-						</h3>
-						{psaError && (
-							<p className='alert' role='alert'>
-								{psaError}
-							</p>
-						)}
-					</div>
+					<h3 className={styles.DrawerInfo__count}>
+						{selectedCardIds.length} card
+						{selectedCardIds.length === 1 ? "" : "s"} selected
+					</h3>
+					{psaError && (
+						<p className='alert' role='alert'>
+							{psaError}
+						</p>
+					)}
+
 					<form
 						className={styles.DrawerForm}
 						action={handleCreatePsaSubmission}
 					>
+						<div className={styles.DrawerForm__section__header}>
+							<hr className={styles.DrawerForm__section__hr} />
+							<h3 className={styles.DrawerForm__section__heading}>
+								Create New Submission
+							</h3>
+						</div>
+
 						<div className={styles.DrawerForm__section}>
-							<div className={styles.DrawerForm__section__header}>
-								<hr className={styles.DrawerForm__section__hr} />
-								<h3 className={styles.DrawerForm__section__heading}>
-									Create New Submission
-								</h3>
-							</div>
 							<InputText
 								label='Submission Number'
 								name='submissionNumber'
@@ -305,25 +303,28 @@ export function CardPortfolio({
 						</div>
 						<div className={styles.DrawerForm__actions}>
 							<Button
-								type='main'
-								variant='add'
+								type='main-lg'
+								variant='delete'
 								htmlType='submit'
-								label='Create New Submission'
-							/>
-							<Button
-								type='main'
-								variant='cancel'
-								htmlType='submit'
+								leadingIcon='circle-close'
 								label='Cancel'
 								onClick={handleClosePsaDrawer}
+							/>
+							<Button
+								type='main-lg'
+								variant='primary'
+								htmlType='submit'
+								leadingIcon='add-sub'
+								label='Create Submission'
 							/>
 						</div>
 					</form>
 					<div className={styles.DrawerInfo__section}>
 						{psaSubmissions.length >= 1 && (
 							<Accordion
-								icon='arrow-down'
+								icon='arrow-left'
 								label='Existing Submissions'
+								labelSize='large'
 								defaultOpen={false}
 							>
 								<div

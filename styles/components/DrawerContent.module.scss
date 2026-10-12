@@ -5,11 +5,12 @@
 	flex-wrap: wrap;
 	&__section {
 		width: 100%;
-		display: flex;
-		flex-wrap: wrap;
-		gap: var(--form-gap);
-		margin-bottom: var(--form-section-margin);
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(45%, 1fr));
+		gap: var(--drawer-form-space) calc(var(--drawer-form-space) * 2);
+		margin-bottom: calc(var(--drawer-form-space) * 2);
 		&__header {
+			margin-bottom: calc(var(--drawer-form-space) * 2);
 			display: grid;
 			grid-template-columns: 1fr;
 			align-items: center;
@@ -23,74 +24,59 @@
 		&__hr {
 			width: 100%;
 			margin: 0;
+			border-color: var(--bg-color-02);
 		}
 		&__heading {
 			@include heading(h3);
 			z-index: 1;
 			justify-self: center;
 			padding-inline: 0.5em;
-			background-color: var(--bg-color-03);
+			background-color: var(--bg-color-02);
 		}
-		&__title {
-			display: block;
-			width: 100%;
-			font-size: var(--font-size-12);
-			letter-spacing: 0.05em;
-			@include font-weight(semibold);
-			text-transform: uppercase;
-			margin-block: calc(var(--form-section-margin) / 2);
-			padding-bottom: 0.3em;
-			border-bottom: var(--input-border);
-		}
+
 		&__accordion {
 			margin-top: var(--form-section-margin);
+			width: 100%;
 		}
-		&__card {
-			display: grid;
-			grid-template-columns: 2fr 1fr;
-			gap: var(--form-gap);
-			align-items: flex-end;
-			&__name {
-				min-width: 0;
-				@include font-weight(semibold);
-				font-size: var(--font-size-14);
-				margin: 0;
-			}
+		&__title {
+			@include heading(h4);
 		}
 	}
 	&__actions {
+		gap: calc(var(--drawer-form-space) * 2);
+		margin-block: calc(var(--drawer-form-space) * 2);
 		display: flex;
 		justify-content: space-between;
 		width: 100%;
 		gap: var(--form-gap);
+		button {
+			flex: 0 0 calc(50% - (var(--form-gap) / 2));
+			min-width: 12rem;
+		}
+	}
+	&__action--right {
+		margin-left: auto;
 	}
 	&__info {
 		display: flex;
+		font-size: var(--font-size-14);
 		gap: var(--form-gap);
+		align-items: baseline;
 		width: 100%;
+		margin-block: calc(var(--drawer-form-space) * 2);
 		&__label {
-			@include font-weight(semibold);
 			text-transform: uppercase;
 		}
 		&__value {
-			@include font-weight-chivo(regular);
+			@include font-family(mono);
+			@include font-weight(medium);
 		}
 	}
 	&__info__stacked {
 		display: flex;
 		flex-direction: column;
 		gap: var(--input-gap);
-		flex: 0 0 100%;
-		min-width: 0;
-		&--half {
-			flex-basis: calc(50% - var(--form-gap) / 2);
-		}
-		&__label {
-			@include font-weight(semibold);
-			font-size: var(--font-size-12);
-			letter-spacing: 0.05em;
-			text-transform: uppercase;
-		}
+
 		&__value {
 			width: 100%;
 			padding-inline: var(--input-padding);
@@ -104,14 +90,18 @@
 			font-size: var(--input-font-size);
 		}
 	}
+	&__cards {
+		display: flex;
+		flex-direction: column;
+		gap: var(--form-gap);
+	}
 	&__card {
 		display: grid;
-		grid-template-columns: 2fr 1fr;
+		grid-template-columns: 1fr var(--input-min-width);
 		gap: var(--form-gap);
 		align-items: flex-end;
 		&__name {
 			min-width: 0;
-			@include font-weight(semibold);
 			font-size: var(--font-size-14);
 			margin: 0;
 		}
@@ -152,8 +142,7 @@
 	}
 	&__count {
 		@include heading(h3);
-		text-transform: uppercase;
-		font-size: var(--font-size-18);
+		margin-bottom: calc(var(--drawer-form-space) * 2);
 		display: flex;
 		width: 100%;
 	}

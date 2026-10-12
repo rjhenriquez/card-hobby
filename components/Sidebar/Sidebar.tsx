@@ -5,14 +5,14 @@ import { usePathname } from "next/navigation";
 import cn from "classnames";
 import { Icon } from "@/components/Icons/Icons";
 import { SIDEBAR_NAVIGATION } from "@/constants";
+import { Button } from "@/components/Button/Button";
 import { useSidebar } from "./SidebarContext";
 
 import styles from "./Sidebar.module.scss";
 
 export function Sidebar() {
 	const pathname = usePathname();
-	const { isOpen } = useSidebar();
-
+	const { isOpen, toggleSidebar } = useSidebar();
 	const sidebarClass = `Sidebar ${styles.Sidebar} ${
 		!isOpen ? `Sidebar--closed ${styles["Sidebar--closed"]}` : ""
 	}`.trim();
@@ -20,9 +20,21 @@ export function Sidebar() {
 	return (
 		<aside className={sidebarClass}>
 			<div className={styles.Sidebar__top}>
-				<Link href='/' className={styles.Header__logo}>
-					CH
-				</Link>
+				{isOpen && (
+					<Link href='/' className={styles.Header__logo}>
+						CH
+					</Link>
+				)}
+				<Button
+					className={cn(styles.Sidebar__sidebarToggle, {
+						[styles["Sidebar__sidebarToggle--open"]]: isOpen,
+					})}
+					onClick={toggleSidebar}
+					aria-expanded={isOpen}
+					aria-label={isOpen ? "Close sidebar" : "Open sidebar"}
+					leadingIcon='hamburger'
+					type='icon'
+				/>
 			</div>
 
 			<div className={styles.Sidebar__bottom}>
@@ -32,11 +44,7 @@ export function Sidebar() {
 				>
 					<ul className={styles.Sidebar__list}>
 						{SIDEBAR_NAVIGATION.map((item) => {
-							const isActive =
-								item.href === "/"
-									? pathname === "/"
-									: pathname === item.href ||
-										pathname.startsWith(`${item.href}/`);
+							const isActive = pathname === item.href;
 
 							const content = (
 								<>

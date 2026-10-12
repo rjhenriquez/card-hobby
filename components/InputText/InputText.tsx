@@ -12,13 +12,13 @@ interface InputTextProps {
 	required?: boolean;
 	disabled?: boolean;
 	leadingIcon?: string;
-	width?: "full" | "half" | "third";
 	variant?: "small";
 	type?: "text" | "number" | "search";
 	min?: number;
 	max?: number;
 	step?: number;
 	form?: string;
+	layout?: "column" | "row";
 	placeholder?: string;
 	autoFocus?: boolean;
 	onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
@@ -33,7 +33,6 @@ export function InputText({
 	required,
 	disabled,
 	leadingIcon,
-	width = "full",
 	type = "text",
 	min,
 	max,
@@ -44,13 +43,14 @@ export function InputText({
 	variant,
 	onChange,
 	className,
+	layout = "column",
 }: InputTextProps) {
 	return (
 		<label
 			className={cn(
 				styles.InputText,
-				width && styles[`InputText--${width}`],
 				variant && styles[`InputText--${variant}`],
+				layout && styles[`InputText--${layout}`],
 				className,
 			)}
 		>

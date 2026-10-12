@@ -6,6 +6,7 @@
 		display: flex;
 		align-items: baseline;
 		justify-content: space-between;
+		margin-bottom: var(--page-padding);
 	}
 	&__heading {
 		@include heading(h1);
@@ -15,7 +16,7 @@
 		margin-bottom: 1em;
 	}
 	&__section {
-		margin-block: var(--page-padding);
+		margin-bottom: var(--page-padding);
 		display: flex;
 		gap: var(--page-padding);
 		flex-direction: column;
@@ -30,8 +31,17 @@
 		}
 	}
 	&__tables {
-		display: flex;
+		display: grid;
+		grid-template-columns: repeat(
+			auto-fit,
+			minmax(var(--dashboard-table-min-width), 1fr)
+		);
 		gap: var(--page-padding);
 		align-items: flex-start;
+	}
+	&__content {
+		display: flex;
+		flex-direction: column;
+		gap: var(--page-padding);
 	}
 }

@@ -350,7 +350,7 @@ export async function getCardsByPortfolio(portfolio: CardPortfolio) {
 			...card,
 
 			effectiveStatus: activePsaSubmission
-				? `PSA Grading${
+				? `PSA${
 						activePsaSubmission.stage ? ` - ${activePsaSubmission.stage}` : ""
 					}`
 				: card.status,

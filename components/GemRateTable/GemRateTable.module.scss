@@ -48,23 +48,17 @@
 	}
 	&__cell {
 		&--value {
-			@include font-weight-chivo(light);
+			@include font-family(mono);
 			text-align: right;
 		}
 		&--mono {
-			@include font-weight-chivo(light);
+			@include font-family(mono);
 		}
 	}
 	&__link {
-		@include font-weight-chivo(regular);
-		border: var(--input-border-line);
-		font-size: 0.9em;
-		padding: var(--table-link-padding);
-		border-radius: 0.4em;
-		line-height: 1;
-		letter-spacing: 0.05em;
-		transition: var(--transition-productive);
-		text-box: trim-both cap alphabetic;
+		@include table-tag;
+		@include font-family(mono);
+		@include transition(border-color, color);
 
 		&:hover {
 			border-color: var(--psa-color);

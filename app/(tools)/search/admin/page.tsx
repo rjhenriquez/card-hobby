@@ -15,8 +15,12 @@ import {
 	updateSearchSectionAction,
 	updateSearchTermAction,
 } from "./actions";
-
+import { InputText } from "@/components/InputText/InputText";
+import { InputSelect } from "@/components/InputSelect/InputSelect";
+import { Accordion } from "@/components/Accordion/Accordion";
+import { Button } from "@/components/Button/Button";
 import styles from "@/styles/page/Page.module.scss";
+import adminStyles from "@/styles/components/SearchAdmin.module.scss";
 
 export default async function SearchAdminPage() {
 	const [sections, categories, terms] = await Promise.all([
@@ -29,11 +33,6 @@ export default async function SearchAdminPage() {
 		<div className={`tempAdmin ${styles.Page}`}>
 			<div className={styles.Page__header}>
 				<h1 className={styles.Page__heading}>Search Admin</h1>
-
-				<p className='tempAdmin__intro'>
-					Manage the sections, categories, and search terms used to organize
-					saved searches.
-				</p>
 			</div>
 
 			<div className='tempAdmin__setup'>
@@ -145,57 +144,75 @@ export default async function SearchAdminPage() {
 							);
 
 							return (
-								<section key={section.id} className='tempAdmin__section'>
-									<header className='tempAdmin__section-header'>
-										<div>
-											<p className='tempAdmin__type'>Section</p>
-											<h3>{section.name}</h3>
-											<p>
+								<section
+									key={section.id}
+									className={adminStyles.SearchAdmin__section}
+								>
+									<header className={adminStyles.SearchAdmin__section__header}>
+										<div className={adminStyles.SearchAdmin__section__heading}>
+											<p className={adminStyles.SearchAdmin__section__eyebrow}>
+												Section
+											</p>
+
+											<h2 className={adminStyles.SearchAdmin__section__title}>
+												{section.name}
+											</h2>
+
+											<p className={adminStyles.SearchAdmin__section__subhead}>
 												{sectionCategories.length}{" "}
 												{sectionCategories.length === 1
 													? "category"
 													: "categories"}
 											</p>
 										</div>
-
-										<div className='tempAdmin__actions'>
-											<form action={updateSearchSectionAction}>
-												<input type='hidden' name='id' value={section.id} />
-
-												<label>
-													<span>Section Name</span>
-													<input
-														name='name'
-														defaultValue={section.name}
-														required
-													/>
-												</label>
-
-												<label>
-													<span>Sort Order</span>
-													<input
-														type='number'
-														name='sortOrder'
-														defaultValue={section.sortOrder}
-														min={0}
-														required
-													/>
-												</label>
-
-												<button type='submit'>Save Section</button>
-											</form>
-
-											<form action={deleteSearchSectionAction}>
-												<input type='hidden' name='id' value={section.id} />
-
-												<button type='submit' className='tempAdmin__delete'>
-													Delete Section
-												</button>
-											</form>
-										</div>
 									</header>
+									<div className={adminStyles.SearchAdmin__section__edits}>
+										<form
+											action={updateSearchSectionAction}
+											className={adminStyles.SearchAdmin__section__edits__form}
+										>
+											<input type='hidden' name='id' value={section.id} />
 
-									<div className='tempAdmin__categories'>
+											<InputText
+												name='name'
+												label='Section Name'
+												defaultValue={section.name}
+												required
+											/>
+
+											<InputText
+												label='Sort Order'
+												className={adminStyles.SearchAdmin__input__sort}
+												type='number'
+												name='sortOrder'
+												min={0}
+												required
+												defaultValue={section.sortOrder}
+											/>
+											<Button
+												type='main'
+												variant='primary'
+												htmlType='submit'
+
+												label='Save Section'
+											/>
+										</form>
+
+										<form
+											action={deleteSearchSectionAction}
+											className={adminStyles.SearchAdmin__section__edits__form}
+										>
+											<input type='hidden' name='id' value={section.id} />
+											<Button
+												type='main'
+												variant='delete'
+												htmlType='submit'
+
+												label='Delete Section'
+											/>
+										</form>
+									</div>
+									<div className={adminStyles.SearchAdmin__section__content}>
 										{sectionCategories.length === 0 ? (
 											<p className='tempAdmin__empty'>
 												No categories in this section.
@@ -209,197 +226,249 @@ export default async function SearchAdminPage() {
 												return (
 													<div
 														key={category.id}
-														className='tempAdmin__category'
+														className={adminStyles.SearchAdmin__section}
 													>
-														<header className='tempAdmin__category-header'>
-															<div>
-																<p className='tempAdmin__type'>Category</p>
-																<h4>{category.name}</h4>
-																<p>
+														<header
+															className={`${adminStyles.SearchAdmin__section__header} ${
+																adminStyles[
+																	"SearchAdmin__section__header--nested"
+																]
+															}  `}
+														>
+															<div
+																className={
+																	adminStyles.SearchAdmin__section__heading
+																}
+															>
+																<p
+																	className={
+																		adminStyles.SearchAdmin__section__eyebrow
+																	}
+																>
+																	Category
+																</p>
+
+																<h2
+																	className={
+																		adminStyles.SearchAdmin__section__title
+																	}
+																>
+																	{category.name}
+																</h2>
+
+																<p
+																	className={
+																		adminStyles.SearchAdmin__section__subhead
+																	}
+																>
 																	{categoryTerms.length}{" "}
 																	{categoryTerms.length === 1
 																		? "search term"
 																		: "search terms"}
 																</p>
 															</div>
-
-															<div className='tempAdmin__actions'>
-																<form action={updateSearchCategoryAction}>
-																	<input
-																		type='hidden'
-																		name='id'
-																		value={category.id}
-																	/>
-
-																	<label>
-																		<span>Category Name</span>
-																		<input
-																			name='name'
-																			defaultValue={category.name}
-																			required
-																		/>
-																	</label>
-
-																	<label>
-																		<span>Parent Section</span>
-																		<select
-																			name='sectionId'
-																			defaultValue={category.sectionId}
-																			required
-																		>
-																			{sections.map((sectionOption) => (
-																				<option
-																					key={sectionOption.id}
-																					value={sectionOption.id}
-																				>
-																					{sectionOption.name}
-																				</option>
-																			))}
-																		</select>
-																	</label>
-
-																	<label>
-																		<span>Sort Order</span>
-																		<input
-																			type='number'
-																			name='sortOrder'
-																			defaultValue={category.sortOrder}
-																			min={0}
-																			required
-																		/>
-																	</label>
-
-																	<button type='submit'>Save Category</button>
-																</form>
-
-																<form action={deleteSearchCategoryAction}>
-																	<input
-																		type='hidden'
-																		name='id'
-																		value={category.id}
-																	/>
-
-																	<button
-																		type='submit'
-																		className='tempAdmin__delete'
-																	>
-																		Delete Category
-																	</button>
-																</form>
-															</div>
 														</header>
 
-														<div className='tempAdmin__terms'>
-															<div className='tempAdmin__terms-header'>
-																<div>
-																	<p className='tempAdmin__type'>
-																		Search Terms
-																	</p>
-																	<p>
-																		Individual searches associated with this
-																		category.
-																	</p>
-																</div>
-															</div>
-
-															{categoryTerms.length === 0 ? (
-																<p className='tempAdmin__empty'>
-																	No search terms in this category yet.
-																</p>
-															) : (
-																<ul className='tempAdmin__term-list'>
-																	{categoryTerms.map((term) => (
-																		<li
-																			key={term.id}
-																			className='tempAdmin__term'
-																		>
-																			<form action={updateSearchTermAction}>
-																				<input
-																					type='hidden'
-																					name='id'
-																					value={term.id}
-																				/>
-
-																				<input
-																					type='hidden'
-																					name='categoryId'
-																					value={category.id}
-																				/>
-
-																				<label>
-																					<span>Search Term</span>
-																					<input
-																						name='value'
-																						defaultValue={term.value}
-																						required
-																					/>
-																				</label>
-
-																				<label>
-																					<span>Sort Order</span>
-																					<input
-																						type='number'
-																						name='sortOrder'
-																						defaultValue={term.sortOrder}
-																						min={0}
-																						required
-																					/>
-																				</label>
-
-																				<button type='submit'>Save</button>
-																			</form>
-
-																			<form action={deleteSearchTermAction}>
-																				<input
-																					type='hidden'
-																					name='id'
-																					value={term.id}
-																				/>
-
-																				<button
-																					type='submit'
-																					className='tempAdmin__delete'
-																				>
-																					Delete
-																				</button>
-																			</form>
-																		</li>
-																	))}
-																</ul>
-															)}
-
+														<div
+															className={
+																adminStyles.SearchAdmin__section__edits
+															}
+														>
 															<form
-																action={createSearchTermAction}
-																className='tempAdmin__add-term'
+																action={updateSearchCategoryAction}
+																className={
+																	adminStyles.SearchAdmin__section__edits__form
+																}
 															>
 																<input
 																	type='hidden'
-																	name='categoryId'
+																	name='id'
 																	value={category.id}
 																/>
 
-																<label>
-																	<span>Add Search Term</span>
-																	<input
-																		name='value'
-																		placeholder='Enter search term'
-																		required
-																	/>
-																</label>
+																<InputText
+																	name='name'
+																	label='Category Name'
+																	defaultValue={category.name}
+																	required
+																/>
 
-																<label>
-																	<span>Sort Order</span>
-																	<input
-																		type='number'
-																		name='sortOrder'
-																		defaultValue={0}
-																		min={0}
-																		required
-																	/>
-																</label>
+																<InputSelect
+																	name='sectionId'
+																	label='Parent Section'
+																	defaultValue={category.sectionId.toString()}
+																	options={sections.map((sectionOption) => ({
+																		label: sectionOption.name,
+																		value: sectionOption.id.toString(),
+																	}))}
+																/>
 
-																<button type='submit'>Add Term</button>
+																<InputText
+																	label='Sort Order'
+																	className={
+																		adminStyles[
+																			"SearchAdmin__input__sort--stacked"
+																		]
+																	}
+																	type='number'
+																	name='sortOrder'
+																	min={0}
+																	required
+																	defaultValue={category.sortOrder}
+																/>
+																<Button
+																	type='main'
+																	variant='primary'
+																	htmlType='submit'
+																	label='Save Category'
+																/>
 															</form>
+
+															<form action={deleteSearchCategoryAction}>
+																<input
+																	type='hidden'
+																	name='id'
+																	value={category.id}
+																/>
+
+																<Button
+																	type='main'
+																	variant='delete'
+																	htmlType='submit'
+																	label='Delete Section'
+																/>
+															</form>
+														</div>
+
+														<div
+															className={
+																adminStyles.SearchAdmin__section__content
+															}
+														>
+															{categoryTerms.length === 0 ? (
+																<p
+																	className={
+																		adminStyles.SearchAdmin__terms__header
+																	}
+																>
+																	No search terms in this category yet.
+																</p>
+															) : (
+																<>
+																	<p>Search Terms</p>
+																	<ul
+																		className={
+																			adminStyles.SearchAdmin__terms__list
+																		}
+																	>
+																		{categoryTerms.map((term) => (
+																			<li
+																				key={term.id}
+																				className={
+																					adminStyles.SearchAdmin__terms__term
+																				}
+																			>
+																				<form
+																					action={updateSearchTermAction}
+																					className={
+																						adminStyles.SearchAdmin__terms__form
+																					}
+																				>
+																					<input
+																						type='hidden'
+																						name='id'
+																						value={term.id}
+																					/>
+
+																					<input
+																						type='hidden'
+																						name='categoryId'
+																						value={category.id}
+																					/>
+
+																					<InputText
+																						name='value'
+																						layout='row'
+																						label='Search Term'
+																						defaultValue={term.value}
+																						required
+																					/>
+
+																					<InputText
+																						label='Sort Order'
+																						layout='row'
+																						className={
+																							adminStyles.SearchAdmin__input__sort
+																						}
+																						type='number'
+																						name='sortOrder'
+																						min={0}
+																						required
+																						defaultValue={term.sortOrder}
+																					/>
+
+																					<Button
+																						type='main'
+																						variant='primary'
+																						htmlType='submit'
+																						label='Save'
+																					/>
+																				</form>
+
+																				<form action={deleteSearchTermAction}>
+																					<input
+																						type='hidden'
+																						name='id'
+																						value={term.id}
+																					/>
+
+																					<Button
+																						type='main'
+																						variant='delete'
+																						htmlType='submit'
+																						label='Delete'
+																					/>
+																				</form>
+																			</li>
+																		))}
+																	</ul>
+																	<form
+																		action={createSearchTermAction}
+																		className={`${adminStyles["SearchAdmin__terms__form--add"]} ${adminStyles["SearchAdmin__terms__form"]}`}
+																	>
+																		<input
+																			type='hidden'
+																			name='categoryId'
+																			value={category.id}
+																		/>
+
+																		<InputText
+																			name='value'
+																			label='Add Search Term'
+																			placeholder='Enter search term'
+																			required
+																		/>
+
+																		<InputText
+																			label='Sort Order'
+																			className={
+																				adminStyles.SearchAdmin__input__sort
+																			}
+																			type='number'
+																			name='sortOrder'
+																			min={0}
+																			required
+																			defaultValue={0}
+																		/>
+																		<Button
+																			type='main'
+																			variant='primary'
+																			htmlType='submit'
+																			label='Add Term'
+																		/>
+																	</form>
+																</>
+															)}
 														</div>
 													</div>
 												);

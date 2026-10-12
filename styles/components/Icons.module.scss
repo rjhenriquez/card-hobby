@@ -23,7 +23,8 @@
 	}
 	&__label {
 		border-top: 1px solid var(--border-color);
-		@include font-weight-chivo(semibold);
+		@include font-family(mono);
+		@include font-weight(semibold);
 		text-align: center;
 		padding: 1em;
 		font-size: 12px;

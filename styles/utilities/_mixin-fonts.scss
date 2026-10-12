@@ -1,0 +1,163 @@
+@use "sass:list";
+@use "sass:map";
+@use "sass:string";
+
+// --------------------------------------------------
+// Active Font
+// --------------------------------------------------
+
+// Options: "chivo" | "ttpro"
+$active-font: "chivo";
+// $active-font: "ttpro";
+
+// --------------------------------------------------
+// Font Config
+// --------------------------------------------------
+
+$font-configs: (
+	chivo: (
+		path: "/fonts/chivo",
+		sans-family: "Chivo",
+		mono-family: "Chivo Mono",
+		sans: "Chivo-VariableFont_wght.woff2",
+		sans-italic: "Chivo-Italic-VariableFont_wght.woff2",
+		mono: "ChivoMono-VariableFont_wght.woff2",
+		mono-italic: "ChivoMono-Italic-VariableFont_wght.woff2",
+	),
+	ttpro: (
+		path: "/fonts/ttpro",
+		sans-family: "TT Norms Pro",
+		mono-family: "TT Norms Pro Mono",
+		sans: "tt-norms-pro-latin.woff2",
+		sans-italic: null,
+		mono: "tt-norms-pro-mono-latin.woff2",
+		mono-italic: null,
+	),
+);
+
+@if not map.has-key($font-configs, $active-font) {
+	@error "Unknown active font `#{$active-font}`. Available options: #{map.keys($font-configs)}.";
+}
+
+// --------------------------------------------------
+// Active Font Values
+// --------------------------------------------------
+
+$active-config: map.get($font-configs, $active-font);
+
+$font-path: map.get($active-config, path);
+
+$font-family-sans: map.get($active-config, sans-family);
+$font-family-mono: map.get($active-config, mono-family);
+
+$font-file-sans: map.get($active-config, sans);
+$font-file-sans-italic: map.get($active-config, sans-italic);
+$font-file-mono: map.get($active-config, mono);
+$font-file-mono-italic: map.get($active-config, mono-italic);
+
+// --------------------------------------------------
+// Font Faces
+// --------------------------------------------------
+
+@font-face {
+	font-display: swap;
+	font-family: "#{$font-family-sans}";
+	font-style: normal;
+	font-weight: 100 900;
+	src: url("#{$font-path}/#{$font-file-sans}") format("woff2");
+}
+
+@if $font-file-sans-italic {
+	@font-face {
+		font-display: swap;
+		font-family: "#{$font-family-sans}";
+		font-style: italic;
+		font-weight: 100 900;
+		src: url("#{$font-path}/#{$font-file-sans-italic}") format("woff2");
+	}
+}
+
+@font-face {
+	font-display: swap;
+	font-family: "#{$font-family-mono}";
+	font-style: normal;
+	font-weight: 100 900;
+	src: url("#{$font-path}/#{$font-file-mono}") format("woff2");
+}
+
+@if $font-file-mono-italic {
+	@font-face {
+		font-display: swap;
+		font-family: "#{$font-family-mono}";
+		font-style: italic;
+		font-weight: 100 900;
+		src: url("#{$font-path}/#{$font-file-mono-italic}") format("woff2");
+	}
+}
+
+// --------------------------------------------------
+// Font Families
+// --------------------------------------------------
+
+$font-families: (sans, sans-italic, mono, mono-italic);
+
+@mixin font-family($family: sans) {
+	@if not list.index($font-families, $family) {
+		@error "Unknown font family `#{$family}`. Available options: #{$font-families}.";
+	}
+
+	@if $family == sans {
+		font-family: "#{$font-family-sans}", sans-serif;
+		font-style: normal;
+	} @else if $family == sans-italic {
+		font-family: "#{$font-family-sans}", sans-serif;
+		font-style: italic;
+	} @else if $family == mono {
+		font-family: "#{$font-family-mono}", monospace;
+		font-style: normal;
+	} @else if $family == mono-italic {
+		font-family: "#{$font-family-mono}", monospace;
+		font-style: italic;
+	}
+}
+
+// --------------------------------------------------
+// Font Weights
+// --------------------------------------------------
+
+$font-weights: (
+	light: 300,
+	regular: 400,
+	medium: 500,
+	semibold: 600,
+	bold: 700,
+	extrabold: 800,
+	black: 900,
+);
+
+@mixin font-weight($weight: regular) {
+	@if not map.has-key($font-weights, $weight) {
+		@error "Unknown font weight `#{$weight}`. Available options: #{map.keys($font-weights)}.";
+	}
+
+	font-weight: map.get($font-weights, $weight);
+}
+
+// --------------------------------------------------
+// Font Rendering
+// --------------------------------------------------
+
+@mixin color-dark-on-light($color, $important: "") {
+	color: $color string.unquote($important);
+	-webkit-font-smoothing: subpixel-antialiased;
+	-moz-osx-font-smoothing: auto;
+	text-rendering: optimizelegibility;
+}
+
+@mixin color-light-on-dark($color, $important: "") {
+	color: $color string.unquote($important);
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	text-rendering: optimizelegibility;
+	text-shadow: 1px 1px 1px rgb(0 0 0 / 0.4%);
+}

@@ -196,7 +196,7 @@ export function ProfitHistoryChart({ data }: ProfitHistoryChartProps) {
 								strokeWidth: 2,
 								r: 4,
 							}}
-							isAnimationActive={true}
+							isAnimationActive={false}
 						/>
 					</AreaChart>
 				</ResponsiveContainer>

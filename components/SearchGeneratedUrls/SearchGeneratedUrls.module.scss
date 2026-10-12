@@ -4,19 +4,17 @@
 	margin-block: var(--generated-urls-space);
 	width: 100%;
 	box-sizing: border-box;
+	&__heading {
+		@include heading(h4);
+	}
 	&__header {
 		display: flex;
-		align-items: baseline;
+		align-items: flex-end;
 		justify-content: space-between;
 		margin-bottom: calc(var(--generated-urls-space) / 2);
-		border-bottom: var(--button-border-color) 1px solid;
+		border-bottom: var(--border-line-main);
 		padding-bottom: calc(var(--generated-urls-space) / 2);
 	}
-	// &__heading {
-	// 	&--inactive {
-	// 		opacity: 0.4;
-	// 	}
-	// }
 	&__actions {
 		display: flex;
 		gap: var(--generated-urls-space);
@@ -24,17 +22,28 @@
 	&__list {
 		display: flex;
 		flex-direction: column;
-		gap: 0.3em;
+		gap: var(--generated-urls-gap);
 	}
 	&__link {
-		color: red;
-		border: var(--button-border-color) 1px solid;
+		@include transition(color, border-color);
+		border: var(--border-line-main);
+		padding: var(--generated-urls-padding);
+		border-radius: var(--border-radius);
+		font-size: var(--font-size-14);
+		width: 100%;
+		display: block;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		background-color: var(--bg-color-02);
+		color: color-mix(in srgb, var(--text-color) 80%, transparent);
 		&:hover {
-			background: blue;
-			border-color: green;
+			color: var(--text-color);
+			border-color: var(--button-border-color-main);
 		}
+
 		&--visited {
-			color: var(--secondary);
+			color: var(--color-main);
 		}
 	}
 }

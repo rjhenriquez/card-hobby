@@ -12,7 +12,6 @@
 		display: flex;
 		align-items: center;
 		gap: var(--responsive-space-lg);
-		// margin-block: 0.2em;
 		label {
 			flex: 0 0 auto;
 			width: auto;
@@ -22,6 +21,7 @@
 
 	&__button {
 		cursor: pointer;
+		@include font-weight(regular);
 		font-size: var(--selection-group-cat-font-size);
 		height: 100%;
 		width: 100%;
@@ -33,12 +33,12 @@
 		&__icon {
 			width: var(--toggle-button-size);
 			margin-right: 0.5rem;
-			transition: var(--transition-productive);
 		}
 		svg {
 			color: var(--gray-06);
+			@include transition(transform, color);
 			line {
-				transition: var(--transition-productive);
+				@include transition(transform);
 				transform-box: fill-box;
 				transform-origin: center;
 			}
@@ -66,14 +66,20 @@
 	&__options {
 		display: grid;
 		grid-template-rows: 0fr;
-		transition: var(--transition-productive);
+		@include transition-expressive(grid-template-rows);
 		&--open {
 			grid-template-rows: 1fr;
 		}
 		&__inner {
 			overflow: hidden;
+			:global(.input) {
+				align-items: unset;
+				span {
+					@include text-box;
+				}
+			}
 			ul {
-				gap: 0.2em;
+				gap: 0.3em;
 				display: flex;
 				flex-direction: column;
 				border-left: var(--button-border-color) 1px solid;

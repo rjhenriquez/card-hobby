@@ -15,7 +15,6 @@ interface InputSelectProps {
 	defaultValue?: string;
 	value?: string;
 	options: InputSelectOption[];
-	width?: "full" | "half";
 	form?: string;
 	onChange?: (event: ChangeEvent<HTMLSelectElement>) => void;
 	className?: string;
@@ -28,7 +27,6 @@ export function InputSelect({
 	defaultValue,
 	value,
 	options,
-	width = "full",
 	form,
 	onChange,
 	variant,
@@ -38,7 +36,6 @@ export function InputSelect({
 		<label
 			className={cn(
 				styles.InputSelect,
-				width && styles[`InputSelect--${width}`],
 				variant && styles[`InputSelect--${variant}`],
 				className,
 			)}

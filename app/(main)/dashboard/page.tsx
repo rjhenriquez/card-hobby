@@ -1,7 +1,6 @@
 import { getCardsByPortfolio } from "@/db/queries/cards";
-
 import { getPsaGemRateRows } from "@/db/queries/psaGemRate";
-
+import { getPsaSubmissions } from "@/db/queries/psaSubmissions";
 import {
 	getInvestmentStatsByYear,
 	getActiveInvestmentStats,
@@ -10,21 +9,13 @@ import {
 	getGroupedCardStats,
 	getOverallPsaStats,
 } from "@/lib/stats";
-
 import { HighlightCard } from "@/components/HighlightCard/HighlightCard";
-
 import { HighlightCardTable } from "@/components/HighlightCardTable/HighlightCardTable";
-
 import { HighlightCardMultiple } from "@/components/HighlightCardMultiple/HighlightCardMultiple";
-
 import { CostHistoryChart } from "@/components/CostHistoryChart/CostHistoryChart";
-
 import { ProfitHistoryChart } from "@/components/ProfitHistoryChart/ProfitHistoryChart";
-
 import { GemRateTable } from "@/components/GemRateTable/GemRateTable";
-
 import { Tabs } from "@/components/Tabs/Tabs";
-
 import {
 	getInvestedCapitalHistory,
 	getCollectionCostHistory,
@@ -45,13 +36,16 @@ interface HomeProps {
 
 export default async function Home({ searchParams }: HomeProps) {
 	const { tab = "investments" } = await searchParams;
-	const [investmentCards, collectionCards, gemRateSubmissions] =
+	const [investmentCards, collectionCards, gemRateSubmissions, psaSubmissions] =
 		await Promise.all([
 			getCardsByPortfolio("investment"),
 			getCardsByPortfolio("collection"),
 			getPsaGemRateRows(),
+			getPsaSubmissions(),
 		]);
+
 	const activeStats = getActiveInvestmentStats(investmentCards);
+
 	const soldYears = Array.from(
 		new Set(
 			investmentCards
@@ -60,10 +54,13 @@ export default async function Home({ searchParams }: HomeProps) {
 				.filter((year): year is string => Boolean(year)),
 		),
 	).sort((a, b) => Number(b) - Number(a));
+
 	const yearStats = soldYears.map((year) =>
 		getInvestmentStatsByYear(investmentCards, year),
 	);
+
 	const stats2026 = yearStats.find((stats) => stats.year === "2026");
+
 	const collectionCategories = Array.from(
 		new Set(
 			collectionCards
@@ -71,11 +68,30 @@ export default async function Home({ searchParams }: HomeProps) {
 				.filter((category): category is string => Boolean(category)),
 		),
 	).sort((a, b) => a.localeCompare(b));
+
 	const collectionStats = collectionCategories.map((category) =>
 		getCollectionStatsByCategory(collectionCards, category),
 	);
+
 	const collectionTotals = getCollectionStats(collectionCards);
 	const { gemRate, totalCards } = getOverallPsaStats(gemRateSubmissions);
+
+	const activePsaSubmissionRows = psaSubmissions
+		.filter((submission) => !submission.completedDate)
+		.map((submission) => {
+			const submissionCards = investmentCards.filter((card) =>
+				card.psaSubmissionNumbers.includes(submission.submissionNumber),
+			);
+
+			return {
+				label: submission.submissionNumber,
+				count: submissionCards.length,
+				value: submissionCards.reduce(
+					(total, card) => total + (card.totalCost ?? 0),
+					0,
+				),
+			};
+		});
 
 	const tabs = [
 		{
@@ -107,7 +123,8 @@ export default async function Home({ searchParams }: HomeProps) {
 
 					<div className={styles.Page__tables}>
 						<HighlightCardTable
-							title='Active Investments'
+							eyebrow='Active Investments'
+							title='Invested by Player'
 							rows={getGroupedCardStats(investmentCards, {
 								groupBy: "player",
 								valueBy: "totalCost",
@@ -116,11 +133,23 @@ export default async function Home({ searchParams }: HomeProps) {
 						/>
 
 						<HighlightCardTable
-							title='Investments by eBay Seller'
+							eyebrow='Active Investments'
+							title='Invested by Status'
+							headers={["Status", "Cards", "Value"]}
 							rows={getGroupedCardStats(investmentCards, {
-								groupBy: "ebaySeller",
+								groupBy: "effectiveStatus",
 								valueBy: "totalCost",
+								filter: (card) => !(card.soldDate && card.isPaid),
+								normalizeGroup: (status) =>
+									status.toLowerCase().startsWith("psa") ? "Grading" : status,
 							})}
+						/>
+
+						<HighlightCardTable
+							eyebrow='Active Investments'
+							title='Invested by PSA Order'
+							headers={["Submission", "Cards", "Value"]}
+							rows={activePsaSubmissionRows}
 						/>
 					</div>
 				</div>
@@ -148,10 +177,12 @@ export default async function Home({ searchParams }: HomeProps) {
 								className={styles.Page__graphs__highlight}
 							/>
 						)}
+
 						<ProfitHistoryChart
 							data={getProfitHistory(investmentCards, "2026")}
 						/>
 					</div>
+
 					<HighlightCardMultiple
 						icon='finance'
 						items={yearStats.map((stats) => ({
@@ -164,9 +195,20 @@ export default async function Home({ searchParams }: HomeProps) {
 							link: `/?tab=${stats.year}`,
 						}))}
 					/>
+
 					<div className={styles.Page__tables}>
 						<HighlightCardTable
-							title='2026 Investments'
+							title='Costs by eBay Seller'
+							eyebrow='Lifetime Investment'
+							rows={getGroupedCardStats(investmentCards, {
+								groupBy: "ebaySeller",
+								valueBy: "totalCost",
+							})}
+						/>
+
+						<HighlightCardTable
+							eyebrow='2026 Investments'
+							title='Returns by player'
 							headers={["Player", "Cards", "Profit"]}
 							rows={getGroupedCardStats(investmentCards, {
 								groupBy: "player",
@@ -175,8 +217,10 @@ export default async function Home({ searchParams }: HomeProps) {
 									Boolean(card.soldDate?.startsWith("2026") && card.isPaid),
 							})}
 						/>
+
 						<HighlightCardTable
-							title='2025 Investments'
+							eyebrow='2025 Investments'
+							title='Returns by player'
 							headers={["Player", "Cards", "Profit"]}
 							rows={getGroupedCardStats(investmentCards, {
 								groupBy: "player",
@@ -210,14 +254,15 @@ export default async function Home({ searchParams }: HomeProps) {
 							className={styles.Page__graphs__highlight}
 							icon='collection'
 						/>
+
 						<CostHistoryChart
 							data={getCollectionCostHistory(collectionCards)}
 						/>
 					</div>
+
 					<HighlightCardMultiple
 						icon='stacks'
 						items={[...collectionStats]
-
 							.sort((a, b) => b.totalCost - a.totalCost)
 							.map((stats) => ({
 								label: stats.category,
@@ -231,22 +276,28 @@ export default async function Home({ searchParams }: HomeProps) {
 								link: `/collection?tab=${getCategoryTabValue(stats.category)}`,
 							}))}
 					/>
+
 					<div className={styles.Page__tables}>
 						<HighlightCardTable
+							eyebrow='Collection Costs'
 							title='Baseball Cards'
 							rows={getGroupedCardStats(collectionCards, {
 								groupBy: "player",
 								filter: (card) => card.category?.trim() === "Baseball",
 							})}
 						/>
+
 						<HighlightCardTable
+							eyebrow='Collection Costs'
 							title='Fortnite Cards'
 							rows={getGroupedCardStats(collectionCards, {
 								groupBy: "player",
 								filter: (card) => card.category?.trim() === "Fortnite",
 							})}
 						/>
+
 						<HighlightCardTable
+							eyebrow='Collection Costs'
 							title='Soccer Cards'
 							rows={getGroupedCardStats(collectionCards, {
 								groupBy: "player",
@@ -257,7 +308,6 @@ export default async function Home({ searchParams }: HomeProps) {
 				</div>
 			),
 		},
-
 		{
 			label: "Grading",
 			value: "grading",
@@ -270,6 +320,7 @@ export default async function Home({ searchParams }: HomeProps) {
 						icon='diamond'
 						subValue={totalCards}
 					/>
+
 					<GemRateTable submissions={gemRateSubmissions} />
 				</div>
 			),

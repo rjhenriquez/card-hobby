@@ -1,31 +1,61 @@
 @use "@/styles/utilities/all" as *;
 
 .Button {
+	@include font-weight(medium);
+	@include text-box;
 	cursor: pointer;
+	color: var(--text-color);
+	font-size: var(--button-font-size);
 	position: relative;
-	font-size: var(--font-size-14);
 	box-sizing: border-box;
-	transition: var(--transition-productive);
 	background: transparent;
-	&--main {
-		@include font-weight(semibold);
-		height: var(--button-main-size-lg);
-		border-radius: var(--button-border-radius);
-		padding-inline: var(--button-main-padding-lg);
-		font-size: 1rem;
+	height: var(--button-size);
+	border: var(--button-border-line);
+	border-radius: var(--button-border-radius);
+	&:not(:disabled) {
+		&:hover,
+		&:focus-within {
+			@include transition(color, background-color, border-color);
+		}
+	}
+
+	&--main,
+	&--main-lg,
+	&--main-sm {
 		gap: var(--button-gap);
-		border: 1px solid transparent;
+		.Button__icon {
+			width: var(--button-icon-size-sm);
+			height: var(--button-icon-size-sm);
+		}
+		&:not(:disabled) {
+			&:hover,
+			&:focus-within {
+				border-color: var(--button-border-color-main-hover);
+			}
+		}
+	}
+	&--main {
+		padding-inline: var(--button-padding-main-sm);
+	}
+	&--main-lg {
+		height: var(--button-size-lg);
+		font-size: var(--button-font-size-lg);
+		padding-inline: var(--button-padding-main);
+		.Button__icon {
+			width: var(--button-icon-size);
+			height: var(--button-icon-size);
+		}
+	}
+	&--main-sm {
+		height: var(--button-icon-size-sm);
+		font-size: var(--button-font-size-sm);
 		.Button__icon {
 			width: var(--button-icon-size);
 			height: var(--button-icon-size);
 		}
 	}
 	&--icon {
-		border: var(--button-border-line);
-		border-radius: var(--button-border-radius);
 		width: var(--button-size);
-		height: var(--button-size);
-		color: var(--text-color);
 		.Button__icon {
 			width: var(--button-icon-size);
 			height: var(--button-icon-size);
@@ -33,73 +63,54 @@
 		&:not(:disabled) {
 			&:hover,
 			&:focus-within {
-				border-color: var(--main);
+				border-color: var(--button-border-color-main-hover);
 			}
 		}
 	}
-	&--default {
-		height: var(--button-main-size);
-		padding-inline: var(--button-main-padding);
-		background: transparent;
-		border: var(--button-border-line);
-	}
-	&--add {
-		background: var(--button-main-background);
-		border-color: var(--button-main-background);
-		@include color-light-on-dark(var(--white));
-		&:hover {
-			background: color-mix(in srgb, var(--button-main-background) 80%, black);
-		}
-	}
-	&--delete {
-		background: transparent;
-		color: var(--red);
-		border-color: var(--red);
-		&:hover {
-			@include color-light-on-dark(var(--white));
-			background: var(--red);
-			border-color: var(--red) !important;
-		}
-	}
-	&--cancel {
-		background: transparent;
-		border-color: var(--button-border-line);
-	}
-
-	&--header {
-		border-color: transparent;
-		background: transparent;
-		&:hover {
-			background: var(--bg-color);
-			border-color: var(--button-border-color);
-		}
-	}
-	&--number-add {
-		@include font-weight-chivo(regular);
-		border: var(--button-border-line);
-		border-radius: var(--button-border-radius);
-		font-size: var(--font-size-18);
-		span {
-			padding: var(--button-main-padding-sm);
-			border-right: var(--button-border-line);
-		}
+	&--icon-sm {
+		width: var(--button-size-sm);
+		height: var(--button-size-sm);
 		.Button__icon {
-			margin-inline: var(--button-main-padding-sm);
-			width: var(--button-icon-size);
-			height: var(--button-icon-size);
-		}
-		&:hover {
-			background: var(--gray-02);
-		}
-	}
-	&__icon {
-		&--loading {
-			animation: button-icon-spin 2s linear infinite;
+			width: var(--button-icon-size-sm);
+			height: var(--button-icon-size-sm);
 		}
 	}
 	&:disabled {
 		color: color-mix(in srgb, var(--text-color) 30%, transparent);
 		cursor: not-allowed;
+	}
+	&--number-add {
+		span {
+			padding: var(--button-main-padding-sm);
+			border-right: var(--button-border-line);
+		}
+		.Button__icon {
+			margin-inline: calc((var(--button-size) - var(--button-icon-size)) / 2);
+			width: var(--button-icon-size);
+			height: var(--button-icon-size);
+		}
+		&:not(:disabled) {
+			&:hover,
+			&:focus-within {
+				border-color: var(--button-border-color-main-hover);
+			}
+		}
+	}
+	&--primary {
+		&:not(:disabled) {
+			&:hover,
+			&:focus-within {
+				@include button-hover(var(--main));
+			}
+		}
+	}
+	&--delete {
+		&:not(:disabled) {
+			&:hover,
+			&:focus-within {
+				@include button-hover(var(--color-red));
+			}
+		}
 	}
 }
 

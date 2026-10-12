@@ -71,8 +71,8 @@ export function AddCard({
 		<>
 			{!editOnly && !copyOnly && !isEditing && !isCopying && (
 				<Button
-					type='main'
-					variant='add'
+					type='main-lg'
+					variant='primary'
 					htmlType='button'
 					leadingIcon='add-card'
 					label='Add Card'

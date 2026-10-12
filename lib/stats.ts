@@ -229,7 +229,12 @@ export function getSoldInvestmentPlayerStats(cards: Card[], year?: string) {
 // ---------------------------------------------
 
 export type CardGroupBy =
-	"player" | "category" | "soldVia" | "ebaySeller" | "purchasedFrom";
+	| "player"
+	| "category"
+	| "soldVia"
+	| "ebaySeller"
+	| "purchasedFrom"
+	| "effectiveStatus";
 
 export type CardValueBy = "totalCost" | "profit" | "soldPrice";
 
@@ -237,11 +242,17 @@ interface GetGroupedCardStatsOptions {
 	groupBy: CardGroupBy;
 	valueBy?: CardValueBy;
 	filter?: (card: Card) => boolean;
+	normalizeGroup?: (value: string) => string;
 }
 
 export function getGroupedCardStats(
 	cards: Card[],
-	{ groupBy, valueBy = "totalCost", filter }: GetGroupedCardStatsOptions,
+	{
+		groupBy,
+		valueBy = "totalCost",
+		filter,
+		normalizeGroup,
+	}: GetGroupedCardStatsOptions,
 ) {
 	const filteredCards = filter ? cards.filter(filter) : cards;
 
@@ -260,10 +271,14 @@ export function getGroupedCardStats(
 			continue;
 		}
 
-		const label = String(groupValue).trim();
+		let label = String(groupValue).trim();
 
 		if (!label) {
 			continue;
+		}
+
+		if (normalizeGroup) {
+			label = normalizeGroup(label);
 		}
 
 		const current = groups.get(label) ?? {

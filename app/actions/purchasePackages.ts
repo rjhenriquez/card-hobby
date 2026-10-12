@@ -194,19 +194,6 @@ export async function updatePurchasePackage(formData: FormData) {
 		throw new Error("Purchase package not found.");
 	}
 
-	const submittedCardIds = formData
-		.getAll("cardId")
-		.map((value) => Number(value))
-		.filter((value) => Number.isInteger(value));
-
-	if (submittedCardIds.length === 0) {
-		throw new Error("At least one card is required.");
-	}
-
-	if (new Set(submittedCardIds).size !== submittedCardIds.length) {
-		throw new Error("A card cannot be added to a package more than once.");
-	}
-
 	const existingPackageCards = await db
 		.select({
 			cardId: purchasePackageCards.cardId,
@@ -214,34 +201,10 @@ export async function updatePurchasePackage(formData: FormData) {
 		.from(purchasePackageCards)
 		.where(eq(purchasePackageCards.purchasePackageId, id));
 
-	const existingCardIds = existingPackageCards.map((card) => card.cardId);
-
-	const addedCardIds = submittedCardIds.filter(
-		(cardId) => !existingCardIds.includes(cardId),
-	);
-
-	const removedCardIds = existingCardIds.filter(
-		(cardId) => !submittedCardIds.includes(cardId),
-	);
-
-	if (addedCardIds.length > 0) {
-		const existingAssignments = await db
-			.select({
-				cardId: purchasePackageCards.cardId,
-			})
-			.from(purchasePackageCards)
-			.where(inArray(purchasePackageCards.cardId, addedCardIds));
-
-		if (existingAssignments.length > 0) {
-			throw new Error(
-				"One or more selected cards already belong to another package.",
-			);
-		}
-	}
-
-	for (const cardId of submittedCardIds) {
-		const hammerPrice = String(formData.get(`hammerPrice-${cardId}`) ?? "");
-
+	for (const packageCard of existingPackageCards) {
+		const hammerPrice = String(
+			formData.get(`hammerPrice-${packageCard.cardId}`) ?? "",
+		);
 		const parsedHammerPrice = Number(hammerPrice);
 
 		if (!Number.isFinite(parsedHammerPrice) || parsedHammerPrice < 0) {
@@ -266,29 +229,10 @@ export async function updatePurchasePackage(formData: FormData) {
 		})
 		.where(eq(purchasePackages.id, id));
 
-	if (removedCardIds.length > 0) {
-		await db
-			.delete(purchasePackageCards)
-			.where(
-				and(
-					eq(purchasePackageCards.purchasePackageId, id),
-					inArray(purchasePackageCards.cardId, removedCardIds),
-				),
-			);
-	}
-
-	if (addedCardIds.length > 0) {
-		await db.insert(purchasePackageCards).values(
-			addedCardIds.map((cardId) => ({
-				purchasePackageId: id,
-				cardId,
-				hammerPrice: String(formData.get(`hammerPrice-${cardId}`) ?? ""),
-			})),
+	for (const packageCard of existingPackageCards) {
+		const hammerPrice = String(
+			formData.get(`hammerPrice-${packageCard.cardId}`) ?? "",
 		);
-	}
-
-	for (const cardId of submittedCardIds) {
-		const hammerPrice = String(formData.get(`hammerPrice-${cardId}`) ?? "");
 
 		await db
 			.update(purchasePackageCards)
@@ -299,14 +243,14 @@ export async function updatePurchasePackage(formData: FormData) {
 			.where(
 				and(
 					eq(purchasePackageCards.purchasePackageId, id),
-					eq(purchasePackageCards.cardId, cardId),
+					eq(purchasePackageCards.cardId, packageCard.cardId),
 				),
 			);
 	}
 
 	const wasJustReceived = !existingPackage.isDelivered && isDelivered;
 
-	if (wasJustReceived && submittedCardIds.length > 0) {
+	if (wasJustReceived && existingPackageCards.length > 0) {
 		const [inTransitStatus] = await db
 			.select({
 				id: cardStatuses.id,
@@ -335,7 +279,10 @@ export async function updatePurchasePackage(formData: FormData) {
 			})
 			.where(
 				and(
-					inArray(cards.id, submittedCardIds),
+					inArray(
+						cards.id,
+						existingPackageCards.map((card) => card.cardId),
+					),
 					eq(cards.statusId, inTransitStatus.id),
 				),
 			);

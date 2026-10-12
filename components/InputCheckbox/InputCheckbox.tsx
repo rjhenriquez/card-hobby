@@ -13,7 +13,6 @@ interface InputCheckboxProps {
 	onChange?: React.ChangeEventHandler<HTMLInputElement>;
 	isHeader?: boolean;
 	type?: "circle" | "square" | "sidebar";
-	width?: "full" | "half";
 	ref?: React.Ref<HTMLInputElement>;
 }
 
@@ -28,14 +27,13 @@ export function InputCheckbox({
 	onChange,
 	isHeader = false,
 	type = "circle",
-	width = "full",
 	ref,
 }: InputCheckboxProps) {
 	return (
 		<label
 			className={`input ${styles.InputCheckbox} ${
 				styles[`InputCheckbox--${type}`]
-			} ${width === "half" ? styles["InputCheckbox--half"] : ""} ${
+			} ${
 				disabled ? styles["InputCheckbox--disabled"] : ""
 			} ${isHeader ? styles["InputCheckbox--header"] : ""}`}
 		>

@@ -18,6 +18,7 @@
 	}
 
 	&::after {
+		@include transition(transform);
 		content: "";
 		box-sizing: border-box;
 		position: absolute;
@@ -29,9 +30,6 @@
 		background: var(--main);
 		opacity: 0;
 		transform: translate(-50%, -50%) scale(0);
-		transition:
-			opacity 0.2s ease,
-			transform 0.2s ease;
 	}
 }
 
@@ -40,16 +38,9 @@
 	width: 100%;
 	display: flex;
 	align-items: center;
-	gap: var(--form-gap);
-	justify-content: center;
+	gap: calc(var(--input-gap) * 2);
 	cursor: pointer;
 	background: transparent;
-	flex: 0 0 100%;
-	min-width: 0;
-	&--half {
-		flex-basis: calc(50% - var(--form-gap) / 2);
-	}
-
 	input {
 		position: absolute;
 		width: 0;
@@ -67,12 +58,7 @@
 	}
 
 	&__label {
-		@include font-weight(semibold);
-		font-size: var(--font-size-12);
-		letter-spacing: 0.05em;
-		text-transform: uppercase;
-		flex: 1;
-		min-width: 0;
+		@include label-styles;
 	}
 
 	&__icon {
@@ -104,6 +90,7 @@
 			border: var(--input-border);
 			border-radius: var(--input-border-radius);
 			color: var(--text-color);
+			background: var(--bg-color);
 		}
 
 		input:checked + .InputCheckbox__indicator {
@@ -126,7 +113,7 @@
 				@include input-indicator;
 			}
 			&__label {
-				@include font-weight(light);
+				@include font-weight(regular);
 				transform: translateY(0.1em);
 				text-transform: none;
 				font-size: var(--font-size-14);
