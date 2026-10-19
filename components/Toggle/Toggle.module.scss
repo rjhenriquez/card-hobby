@@ -1,0 +1,30 @@
+@use "@/styles/utilities/all" as *;
+
+.Toggle {
+	display: inline-flex;
+	border: var(--input-border-line);
+	background: var(--white);
+	border-radius: var(--border-radius);
+	overflow: hidden;
+	padding: 0.3em;
+	font-size: var(--input-font-size);
+	&__button {
+		border: 0;
+		box-sizing: border-box;
+		background: transparent;
+		border-radius: var(--border-radius);
+		padding: 0.8em 1em;
+		cursor: pointer;
+		min-width: 5.375rem;
+		@include transition(color, background);
+		svg {
+			width: 100%;
+			height: auto;
+			max-width: 4rem;
+		}
+		&--active {
+			background: var(--color-main);
+			color: var(--white);
+		}
+	}
+}

@@ -3,6 +3,7 @@
 import { Tabs } from "@/components/Tabs/Tabs";
 import { ToggleSmall } from "@/components/ToggleSmall/ToggleSmall";
 import { InputText } from "@/components/InputText/InputText";
+import { Toggle } from "@/components/Toggle/Toggle";
 import { useSearchParams } from "next/navigation";
 
 import styles from "./SearchFilters.module.scss";
@@ -124,21 +125,17 @@ export function SearchFilters({
 			logo: "fanatics",
 			value: "fanatics-collect",
 			children: (
-				<div>
-					<label>
-						Type
-						<select
-							value={fanaticsCollectType}
-							onChange={(event) =>
-								onFanaticsCollectTypeChange(
-									event.target.value as FanaticsCollectType,
-								)
-							}
-						>
-							<option value='weekly'>Weekly</option>
-							<option value='premier'>Premier</option>
-						</select>
-					</label>
+				<div className={styles.SearchFilters__section}>
+					<Toggle
+						options={[
+							{ label: "Weekly", value: "weekly" },
+							{ label: "Premier", value: "premier" },
+						]}
+						value={fanaticsCollectType}
+						onChange={(value) =>
+							onFanaticsCollectTypeChange(value as FanaticsCollectType)
+						}
+					/>
 				</div>
 			),
 		},
@@ -146,19 +143,15 @@ export function SearchFilters({
 			logo: "alt",
 			value: "alt",
 			children: (
-				<div>
-					<label>
-						Type
-						<select
-							value={altType}
-							onChange={(event) =>
-								onAltTypeChange(event.target.value as AltType)
-							}
-						>
-							<option value='auctions'>Auctions</option>
-							<option value='fixed'>Fixed</option>
-						</select>
-					</label>
+				<div className={styles.SearchFilters__section}>
+					<Toggle
+						options={[
+							{ label: "Auctions", value: "auctions" },
+							{ label: "Fixed", value: "fixed" },
+						]}
+						value={altType}
+						onChange={(value) => onAltTypeChange(value as AltType)}
+					/>
 				</div>
 			),
 		},
