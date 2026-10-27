@@ -48,10 +48,10 @@ main {
 	display: block;
 	width: 100%;
 	text-align: center;
-	color: var(--red);
-	background: color-mix(in srgb, var(--red) 10%, transparent);
+	color: var(--color-red);
+	background: color-mix(in srgb, var(--color-red) 10%, transparent);
 	@include font-weight(semibold);
 	border-radius: var(--button-border-radius);
-	border: 1px solid var(--red);
+	border: 1px solid var(--color-red);
 	padding: 0.5em 1em;
 }

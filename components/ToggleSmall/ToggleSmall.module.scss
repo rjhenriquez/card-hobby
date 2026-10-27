@@ -39,10 +39,10 @@
 		left: var(--toggle-small-padding);
 		border-radius: 50%;
 		transition: var(--transition-productive);
-		background: var(--white);
+		background: var(--color-white);
 	}
 	input:checked + label {
-		background: var(--main);
+		background: var(--color-main);
 	}
 	input:checked + label::after {
 		transform: translateX(var(--toggle-small-button-size));

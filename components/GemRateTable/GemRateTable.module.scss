@@ -27,7 +27,7 @@
 
 			&--open {
 				.GemRateTable__actions__filter__btn {
-					border-color: var(--main);
+					border-color: var(--color-main);
 					border-top-left-radius: 0;
 					border-bottom-left-radius: 0;
 				}
@@ -61,8 +61,8 @@
 		@include transition(border-color, color);
 
 		&:hover {
-			border-color: var(--psa-color);
-			color: var(--psa-color);
+			border-color: var(--color-main);
+			color: var(--color-main);
 		}
 	}
 }

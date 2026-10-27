@@ -1,6 +1,7 @@
 @use "@/styles/utilities/all" as *;
 
 .Tooltip {
+	@include font-weight(regular);
 	position: absolute;
 	z-index: var(--tooltip-z-index);
 	width: max-content;

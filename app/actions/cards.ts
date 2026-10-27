@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { eq } from "drizzle-orm";
+import { and, eq, inArray, isNull } from "drizzle-orm";
 import { db } from "@/db";
 import { cards, cardStatuses, psaSubmissionCards } from "@/db/schema";
 
@@ -109,6 +109,89 @@ export async function updateCard(formData: FormData) {
 
 	revalidatePath("/");
 	revalidatePath("/investment");
+	revalidatePath("/collection");
+}
+
+// Optional text fields that bulk edit can change.
+const BULK_TEXT_FIELDS = [
+	"category",
+	"year",
+	"setName",
+	"info",
+	"notes",
+	"purchaseDate",
+	"purchasedFrom",
+	"ebaySeller",
+	"purchasePrice",
+	"grade",
+] as const;
+
+// Bulk edit: only the fields present in formData are written, to every card in `ids`.
+// A missing field means "leave each card's own value alone".
+export async function updateCards(formData: FormData) {
+	const ids = formData.getAll("ids").map((value) => Number(value));
+
+	if (ids.length === 0 || !ids.every((id) => Number.isInteger(id))) {
+		throw new Error("Invalid card IDs");
+	}
+
+	const updates: Partial<typeof cards.$inferInsert> = {};
+
+	if (formData.has("player")) {
+		const player = formData.get("player");
+
+		if (typeof player !== "string" || !player.trim()) {
+			throw new Error("Player is required");
+		}
+
+		updates.player = player.trim();
+	}
+
+	for (const field of BULK_TEXT_FIELDS) {
+		if (formData.has(field)) {
+			updates[field] = getOptionalString(formData, field);
+		}
+	}
+
+	if (formData.has("acquisitionType")) {
+		updates.acquisitionType =
+			formData.get("acquisitionType") === "pulled" ? "pulled" : "purchased";
+	}
+
+	if (formData.has("isShared")) {
+		updates.isShared = formData.get("isShared") === "true";
+	}
+
+	const hasStatusChange = formData.has("statusId");
+
+	if (Object.keys(updates).length === 0 && !hasStatusChange) {
+		return;
+	}
+
+	const updatedAt = new Date();
+
+	if (Object.keys(updates).length > 0) {
+		await db
+			.update(cards)
+			.set({ ...updates, updatedAt })
+			.where(inArray(cards.id, ids));
+	}
+
+	// Sold cards keep their sale-controlled status, same as single edit.
+	if (hasStatusChange) {
+		const statusIdValue = formData.get("statusId");
+		const statusId =
+			typeof statusIdValue === "string" && statusIdValue
+				? Number(statusIdValue)
+				: null;
+
+		await db
+			.update(cards)
+			.set({ statusId, updatedAt })
+			.where(and(inArray(cards.id, ids), isNull(cards.soldPrice)));
+	}
+
+	revalidatePath("/");
 	revalidatePath("/collection");
 }
 

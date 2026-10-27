@@ -18,7 +18,6 @@
 			@include transition(color, background-color, border-color);
 		}
 	}
-
 	&--main,
 	&--main-lg,
 	&--main-sm {
@@ -52,6 +51,21 @@
 		.Button__icon {
 			width: var(--button-icon-size);
 			height: var(--button-icon-size);
+		}
+	}
+	&--panel {
+		border-color: transparent;
+		border-radius: 50%;
+		background-color: transparent;
+		width: var(--button-size);
+		.Button__icon {
+			width: var(--button-icon-size);
+			height: var(--button-icon-size);
+		}
+		&:hover,
+		&:focus-within {
+			border-color: transparent;
+			background: color-mix(in srgb, var(--bg-color-inverted) 10%, transparent);
 		}
 	}
 	&--icon {
@@ -100,7 +114,7 @@
 		&:not(:disabled) {
 			&:hover,
 			&:focus-within {
-				@include button-hover(var(--main));
+				@include button-hover(var(--color-main));
 			}
 		}
 	}

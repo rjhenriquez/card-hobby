@@ -1,0 +1,71 @@
+@use "@/styles/utilities/all" as *;
+
+.SettingsMenu {
+	position: relative;
+	margin-left: auto;
+	&__list {
+		@include transition(opacity, visibility, transform);
+		position: absolute;
+		top: calc(100% + var(--settings-menu-offset));
+		right: 0;
+		z-index: var(--settings-menu-z-index);
+		display: flex;
+		flex-direction: column;
+		gap: var(--settings-menu-gap);
+		background-color: var(--bg-color-02);
+		min-width: var(--settings-menu-min-width);
+		padding: var(--settings-menu-padding);
+		box-shadow: var(--settings-menu-box-shadow);
+		opacity: 0;
+		visibility: hidden;
+		transform: translateY(calc(var(--settings-menu-offset) * -1));
+		&::before {
+			content: "";
+			position: absolute;
+			left: 0;
+			right: 0;
+			bottom: 100%;
+			height: var(--settings-menu-offset);
+		}
+	}
+	&:hover,
+	&:focus-within {
+		.SettingsMenu__list {
+			opacity: 1;
+			visibility: visible;
+			transform: translateY(0);
+		}
+	}
+	&__link {
+		@include transition(background-color);
+		display: flex;
+		align-items: center;
+		justify-content: flex-start;
+		gap: var(--settings-menu-item-gap);
+		width: 100%;
+		box-sizing: border-box;
+		padding: var(--settings-menu-item-padding);
+		border-radius: var(--settings-menu-item-border-radius);
+		background-color: var(--bg-color-02);
+		cursor: pointer;
+		&:hover,
+		&:focus-visible {
+			background-color: var(--bg-color-03);
+		}
+		&--active {
+			background-color: var(--bg-color-03);
+			cursor: default;
+		}
+	}
+	&__icon {
+		width: var(--settings-menu-item-icon-size);
+		height: var(--settings-menu-item-icon-size);
+		flex: 0 0 auto;
+	}
+	&__label {
+		@include font-weight(regular);
+		@include text-box;
+		font-size: var(--font-size-14);
+		white-space: nowrap;
+	}
+}

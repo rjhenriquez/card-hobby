@@ -83,6 +83,13 @@ confirmation.
 Ordinary card editing must not silently change portfolio or sale
 lifecycle state.
 
+Bulk edit: selecting two or more cards and clicking Edit opens the same
+drawer. A field is pre-filled only when every selected card shares the
+value; otherwise it shows "Multiple values". Only fields the user changes
+are written, to all selected cards; untouched fields keep each card's own
+value. A status change skips cards that have a sale. Delete and Sale are
+not available in bulk edit.
+
 ## 5. PSA Submissions
 
 PSA submissions are separate records containing multiple cards.

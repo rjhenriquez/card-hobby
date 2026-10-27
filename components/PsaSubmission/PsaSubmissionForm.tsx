@@ -11,6 +11,7 @@ import { InputText } from "@/components/InputText/InputText";
 import { Button } from "@/components/Button/Button";
 import { InputDate } from "@/components/InputDate/InputDate";
 import styles from "./PsaSubmission.module.scss";
+import modalStyles from "@/styles/components/ModalContent.module.scss";
 
 interface PsaSubmission {
 	id: number;
@@ -40,11 +41,17 @@ export function PsaSubmissionForm({
 		submission.receivedDate ?? "",
 	);
 	const [outboundShippingCost, setOutboundShippingCost] = useState(
-		submission.outboundShippingCost,
+		Number(submission.outboundShippingCost) === 0
+			? ""
+			: submission.outboundShippingCost,
 	);
+
 	const [insuredReturnShippingCost, setInsuredReturnShippingCost] = useState(
-		submission.insuredReturnShippingCost,
+		Number(submission.insuredReturnShippingCost) === 0
+			? ""
+			: submission.insuredReturnShippingCost,
 	);
+	const [baseGradingFee, setBaseGradingFee] = useState("");
 
 	const [isSaving, setIsSaving] = useState(false);
 	const [isFinishModalOpen, setIsFinishModalOpen] = useState(false);
@@ -56,8 +63,15 @@ export function PsaSubmissionForm({
 		stage !== (submission.stage ?? "") ||
 		sentDate !== (submission.sentDate ?? "") ||
 		receivedDate !== (submission.receivedDate ?? "") ||
-		outboundShippingCost !== submission.outboundShippingCost ||
-		insuredReturnShippingCost !== submission.insuredReturnShippingCost;
+		(outboundShippingCost || "0") !==
+			(Number(submission.outboundShippingCost) === 0
+				? "0"
+				: submission.outboundShippingCost) ||
+		(insuredReturnShippingCost || "0") !==
+			(Number(submission.insuredReturnShippingCost) === 0
+				? "0"
+				: submission.insuredReturnShippingCost) ||
+		baseGradingFee !== "";
 
 	useEffect(() => {
 		if (isEditing) return;
@@ -65,8 +79,17 @@ export function PsaSubmissionForm({
 		setStage(submission.stage ?? "");
 		setSentDate(submission.sentDate ?? "");
 		setReceivedDate(submission.receivedDate ?? "");
-		setOutboundShippingCost(submission.outboundShippingCost);
-		setInsuredReturnShippingCost(submission.insuredReturnShippingCost);
+		setOutboundShippingCost(
+			Number(submission.outboundShippingCost) === 0
+				? ""
+				: submission.outboundShippingCost,
+		);
+
+		setInsuredReturnShippingCost(
+			Number(submission.insuredReturnShippingCost) === 0
+				? ""
+				: submission.insuredReturnShippingCost,
+		);
 	}, [isEditing, submission]);
 
 	async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -81,6 +104,7 @@ export function PsaSubmissionForm({
 
 			await updatePsaSubmission(formData);
 
+			setBaseGradingFee("");
 			onSaved?.();
 		} finally {
 			setIsSaving(false);
@@ -132,10 +156,21 @@ export function PsaSubmissionForm({
 							value={receivedDate}
 							onChange={(event) => setReceivedDate(event.target.value)}
 						/>
-
+						<InputText
+							name='baseGradingFee'
+							label='Base Fee'
+							type='number'
+							placeholder='0.00'
+							step={0.01}
+							min={0}
+							leadingIcon='dollar-sign'
+							value={baseGradingFee}
+							onChange={(event) => setBaseGradingFee(event.target.value)}
+						/>
 						<InputText
 							name='outboundShippingCost'
 							label='Outbound Shipping'
+							placeholder='0.00'
 							type='number'
 							step={0.01}
 							min={0}
@@ -147,6 +182,7 @@ export function PsaSubmissionForm({
 						<InputText
 							name='insuredReturnShippingCost'
 							label='Return Shipping'
+							placeholder='0.00'
 							type='number'
 							step={0.01}
 							min={0}
@@ -156,6 +192,7 @@ export function PsaSubmissionForm({
 								setInsuredReturnShippingCost(event.target.value)
 							}
 						/>
+
 						<div className={styles.PsaSubmissionForm__actions}>
 							<Button
 								type='main'
@@ -164,6 +201,7 @@ export function PsaSubmissionForm({
 								label={isSaving ? "Saving..." : "Save"}
 								disabled={!hasChanges || isSaving}
 							/>
+
 							{!isCompleted && (
 								<Button
 									type='main'
@@ -210,31 +248,34 @@ export function PsaSubmissionForm({
 				title='PSA Submission'
 				onClose={() => setIsFinishModalOpen(false)}
 			>
-				<div className='psaSubmissionNew__modal'>
-					<h4>
-						Finish PSA Submission <strong>{submission.submissionNumber}</strong>
-						?
-					</h4>
+				<p>
+					Finish PSA Submission <strong>{submission.submissionNumber}</strong>?
+				</p>
+				<p>
+					Finishing this submission will make its grading costs part of the
+					cards' financial totals and release the cards from their
+					PSA-controlled status.
+				</p>
 
-					<p>
-						Finishing this submission will make its grading costs part of the
-						cards&apos; financial totals and release the cards from their
-						PSA-controlled status.
-					</p>
-
-					<div>
-						<button
-							type='button'
-							disabled={isFinishing}
-							onClick={() => setIsFinishModalOpen(false)}
-						>
-							Cancel
-						</button>
-
-						<button type='button' disabled={isFinishing} onClick={handleFinish}>
-							{isFinishing ? "Finishing..." : "Finish Submission"}
-						</button>
-					</div>
+				<div className={modalStyles.ModalContent__actions}>
+					<Button
+						className={modalStyles.ModalContent__button}
+						type='main'
+						htmlType='button'
+						variant='delete'
+						label='Cancel'
+						onClick={() => setIsFinishModalOpen(false)}
+						disabled={isFinishing}
+					/>
+					<Button
+						className={modalStyles.ModalContent__button}
+						type='main'
+						variant='primary'
+						htmlType='button'
+						disabled={isFinishing}
+						onClick={handleFinish}
+						label={isFinishing ? "Finishing..." : "Finish Submission"}
+					/>
 				</div>
 			</Modal>
 		</>

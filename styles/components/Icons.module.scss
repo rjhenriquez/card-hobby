@@ -8,7 +8,7 @@
 }
 .Icon {
 	background-color: var(--bg-color-02);
-	border: 1px solid var(--border-color);
+	border: var(--border-line-main);
 	border-radius: var(--package-border-radius);
 
 	&__wrapper {
@@ -22,7 +22,7 @@
 		height: auto;
 	}
 	&__label {
-		border-top: 1px solid var(--border-color);
+		border-top: var(--border-line-main);
 		@include font-family(mono);
 		@include font-weight(semibold);
 		text-align: center;

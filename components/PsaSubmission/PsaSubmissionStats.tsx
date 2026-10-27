@@ -109,7 +109,7 @@ export function PsaSubmissionStats({
 			</div>
 
 			<div className={styles.PsaSubmissionSummary__wrapper}>
-				<dt>PSA 7.5 or Less</dt>
+				<dt>PSA ≤7.5</dt>
 				<dd className={styles.PsaSubmissionSummary__number}>{psa75OrLess}</dd>
 			</div>
 

@@ -44,8 +44,8 @@
 		transition: var(--transition-productive);
 		text-box: trim-both cap alphabetic;
 		&:hover {
-			border-color: var(--psa-color);
-			color: var(--psa-color);
+			border-color: var(--color-main);
+			color: var(--color-main);
 		}
 	}
 }

@@ -1,4 +1,4 @@
-import { Tabs } from "@/components/Tabs/Tabs";
+import { Tabs, type TabSortOption } from "@/components/Tabs/Tabs";
 import { PsaSubmission } from "@/components/PsaSubmission/PsaSubmission";
 import { getCardsByPortfolio } from "@/db/queries/cards";
 import { getPsaSubmissions } from "@/db/queries/psaSubmissions";
@@ -6,19 +6,33 @@ import {
 	getCardsForPsaSubmission,
 	getPsaSubmissionByNumber,
 } from "@/db/queries/psaSubmissionCards";
+import { getSubmissionDays } from "@/lib/psaSubmissions";
 
 import styles from "@/styles/page/Page.module.scss";
+
+const SORT_OPTIONS: TabSortOption[] = [
+	{ label: "Most cards", value: "cards-desc" },
+	{ label: "Fewest cards", value: "cards-asc" },
+	{ label: "Most days", value: "days-desc" },
+	{ label: "Fewest days", value: "days-asc" },
+	{ label: "Highest acquisition costs", value: "cost-desc" },
+	{ label: "Lowest acquisition costs", value: "cost-asc" },
+];
 
 interface PsaSubmissionsPageProps {
 	searchParams: Promise<{
 		tab?: string;
+		sort?: string;
 	}>;
 }
 
 export default async function PsaSubmissionsPage({
 	searchParams,
 }: PsaSubmissionsPageProps) {
-	const { tab } = await searchParams;
+	const { tab, sort } = await searchParams;
+	const activeSort = SORT_OPTIONS.some((option) => option.value === sort)
+		? sort
+		: undefined;
 
 	const [submissions, investmentCards] = await Promise.all([
 		getPsaSubmissions(),
@@ -86,6 +100,31 @@ export default async function PsaSubmissionsPage({
 		(submission) => submission !== null,
 	);
 
+	// No sort keeps the default order from getPsaSubmissions().
+	if (activeSort) {
+		const [field, direction] = activeSort.split("-");
+
+		const getSortValue = (item: (typeof validSubmissions)[number]) => {
+			if (field === "cards") return item.cards.length;
+			if (field === "cost") return item.totalInvestment;
+			return getSubmissionDays(
+				item.submission.sentDate,
+				item.submission.receivedDate,
+			);
+		};
+
+		validSubmissions.sort((a, b) => {
+			const aValue = getSortValue(a);
+			const bValue = getSortValue(b);
+
+			// Unsent submissions have no day count; keep them last either way.
+			if (aValue === null) return bValue === null ? 0 : 1;
+			if (bValue === null) return -1;
+
+			return direction === "desc" ? bValue - aValue : aValue - bValue;
+		});
+	}
+
 	const activeSubmissions = validSubmissions.filter(
 		({ submission }) => submission.completedDate === null,
 	);
@@ -105,24 +144,29 @@ export default async function PsaSubmissionsPage({
 		return (
 			<div className={styles.Page__content}>
 				{submissionsToRender.map(
-					({
-						submission,
-						cards,
-						sharedCost,
-						totalSubmissionCost,
-						totalInvestment,
-						showStats,
-					}) => (
-						<PsaSubmission
-							key={submission.id}
-							submission={submission}
-							cards={cards}
-							sharedCost={sharedCost}
-							totalSubmissionCost={totalSubmissionCost}
-							totalInvestment={totalInvestment}
-							showStats={showStats}
-						/>
-					),
+					(
+						{
+							submission,
+							cards,
+							sharedCost,
+							totalSubmissionCost,
+							totalInvestment,
+							showStats,
+						},
+						index,
+					) => {
+						return (
+							<PsaSubmission
+								key={submission.id}
+								submission={submission}
+								cards={cards}
+								sharedCost={sharedCost}
+								totalSubmissionCost={totalSubmissionCost}
+								totalInvestment={totalInvestment}
+								showStats={showStats}
+							/>
+						);
+					},
 				)}
 			</div>
 		);
@@ -137,6 +181,8 @@ export default async function PsaSubmissionsPage({
 			<section className={styles.Page__section}>
 				<Tabs
 					activeTab={tab ?? "active"}
+					sortOptions={SORT_OPTIONS}
+					activeSort={activeSort}
 					tabs={[
 						{
 							label: "Active",

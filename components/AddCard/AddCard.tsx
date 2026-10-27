@@ -18,6 +18,8 @@ interface AddCardProps {
 	portfolio: "investment" | "collection";
 	options: CardFormOptions;
 	card?: Card | null;
+	// Two or more cards edited together; uses onCloseEdit.
+	bulkCards?: Card[] | null;
 	copyFrom?: Card | null;
 	onCloseEdit?: () => void;
 	onCloseCopy?: () => void;
@@ -30,6 +32,7 @@ export function AddCard({
 	portfolio,
 	options,
 	card = null,
+	bulkCards = null,
 	copyFrom = null,
 	onCloseEdit,
 	onCloseCopy,
@@ -38,7 +41,8 @@ export function AddCard({
 }: AddCardProps) {
 	const [isOpen, setIsOpen] = useState(false);
 
-	const isEditing = card !== null;
+	const isBulkEditing = bulkCards !== null && bulkCards.length > 1;
+	const isEditing = card !== null || isBulkEditing;
 	const isCopying = copyFrom !== null;
 
 	const drawerIsOpen = isEditing || isCopying || isOpen;
@@ -83,11 +87,13 @@ export function AddCard({
 			<Drawer
 				isOpen={drawerIsOpen}
 				title={
-					isEditing
-						? `Edit ${card.player}`
-						: isCopying
-							? `Copy ${copyFrom.player}`
-							: "Add Card"
+					isBulkEditing
+						? `Edit ${bulkCards.length} Cards`
+						: card
+							? `Edit ${card.player}`
+							: isCopying
+								? `Copy ${copyFrom.player}`
+								: "Add Card"
 				}
 				onClose={handleClose}
 			>
@@ -96,6 +102,7 @@ export function AddCard({
 					portfolio={portfolio}
 					options={options}
 					card={card ?? undefined}
+					bulkCards={isBulkEditing ? bulkCards : undefined}
 					copyFrom={copyFrom ?? undefined}
 					onClose={handleClose}
 				/>

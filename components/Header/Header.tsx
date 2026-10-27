@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ThemeToggle } from "@/components/ThemeToggle/ThemeToggle";
+import { SettingsMenu } from "@/components/SettingsMenu/SettingsMenu";
 import cn from "classnames";
 
 import styles from "./Header.module.scss";
@@ -54,8 +54,7 @@ export function Header() {
 						})}
 					</ul>
 				</nav>
-
-				<ThemeToggle />
+				<SettingsMenu />
 			</div>
 		</header>
 	);

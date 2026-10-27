@@ -64,7 +64,7 @@ export function CardPortfolio({
 		string | null
 	>(null);
 	const [isSavingPurchasePackage, setIsSavingPurchasePackage] = useState(false);
-	const [editingCard, setEditingCard] = useState<Card | null>(null);
+	const [editingCards, setEditingCards] = useState<Card[] | null>(null);
 	const [copyingCard, setCopyingCard] = useState<Card | null>(null);
 
 	const destination = portfolio === "investment" ? "collection" : "investment";
@@ -195,7 +195,7 @@ export function CardPortfolio({
 	}
 
 	function handleCloseEdit() {
-		setEditingCard(null);
+		setEditingCards(null);
 		clearSelection();
 	}
 
@@ -213,16 +213,17 @@ export function CardPortfolio({
 				onCreateSubmission={() => setIsPsaDrawerOpen(true)}
 				onCreatePurchasePackage={() => setIsPurchasePackageDrawerOpen(true)}
 				onMoveCard={setCardToMove}
-				onEditCard={setEditingCard}
+				onEditCards={setEditingCards}
 				onCopyCard={setCopyingCard}
 			/>
 
-			{editingCard && (
+			{editingCards && (
 				<AddCard
 					statuses={statuses}
 					portfolio={portfolio}
 					options={options}
-					card={editingCard}
+					card={editingCards.length === 1 ? editingCards[0] : null}
+					bulkCards={editingCards.length > 1 ? editingCards : null}
 					onCloseEdit={handleCloseEdit}
 					editOnly
 				/>
@@ -253,12 +254,16 @@ export function CardPortfolio({
 
 				<div className={modalStyles.ModalContent__actions}>
 					<Button
+						className={modalStyles.ModalContent__button}
+						variant='delete'
 						type='main'
 						htmlType='button'
 						onClick={() => setCardToMove(null)}
 						label='Cancel'
 					/>
 					<Button
+						className={modalStyles.ModalContent__button}
+						variant='primary'
 						type='main'
 						htmlType='button'
 						onClick={handleMove}

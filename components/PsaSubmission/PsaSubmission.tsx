@@ -5,7 +5,9 @@ import { PsaSubmissionStats } from "./PsaSubmissionStats";
 import { PsaSubmissionFormRow } from "./PsaSubmissionFormRow";
 import { PsaSubmissionForm } from "./PsaSubmissionForm";
 import { TableInfo } from "@/components/TableInfo/TableInfo";
+import { Icon } from "@/components/Icons/Icons";
 import { Button } from "@/components/Button/Button";
+import { getSubmissionDays } from "@/lib/psaSubmissions";
 import cn from "classnames";
 
 import styles from "./PsaSubmission.module.scss";
@@ -75,6 +77,16 @@ export function PsaSubmission({
 		style: "currency",
 		currency: "USD",
 	});
+	const formattedAverageInvestment = (
+		cards.length > 0 ? totalInvestment / cards.length : 0
+	).toLocaleString("en-US", {
+		style: "currency",
+		currency: "USD",
+	});
+	const submissionDays = getSubmissionDays(
+		submission.sentDate,
+		submission.receivedDate,
+	);
 
 	const submissionSummary = (location: "top" | "bottom") => (
 		<dl
@@ -83,35 +95,81 @@ export function PsaSubmission({
 			}`}
 		>
 			<div className={styles.PsaSubmission__summary__wrapper}>
-				<dt>Total Submission Cost</dt>
-				<dd className={styles.PsaSubmission__summary__number}>
+				{/* <Icon
+								className={styles.PsaSubmission__data__group__icon}
+								icon='investments'
+							/> */}
+				<dt>Acquisition Costs</dt>
+				<dd className={styles.PsaSubmission__data__group__value}>
+					{formattedTotalInvestment}
+				</dd>
+			</div>
+
+			<div className={styles.PsaSubmission__summary__wrapper}>
+				{/* <Icon
+								className={styles.PsaSubmission__data__group__icon}
+								icon='hash'
+							/> */}
+				<dt>Number of Cards</dt>
+				<dd className={styles.PsaSubmission__data__group__value}>
+					{`${cards.length} ${cards.length === 1 ? "card" : "cards"}`}
+				</dd>
+			</div>
+
+			<div className={styles.PsaSubmission__summary__wrapper}>
+				{/* <Icon
+								className={styles.PsaSubmission__data__group__icon}
+								icon='percent'
+							/> */}
+				<dt className={styles.PsaSubmission__data__group__label}>
+					Average per Card
+				</dt>
+				<dd className={styles.PsaSubmission__data__group__value}>
+					{formattedAverageInvestment}
+				</dd>
+			</div>
+
+			<div className={styles.PsaSubmission__summary__wrapper}>
+				{/* <Icon
+								className={styles.PsaSubmission__data__group__icon}
+								icon='calendar'
+							/> */}
+				<dt>
+					{submission.receivedDate ? "Days in Submission" : "Days Since Sent"}
+				</dt>
+				<dd className={styles.PsaSubmission__data__group__value}>
+					{submissionDays === null
+						? "—"
+						: `${submissionDays} ${submissionDays === 1 ? "day" : "days"}`}
+				</dd>
+			</div>
+
+			<div className={styles.PsaSubmission__summary__wrapper}>
+				{/* <Icon
+								className={styles.PsaSubmission__data__group__icon}
+								icon='receipt'
+							/> */}
+				<dt>Submission Costs</dt>
+				<dd className={styles.PsaSubmission__data__group__value}>
 					{`$${totalSubmissionCost.toLocaleString("en-US", {
 						minimumFractionDigits: 2,
 						maximumFractionDigits: 2,
 					})}`}
 				</dd>
 			</div>
-
-			<div className={styles.PsaSubmission__summary__wrapper}>
-				<dt>Stage</dt>
-				<dd>{submission.stage ?? "—"}</dd>
-			</div>
-
-			<div className={styles.PsaSubmission__summary__wrapper}>
-				<dt>Status</dt>
-				<dd>In Progress</dd>
-			</div>
 		</dl>
 	);
 
 	return (
-		<div className={styles.PsaSubmission}>
+		<div
+			className={cn(styles.PsaSubmission, {
+				[styles["PsaSubmission--open"]]: isOpen,
+			})}
+		>
 			<header className={styles.PsaSubmission__header}>
 				<div className={styles.PsaSubmission__heading}>
 					<p className={styles.PsaSubmission__eyebrow}>
-						{isCompleted
-							? "Completed"
-							: `In Progress - ${cards.length} ${cards.length === 1 ? "card" : "cards"}`}
+						{isCompleted ? "Completed" : "In Progress"}
 					</p>
 					<h2 className={styles.PsaSubmission__title}>
 						<span>Submission</span>{" "}
@@ -119,13 +177,6 @@ export function PsaSubmission({
 							{submission.submissionNumber}
 						</span>
 					</h2>
-
-					<p className={styles.PsaSubmission__subhead}>
-						<span>Total Costs: </span>
-						<span className={styles.PsaSubmission__subhead__number}>
-							{formattedTotalInvestment}
-						</span>
-					</p>
 				</div>
 
 				{!alwaysOpen && (
@@ -134,8 +185,7 @@ export function PsaSubmission({
 							className={cn(styles.PsaSubmission__trigger, {
 								[styles["PsaSubmission__trigger--open"]]: isOpen,
 							})}
-							type='icon'
-							variant='primary'
+							type='panel'
 							htmlType='button'
 							leadingIcon='arrow-left'
 							tooltip={isOpen ? "Hide Contents" : "Show Contents"}
@@ -144,42 +194,38 @@ export function PsaSubmission({
 					</div>
 				)}
 			</header>
-
+			{isCompleted && showStats ? (
+				<PsaSubmissionStats
+					cards={cards}
+					isHistorical={submission.isHistorical}
+					historicalStats={{
+						totalCards: submission.historicalTotalCards,
+						psa10: submission.historicalPsa10,
+						psa9: submission.historicalPsa9,
+						psa85: submission.historicalPsa85,
+						psa8: submission.historicalPsa8,
+						psa75OrLess: submission.historicalPsa75OrLess,
+						noGrade: submission.historicalNoGrade,
+					}}
+				/>
+			) : (
+				submissionSummary("top")
+			)}
 			<div
 				className={cn(styles.PsaSubmission__content, {
 					[styles["PsaSubmission__content--open"]]: isContentOpen,
 				})}
 			>
 				<div className={styles.PsaSubmission__content__inner}>
-					{isCompleted && showStats ? (
-						<PsaSubmissionStats
-							cards={cards}
-							isHistorical={submission.isHistorical}
-							historicalStats={{
-								totalCards: submission.historicalTotalCards,
-								psa10: submission.historicalPsa10,
-								psa9: submission.historicalPsa9,
-								psa85: submission.historicalPsa85,
-								psa8: submission.historicalPsa8,
-								psa75OrLess: submission.historicalPsa75OrLess,
-								noGrade: submission.historicalNoGrade,
-							}}
-						/>
-					) : (
-						submissionSummary("top")
-					)}
-
-					<div className={styles.PsaSubmission__summary__wrapper}>
-						<PsaSubmissionForm
-							submission={submission}
-							isEditing={isEditing}
-							onSaved={() => {
-								if (isCompleted) {
-									setIsEditing(false);
-								}
-							}}
-						/>
-					</div>
+					<PsaSubmissionForm
+						submission={submission}
+						isEditing={isEditing}
+						onSaved={() => {
+							if (isCompleted) {
+								setIsEditing(false);
+							}
+						}}
+					/>
 
 					<div className={styles.PsaSubmission__content__wrapper}>
 						{cards.length === 0 ? (

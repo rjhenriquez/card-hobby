@@ -28,7 +28,7 @@
 		&:hover,
 		&:focus-within {
 			@include transition(color);
-			color: var(--main);
+			color: var(--color-main);
 		}
 	}
 }

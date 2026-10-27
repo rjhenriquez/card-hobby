@@ -3,6 +3,13 @@
 .ModalContent {
 	&__actions {
 		display: flex;
+		margin-top: var(--modal-gap);
 		justify-content: space-between;
+	}
+	&__small {
+		font-size: var(--font-size-14);
+	}
+	&__button {
+		min-width: var(--modal-btn-min-width);
 	}
 }

@@ -22,6 +22,13 @@
 			z-index: 2;
 		}
 	}
+	&__filter {
+		&__range {
+			display: grid;
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+			gap: var(--filter-panel-gap);
+		}
+	}
 	&__actions {
 		display: flex;
 		align-items: center;
@@ -48,7 +55,7 @@
 
 			&--open {
 				.CardTable__actions__filter__btn {
-					border-color: var(--main);
+					border-color: var(--color-main);
 					border-top-left-radius: 0;
 					border-bottom-left-radius: 0;
 				}
@@ -95,8 +102,8 @@
 			}
 
 			&--negative {
-				color: var(--red);
-				background: color-mix(in srgb, var(--red) 10%, transparent);
+				color: var(--color-red);
+				background: color-mix(in srgb, var(--color-red) 10%, transparent);
 			}
 		}
 
@@ -137,8 +144,8 @@
 		@include font-family(mono);
 		@include transition(border-color, color);
 		&:hover {
-			border-color: var(--psa-color);
-			color: var(--psa-color);
+			border-color: var(--color-main);
+			color: var(--color-main);
 		}
 	}
 	&__status {
@@ -178,10 +185,10 @@
 			height: 1em;
 		}
 		&--yes {
-			color: var(--green);
+			color: var(--color-green);
 		}
 		&--no {
-			color: var(--red);
+			color: var(--color-red);
 		}
 	}
 }

@@ -21,7 +21,7 @@ export function Sidebar() {
 		<aside className={sidebarClass}>
 			<div className={styles.Sidebar__top}>
 				{isOpen && (
-					<Link href='/' className={styles.Header__logo}>
+					<Link href='/' className={styles.Sidebar__logo}>
 						CH
 					</Link>
 				)}

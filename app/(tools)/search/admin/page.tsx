@@ -30,114 +30,128 @@ export default async function SearchAdminPage() {
 	]);
 
 	return (
-		<div className={`tempAdmin ${styles.Page}`}>
+		<div className={`${styles.Page}`}>
 			<div className={styles.Page__header}>
 				<h1 className={styles.Page__heading}>Search Admin</h1>
 			</div>
 
-			<div className='tempAdmin__setup'>
-				<section className='tempAdmin__panel'>
-					<header className='tempAdmin__panel-header'>
-						<p className='tempAdmin__eyebrow'>Step 1</p>
-						<h2>Sections</h2>
-						<p>
+			<section className={adminStyles.SearchAdmin__section}>
+				<header className={adminStyles.SearchAdmin__section__header}>
+					<div className={adminStyles.SearchAdmin__section__heading}>
+						<p className={adminStyles.SearchAdmin__section__eyebrow}>Step 1</p>
+
+						<h2 className={adminStyles.SearchAdmin__section__title}>
+							Sections
+						</h2>
+
+						<p className={adminStyles.SearchAdmin__section__subhead}>
 							Sections are the top-level groups. Categories are organized inside
 							them.
 						</p>
-					</header>
+					</div>
+				</header>
 
-					<form action={createSearchSectionAction} className='tempAdmin__form'>
-						<label>
-							<span>Section Name</span>
-							<input name='name' placeholder='e.g. Sports Cards' required />
-						</label>
+				<div className={adminStyles.SearchAdmin__section__edits}>
+					<form
+						action={createSearchSectionAction}
+						className={adminStyles.SearchAdmin__section__edits__form}
+					>
+						<InputText
+							name='name'
+							label='Section Name'
+							placeholder='e.g. Sports Cards'
+							required
+						/>
 
-						<label>
-							<span>Sort Order</span>
-							<input
-								type='number'
-								name='sortOrder'
-								defaultValue={0}
-								min={0}
-								required
-							/>
-						</label>
+						<InputText
+							label='Sort Order'
+							className={adminStyles.SearchAdmin__input__sort}
+							type='number'
+							name='sortOrder'
+							min={0}
+							required
+							defaultValue={0}
+						/>
 
-						<button type='submit'>Add Section</button>
+						<Button
+							type='main'
+							variant='primary'
+							htmlType='submit'
+							label='Add Section'
+						/>
 					</form>
-				</section>
+				</div>
+			</section>
 
-				<section className='tempAdmin__panel'>
-					<header className='tempAdmin__panel-header'>
-						<p className='tempAdmin__eyebrow'>Step 2</p>
-						<h2>Categories</h2>
-						<p>
+			<section className={adminStyles.SearchAdmin__section}>
+				<header className={adminStyles.SearchAdmin__section__header}>
+					<div className={adminStyles.SearchAdmin__section__heading}>
+						<p className={adminStyles.SearchAdmin__section__eyebrow}>Step 2</p>
+
+						<h2 className={adminStyles.SearchAdmin__section__title}>
+							Categories
+						</h2>
+
+						<p className={adminStyles.SearchAdmin__section__subhead}>
 							Categories live inside a section and contain the individual search
 							terms.
 						</p>
-					</header>
-
-					{sections.length === 0 ? (
-						<p className='tempAdmin__empty'>
-							Create a section before adding categories.
-						</p>
-					) : (
-						<form
-							action={createSearchCategoryAction}
-							className='tempAdmin__form'
-						>
-							<label>
-								<span>Category Name</span>
-								<input name='name' placeholder='e.g. Marvel' required />
-							</label>
-
-							<label>
-								<span>Parent Section</span>
-
-								<select name='sectionId' required defaultValue=''>
-									<option value='' disabled>
-										Select section
-									</option>
-
-									{sections.map((section) => (
-										<option key={section.id} value={section.id}>
-											{section.name}
-										</option>
-									))}
-								</select>
-							</label>
-
-							<label>
-								<span>Sort Order</span>
-								<input
-									type='number'
-									name='sortOrder'
-									defaultValue={0}
-									min={0}
-									required
-								/>
-							</label>
-
-							<button type='submit'>Add Category</button>
-						</form>
-					)}
-				</section>
-			</div>
-
-			<section className='tempAdmin__data'>
-				<header className='tempAdmin__data-header'>
-					<p className='tempAdmin__eyebrow'>Current Structure</p>
-					<h2>Search Data</h2>
-					<p>
-						Everything below shows the current hierarchy. Each section contains
-						its categories, and each category contains its search terms.
-					</p>
+					</div>
 				</header>
 
 				{sections.length === 0 ? (
-					<p className='tempAdmin__empty'>No sections yet.</p>
+					<div className={adminStyles.SearchAdmin__section__content}>
+						<p>Create a section before adding categories.</p>
+					</div>
 				) : (
-					<div className='tempAdmin__sections'>
+					<div className={adminStyles.SearchAdmin__section__edits}>
+						<form
+							action={createSearchCategoryAction}
+							className={adminStyles.SearchAdmin__section__edits__form}
+						>
+							<InputText
+								name='name'
+								label='Category Name'
+								placeholder='e.g. Marvel'
+								required
+							/>
+
+							<InputSelect
+								name='sectionId'
+								label='Parent Section'
+								defaultValue={sections[0].id.toString()}
+								options={sections.map((section) => ({
+									label: section.name,
+									value: section.id.toString(),
+								}))}
+							/>
+
+							<InputText
+								label='Sort Order'
+								className={adminStyles.SearchAdmin__input__sort}
+								type='number'
+								name='sortOrder'
+								min={0}
+								required
+								defaultValue={0}
+							/>
+
+							<Button
+								type='main'
+								variant='primary'
+								htmlType='submit'
+								label='Add Category'
+							/>
+						</form>
+					</div>
+				)}
+			</section>
+
+			<section className={adminStyles.SearchAdmin__sections}>
+				{sections.length === 0 ? (
+					<p>No sections yet.</p>
+				) : (
+					<div>
 						{sections.map((section) => {
 							const sectionCategories = categories.filter(
 								(category) => category.sectionId === section.id,
@@ -214,9 +228,7 @@ export default async function SearchAdminPage() {
 									</div>
 									<div className={adminStyles.SearchAdmin__section__content}>
 										{sectionCategories.length === 0 ? (
-											<p className='tempAdmin__empty'>
-												No categories in this section.
-											</p>
+											<p>No categories in this section.</p>
 										) : (
 											sectionCategories.map((category) => {
 												const categoryTerms = terms.filter(

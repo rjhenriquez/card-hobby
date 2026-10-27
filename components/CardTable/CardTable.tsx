@@ -10,11 +10,13 @@ import {
 import Link from "next/link";
 import {
 	ColumnDef,
+	ColumnFiltersState,
 	RowSelectionState,
 	SortingState,
 	columnFilteringFeature,
 	createFilteredRowModel,
 	createSortedRowModel,
+	filterFn_inNumberRange,
 	filterFn_includesString,
 	globalFilteringFeature,
 	rowSelectionFeature,
@@ -41,6 +43,7 @@ import {
 import { formatCurrency, formatShortDate } from "@/lib/formatters";
 import type { Card } from "@/types/types";
 import { Button } from "@/components/Button/Button";
+import { Filter } from "@/components/Filter/Filter";
 import { ButtonGroup } from "@/components/ButtonGroup/ButtonGroup";
 import { InputCheckbox } from "@/components/InputCheckbox/InputCheckbox";
 import { Icon } from "@/components/Icons/Icons";
@@ -59,7 +62,7 @@ interface CardTableProps {
 	onCreateSubmission: () => void;
 	onCreatePurchasePackage: () => void;
 	onMoveCard: (card: Card) => void;
-	onEditCard: (card: Card) => void;
+	onEditCards: (cards: Card[]) => void;
 	onCopyCard: (card: Card) => void;
 }
 
@@ -75,6 +78,7 @@ const features = tableFeatures({
 	},
 	filterFns: {
 		includesString: filterFn_includesString,
+		inNumberRange: filterFn_inNumberRange,
 	},
 });
 
@@ -100,13 +104,14 @@ export function CardTable({
 	onCreateSubmission,
 	onCreatePurchasePackage,
 	onMoveCard,
-	onEditCard,
+	onEditCards,
 	onCopyCard,
 }: CardTableProps) {
 	const [sorting, setSorting] = useState<SortingState>([]);
 	const [isExpanded, setIsExpanded] = useState(false);
 	const [isSearchOpen, setIsSearchOpen] = useState(false);
 	const [globalFilter, setGlobalFilter] = useState("");
+	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 	const [fontSize, setFontSize] = useState(12);
 	const [isReady, setIsReady] = useState(false);
 	const [isTopSticky, setIsTopSticky] = useState(false);
@@ -336,6 +341,7 @@ export function CardTable({
 		{
 			accessorKey: "totalCost",
 			header: "Total Cost",
+			filterFn: "inNumberRange",
 			cell: ({ getValue }) => {
 				const value = getValue() as number | null;
 
@@ -452,6 +458,7 @@ export function CardTable({
 			rowSelection,
 			sorting,
 			globalFilter,
+			columnFilters,
 		},
 		onSortingChange: (updater) => {
 			const nextSorting =
@@ -466,6 +473,11 @@ export function CardTable({
 
 			setGlobalFilter(nextFilter);
 		},
+		onColumnFiltersChange: (updater) => {
+			setColumnFilters((current) =>
+				typeof updater === "function" ? updater(current) : updater,
+			);
+		},
 		onRowSelectionChange: (updater) => {
 			const nextSelection =
 				typeof updater === "function" ? updater(rowSelection) : updater;
@@ -474,6 +486,21 @@ export function CardTable({
 		},
 		getRowId: (row) => String(row.id),
 	});
+
+	// [min, max] as typed; an empty side means no limit.
+	const costRange = (columnFilters.find((filter) => filter.id === "totalCost")
+		?.value as [string, string] | undefined) ?? ["", ""];
+
+	function setCostRange(nextRange: [string, string] | null) {
+		setColumnFilters((current) => {
+			const others = current.filter((filter) => filter.id !== "totalCost");
+			const isEmpty = !nextRange || (!nextRange[0] && !nextRange[1]);
+
+			return isEmpty
+				? others
+				: [...others, { id: "totalCost", value: nextRange }];
+		});
+	}
 
 	const tableRows = table.getRowModel().rows;
 	const visibleCards = tableRows.map((row) => row.original);
@@ -508,18 +535,16 @@ export function CardTable({
 
 	function getFooterValue(columnId: string) {
 		switch (columnId) {
+			case "player":
+				return `${visibleCards.length} ${visibleCards.length === 1 ? "card" : "cards"}`;
 			case "price":
 				return formatCurrency(tableTotals.price);
-
 			case "gradingCost":
 				return formatCurrency(tableTotals.gradingCost);
-
 			case "totalCost":
 				return formatCurrency(tableTotals.totalCost);
-
 			case "soldPrice":
 				return formatCurrency(tableTotals.soldPrice);
-
 			case "profit":
 				return (
 					<span
@@ -533,7 +558,6 @@ export function CardTable({
 						{formatCurrency(tableTotals.profit)}
 					</span>
 				);
-
 			case "roi":
 				return (
 					<span
@@ -680,21 +704,15 @@ export function CardTable({
 				className={styles.CardTable__table}
 				top={
 					<div className={styles.CardTable__actions}>
-						<div className={styles.CardTable__actions__group}>
+						{/* <div className={styles.CardTable__actions__group}>
 							<Button
 								type='icon'
 								htmlType='button'
 								leadingIcon='edit'
-								tooltip='Edit Card'
+								tooltip={selectedCardCount > 1 ? "Edit Cards" : "Edit Card"}
 								tooltipPosition={isTopSticky ? "bottom" : "top"}
-								disabled={selectedCard === null}
-								onClick={() => {
-									if (!selectedCard) {
-										return;
-									}
-
-									onEditCard(selectedCard);
-								}}
+								disabled={selectedCards.length === 0}
+								onClick={() => onEditCards(selectedCards)}
 							/>
 
 							<Button
@@ -758,6 +776,41 @@ export function CardTable({
 									onMoveCard(selectedCard);
 								}}
 							/>
+						</div> */}
+
+						<div className={styles.CardTable__actions__group}>
+							<Filter
+								label='Cost'
+								isActive={Boolean(costRange[0] || costRange[1])}
+								onClear={() => setCostRange(null)}
+							>
+								<div className={styles.CardTable__filter__range}>
+									<InputText
+										type='number'
+										name='costMin'
+										label='Min Cost'
+										leadingIcon='dollar-sign'
+										min={0}
+										step={0.01}
+										value={costRange[0]}
+										onChange={(event) =>
+											setCostRange([event.target.value, costRange[1]])
+										}
+									/>
+									<InputText
+										type='number'
+										name='costMax'
+										label='Max Cost'
+										leadingIcon='dollar-sign'
+										min={0}
+										step={0.01}
+										value={costRange[1]}
+										onChange={(event) =>
+											setCostRange([costRange[0], event.target.value])
+										}
+									/>
+								</div>
+							</Filter>
 						</div>
 
 						<div className={styles.CardTable__actions__group}>

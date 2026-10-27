@@ -7,7 +7,7 @@ import styles from "./Button.module.scss";
 
 export interface ButtonProps {
 	onClick?: React.MouseEventHandler<HTMLButtonElement>;
-	type?: "icon" | "main" | "number-add" | "main-lg" | "icon-sm";
+	type?: "icon" | "main" | "number-add" | "main-lg" | "icon-sm" | "panel";
 	variant?: "primary" | "delete";
 	htmlType?: "button" | "submit" | "reset";
 	className?: string;

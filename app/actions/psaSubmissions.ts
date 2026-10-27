@@ -83,6 +83,17 @@ export async function updatePsaSubmission(formData: FormData) {
 		throw new Error("Invalid submission number");
 	}
 
+	const baseGradingFee = getOptionalString(formData, "baseGradingFee");
+
+	if (baseGradingFee !== null) {
+		const fee = Number(baseGradingFee);
+
+		if (!Number.isFinite(fee) || fee < 0) {
+			throw new Error("Invalid base grading fee");
+		}
+	}
+
+	// Update submission details
 	await db
 		.update(psaSubmissions)
 		.set({
@@ -97,11 +108,23 @@ export async function updatePsaSubmission(formData: FormData) {
 		})
 		.where(eq(psaSubmissions.id, id));
 
+	// Apply Base Fee to every card in the submission
+	if (baseGradingFee !== null) {
+		await db
+			.update(psaSubmissionCards)
+			.set({
+				baseGradingFee,
+			})
+			.where(eq(psaSubmissionCards.submissionId, id));
+	}
+
 	revalidatePath("/psa-submissions");
 	revalidatePath(`/psa-submissions/${submissionNumber.trim()}`);
 	revalidatePath("/investment");
 	revalidatePath("/collection");
+	revalidatePath("/dashboard");
 }
+
 export async function updatePsaSubmissionCard(formData: FormData) {
 	const submissionCardIdValue = formData.get("submissionCardId");
 	const submissionNumber = formData.get("submissionNumber");
@@ -138,8 +161,13 @@ export async function updatePsaSubmissionCard(formData: FormData) {
 		})
 		.where(eq(psaSubmissionCards.id, submissionCardId));
 
-	revalidatePath(`/psa-submissions/${submissionNumber}`);
+	revalidatePath("/psa-submissions");
+	revalidatePath(`/psa-submissions/${submissionNumber.trim()}`);
+	revalidatePath("/investment");
+	revalidatePath("/collection");
+	revalidatePath("/dashboard");
 }
+
 export async function finishPsaSubmission(
 	submissionId: number,
 	submissionNumber: string,
@@ -168,7 +196,9 @@ export async function finishPsaSubmission(
 	revalidatePath(`/psa-submissions/${trimmedSubmissionNumber}`);
 	revalidatePath("/investment");
 	revalidatePath("/collection");
+	revalidatePath("/dashboard");
 }
+
 export async function removeCardFromPsaSubmission(
 	submissionCardId: number,
 	submissionNumber: string,
@@ -217,6 +247,7 @@ export async function removeCardFromPsaSubmission(
 	revalidatePath("/psa-submissions");
 	revalidatePath("/investment");
 	revalidatePath("/collection");
+	revalidatePath("/dashboard");
 }
 
 function getOptionalString(formData: FormData, name: string) {
@@ -230,6 +261,7 @@ function getOptionalString(formData: FormData, name: string) {
 
 	return trimmedValue || null;
 }
+
 async function validateCardsAreNotInActiveSubmission(
 	cardIds: number[],
 	excludeSubmissionId?: number,

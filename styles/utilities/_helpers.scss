@@ -53,10 +53,13 @@
 	}
 }
 
-@mixin label-styles {
+@mixin label-styles($size: "default") {
 	@include font-weight(semibold);
-	font-size: var(--font-size-12);
+	font-size: if($size == "small", var(--font-size-10), var(--font-size-12));
 	text-transform: uppercase;
+	@if $size == "small" {
+		letter-spacing: 0.05em;
+	}
 }
 
 // ---------- OTHER ----------
@@ -137,7 +140,7 @@
 	font-size: var(--input-font-size);
 	background: var(--bg-color);
 	&:focus {
-		border-color: var(--main);
+		border-color: var(--color-main);
 	}
 	&[type="search"] {
 		&::-webkit-search-cancel-button {
@@ -233,12 +236,13 @@
 		height: var(--button-icon-size);
 	}
 	&:hover {
-		color: var(--main);
+		color: var(--color-main);
 	}
 }
 
 @mixin trigger-styles($class-base, $size: "Regular") {
 	$size-suffix: if($size == small, "-sm", "");
+	@include transition(color);
 	cursor: pointer;
 	align-items: center;
 	display: inline-flex;
@@ -253,7 +257,6 @@
 	&__icon {
 		@include transition(transform, background, border-color);
 		border-radius: 50%;
-		border: var(--button-border-line);
 		width: var(--trigger-button-size#{$size-suffix});
 		height: var(--trigger-button-size#{$size-suffix});
 		display: grid;
@@ -265,17 +268,9 @@
 	}
 	&:hover,
 	&:focus-within {
+		color: var(--color-main);
 		.#{$class-base}__trigger__icon {
-			border-color: color-mix(
-				in srgb,
-				var(--color-main) 70%,
-				var(--bg-color-inverted)
-			);
-			background: color-mix(
-				in srgb,
-				var(--color-main) var(--color-mix-percentage),
-				var(--bg-color)
-			);
+			background: color-mix(in srgb, var(--bg-color-inverted) 10%, transparent);
 		}
 	}
 }

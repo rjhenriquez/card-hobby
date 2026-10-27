@@ -50,7 +50,7 @@
 		}
 		&--open {
 			svg {
-				color: var(--main);
+				color: var(--color-main);
 				transform: rotate(180deg);
 				line:nth-of-type(1) {
 					transform: scaleY(0);
@@ -58,7 +58,7 @@
 			}
 			&:hover {
 				svg {
-					color: var(--main);
+					color: var(--color-main);
 				}
 			}
 		}

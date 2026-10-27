@@ -3,11 +3,24 @@
 import { useEffect, useState } from "react";
 
 import { Button } from "@/components/Button/Button";
+import { Icon } from "@/components/Icons/Icons";
 import { getStoredTheme, setStoredTheme, type Theme } from "@/lib/storage";
 
 import styles from "./ThemeToggle.module.scss";
 
-export function ThemeToggle() {
+interface ThemeToggleProps {
+	layout?: "icon" | "menu";
+	className?: string;
+	iconClassName?: string;
+	labelClassName?: string;
+}
+
+export function ThemeToggle({
+	layout = "icon",
+	className,
+	iconClassName,
+	labelClassName,
+}: ThemeToggleProps) {
 	const [theme, setTheme] = useState<Theme>("light");
 
 	useEffect(() => {
@@ -32,12 +45,25 @@ export function ThemeToggle() {
 		setStoredTheme(nextTheme);
 	}
 
+	const nextThemeLabel = theme === "light" ? "Dark" : "Light";
+
+	if (layout === "menu") {
+		return (
+			<button type='button' onClick={toggleTheme} className={className}>
+				<Icon
+					className={iconClassName}
+					icon={nextThemeLabel === "Dark" ? "moon" : "sun"}
+				/>
+				<span className={labelClassName}>{nextThemeLabel} theme</span>
+			</button>
+		);
+	}
+
 	return (
 		<Button
 			type='icon'
 			onClick={toggleTheme}
 			leadingIcon={theme === "light" ? "dark" : "light"}
-			tooltip={`Switch to ${theme === "light" ? "dark" : "light"} theme`}
 			tooltipPosition='left'
 			className={styles.ThemeToggle}
 		/>

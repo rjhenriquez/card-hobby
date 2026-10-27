@@ -48,7 +48,7 @@
 		&:hover {
 			.HighlightCardMultiple {
 				&__item__label {
-					color: var(--main);
+					color: var(--color-main);
 				}
 			}
 		}
@@ -69,7 +69,7 @@
 	&__icon {
 		align-self: center;
 		grid-column: 1;
-		color: var(--main);
+		color: var(--color-main);
 		width: 100%;
 		height: var(--highlight-icon-size);
 	}

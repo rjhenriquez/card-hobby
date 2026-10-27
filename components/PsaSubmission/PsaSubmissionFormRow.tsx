@@ -1,6 +1,6 @@
 "use client";
-
-import { FormEvent, useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
+import { FormEvent, useEffect, useState, useTransition } from "react";
 import { Modal } from "@/components/Modal/Modal";
 import { InputText } from "@/components/InputText/InputText";
 import { Button } from "@/components/Button/Button";
@@ -67,14 +67,25 @@ export function PsaSubmissionFormRow({
 	isEditing,
 }: PsaSubmissionFormRowProps) {
 	const [gradeValue, setGradeValue] = useState(getGradeValue(card));
+	const [baseGradingFee, setBaseGradingFee] = useState(card.baseGradingFee);
+	const [gradingAdjustment, setGradingAdjustment] = useState(
+		card.gradingAdjustment,
+	);
 	const [isSaving, startSavingTransition] = useTransition();
 	const [isRemoving, startRemovingTransition] = useTransition();
 	const [isRemoveModalOpen, setIsRemoveModalOpen] = useState(false);
-
+	useEffect(() => {
+		setBaseGradingFee(card.baseGradingFee);
+		setGradingAdjustment(card.gradingAdjustment);
+	}, [card.baseGradingFee, card.gradingAdjustment]);
+	const router = useRouter();
 	function handleSubmit(event: FormEvent<HTMLFormElement>) {
 		event.preventDefault();
 
 		const formData = new FormData(event.currentTarget);
+		console.log("Base Fee:", formData.get("baseGradingFee"));
+
+		console.log("Adjustment:", formData.get("gradingAdjustment"));
 
 		if (gradeValue === "pending") {
 			formData.set("gradeStatus", "pending");
@@ -89,6 +100,7 @@ export function PsaSubmissionFormRow({
 
 		startSavingTransition(async () => {
 			await updatePsaSubmissionCard(formData);
+			router.refresh();
 		});
 	}
 
@@ -106,7 +118,7 @@ export function PsaSubmissionFormRow({
 	const formId = `psa-card-${card.submissionCardId}`;
 
 	const totalGradingCost =
-		Number(card.baseGradingFee) + sharedCost + Number(card.gradingAdjustment);
+		Number(baseGradingFee) + sharedCost + Number(gradingAdjustment);
 
 	return (
 		<>
@@ -138,6 +150,7 @@ export function PsaSubmissionFormRow({
 				<td>
 					{isEditing ? (
 						<InputText
+							form={formId}
 							className={styles.PsaSubmissionFormRow__input}
 							name='baseGradingFee'
 							type='number'
@@ -145,7 +158,8 @@ export function PsaSubmissionFormRow({
 							leadingIcon='dollar-sign'
 							min={0}
 							step={0.01}
-							defaultValue={card.baseGradingFee}
+							value={baseGradingFee}
+							onChange={(event) => setBaseGradingFee(event.target.value)}
 						/>
 					) : (
 						`$${Number(card.baseGradingFee).toFixed(2)}`
@@ -154,6 +168,7 @@ export function PsaSubmissionFormRow({
 				<td>
 					{isEditing ? (
 						<InputText
+							form={formId}
 							className={styles.PsaSubmissionFormRow__input}
 							type='number'
 							variant='small'
@@ -161,7 +176,8 @@ export function PsaSubmissionFormRow({
 							leadingIcon='dollar-sign'
 							min={0}
 							step={0.01}
-							defaultValue={card.gradingAdjustment}
+							value={gradingAdjustment}
+							onChange={(event) => setGradingAdjustment(event.target.value)}
 						/>
 					) : (
 						`$${Number(card.gradingAdjustment).toFixed(2)}`
@@ -203,6 +219,7 @@ export function PsaSubmissionFormRow({
 								onClick={() => setIsRemoveModalOpen(true)}
 								tooltip='Remove'
 								trailingIcon='delete'
+								variant='delete'
 							/>
 						)}
 						{isEditing && (
@@ -213,6 +230,7 @@ export function PsaSubmissionFormRow({
 								disabled={isSaving || isRemoving}
 								tooltip='Save'
 								trailingIcon='save'
+								variant='primary'
 							/>
 						)}
 					</div>

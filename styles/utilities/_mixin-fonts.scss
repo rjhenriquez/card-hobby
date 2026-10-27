@@ -8,6 +8,7 @@
 
 // Options: "chivo" | "ttpro"
 $active-font: "chivo";
+// $active-font: "geist";
 // $active-font: "ttpro";
 
 // --------------------------------------------------
@@ -32,6 +33,15 @@ $font-configs: (
 		sans-italic: null,
 		mono: "tt-norms-pro-mono-latin.woff2",
 		mono-italic: null,
+	),
+	geist: (
+		path: "/fonts/geist",
+		sans-family: "Geist",
+		mono-family: "Geist Mono",
+		sans: "Geist-VariableFont_wght.woff2",
+		sans-italic: "Geist-Italic-VariableFont_wght.woff2",
+		mono: "GeistMono-VariableFont_wght.woff2",
+		mono-italic: "GeistMono-Italic-VariableFont_wght.woff2",
 	),
 );
 

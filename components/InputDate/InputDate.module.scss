@@ -5,7 +5,7 @@
 	flex-direction: column;
 	gap: var(--input-gap);
 	&__label {
-		@include label-styles;
+		@include label-styles("small");
 	}
 
 	&__field {
@@ -25,7 +25,7 @@
 	input {
 		@include input-styles;
 		&:focus {
-			border-color: var(--main);
+			border-color: var(--color-main);
 		}
 		&::-webkit-calendar-picker-indicator {
 			position: absolute;

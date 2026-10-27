@@ -93,11 +93,11 @@ export const PSA_GRADE_DEFINITIONS = {
 
 export const STATUS_CLASSES = [
 	{ term: "Transit", className: "status--yellow" },
+	{ term: "Ebay", className: "status--green" },
 	{ term: "PSA", className: "status--red" },
 	{ term: "Received", className: "status--blue" },
 	{ term: "In Hand", className: "status--blue" },
 	{ term: "Available", className: "status--green" },
-	{ term: "Ebay", className: "status--green" },
 	{ term: "Pending", className: "status--yellow" },
 	{ term: "Redemption", className: "status--gray" },
 	{ term: "DCSports", className: "status--blue-light" },

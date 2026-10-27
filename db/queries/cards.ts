@@ -334,7 +334,12 @@ export async function getCardsByPortfolio(portfolio: CardPortfolio) {
 					(card.purchasePrice !== null ? Number(card.purchasePrice) : null))
 				: null;
 
-		const totalCost = price !== null ? price + gradingCost : null;
+		const totalCost =
+			price !== null
+				? price + gradingCost
+				: gradingCost > 0
+					? gradingCost
+					: null;
 
 		const soldPrice = card.soldPrice !== null ? Number(card.soldPrice) : null;
 

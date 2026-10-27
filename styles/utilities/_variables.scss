@@ -2,19 +2,12 @@
 
 :root {
 	// ------- COLORS -------
-	--white: #ffffff;
-	--black: #000000;
-	--main: #7066ff;
-	--red: #ff5f6d;
-	--green: #35c98b;
 
-	--psa-color: var(--main);
-
-	--gray-01: #f3f4f9;
+	--gray-01: #f3f4f9; // unused
 	--gray-02: #fafbfc;
 	--gray-03: #eff1f4;
-	--gray-04: #e6e7e8;
-	--gray-05: #98999b;
+	--gray-04: #e6e7e8; // unused
+	--gray-05: #98999b; // unused
 	--gray-06: #707172;
 	--gray-07: #1a1a28;
 	--gray-08: #0c0c1e;
@@ -31,7 +24,7 @@
 
 	// ------- Spacing -------
 
-	--spacing-10: 0.625em; // 10px
+	--spacing-10: 0.625em; // 10px — unused
 	--spacing-14: 0.875rem; // 14px
 	--spacing-20: 1.25rem; // 20px
 
@@ -39,18 +32,18 @@
 
 	--font-size-10: 0.625em; // 10px
 	--font-size-12: 0.75em; // 12px
-	--font-size-13: 0.8125em; // 13px
+	--font-size-13: 0.8125em; // 13px — unused
 	--font-size-14: 0.875rem; // 14px
 	--font-size-18: 1.125rem; // 18px
 	--font-size-20: 1.25rem; // 20px
-	--font-size-22: 1.375rem; // 22px
+	--font-size-22: 1.375rem; // 22px — unused
 	--font-size-26: 1.625rem; // 26px
-	--font-size-32: 2rem; // 32px
-	--font-size-: 4rem;
+	--font-size-32: 2rem; // 32px — unused
+	--font-size-: 4rem; // unused
 
 	// ------- Page -------
 	--page-padding: var(--spacing-20);
-	--page-section-margin: 1rem;
+	--page-section-margin: 1rem; // unused
 
 	// ------- Header -------
 	--header-height: 60px;
@@ -58,10 +51,10 @@
 	// ------- Button Component -------
 	--button-border-radius: 0.25em; //4px
 
-	--button-main-background: var(--main);
-	--button-main-size: 2rem; // 40px
-	--button-main-padding: 1rem; // 16px
-	--button-main-padding-lg: 1.4rem; // 16px
+	--button-main-background: var(--color-main);
+	--button-main-size: 2rem; // 40px — unused
+	--button-main-padding: 1rem; // 16px — unused
+	--button-main-padding-lg: 1.4rem; // 16px — unused
 	--button-main-padding-sm: 0.5rem; // 8px
 
 	// ------- Header Component -------
@@ -84,7 +77,7 @@
 	--sidebar-item-gap: 0.75rem; //12px
 	--sidebar-item-border-radius: 0.625em; //10px
 	--sidebar-item-icon-size: 1.5rem; //24px
-	--sidebar-border-line: var(--border-color) 1px solid;
+	--sidebar-border-line: var(--border-color) 1px solid; // unused
 	--sidebar-transition:
 		all 0.12s ease-in-out, width 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
 	--sidebar-admin-height: 3.5rem;
@@ -92,7 +85,7 @@
 	// ------- Table -------
 	--table-top-height: 60px;
 	--table-padding: 0.625em; //10px
-	--table-actions-gap: 0.75rem; //12px
+	--table-actions-gap: 0.75rem; //12px — unused
 	--table-select-width: 30px;
 	--table-border-color: var(--border-color);
 	--table-border-color-header: var(--border-color);
@@ -105,15 +98,15 @@
 	--table-cell-padding: 0.5em 0.4em;
 	--table-cell-padding-lg: 0.7em 0.4em;
 	--table-cell-header-padding: 0.5em 0.4em;
-	--table-header-font-size: 10px;
-	--table-value-font-size: 14px;
+	--table-header-font-size: 10px; // unused
+	--table-value-font-size: 14px; // unused
 	--table-link-padding: 0.3em 0.4em;
 
 	// ------- TableInfo -------
 	--table-info-cell-width-first: 31.5rem;
 	--table-info-cell-width: 8rem;
 	--table-info-cell-width-last: 8rem;
-	--table-info-cell-padding-inline: 0.4em; //10px
+	--table-info-cell-padding-inline: 0.4em; //10px — unused
 	--table-info-input-width: 6.5rem; //10px
 
 	// ------- Inputs Checkbox -------
@@ -123,38 +116,38 @@
 
 	// ------- Form -------
 	--form-gap: 0.75rem; //12px
-	--form-gap-lg: 1rem;
+	--form-gap-lg: 1rem; // unused
 	--form-section-margin: 1.4rem;
-	--form-heading-margin: 1rem;
+	--form-heading-margin: 1rem; // unused
 	--input-height: 34px;
-	--input-height-sm: 28px;
+	--input-height-sm: 28px; // unused
 	--input-border: 1px solid var(--input-border-color);
 	--input-border-radius: 0.25em; //4px
 	--input-padding: 0.4em; //10px
-	--input-padding-sm: 0.3em; //10px
+	--input-padding-sm: 0.3em; //10px — unused
 	--input-font-size: 1rem;
-	--input-font-sm: 0.875rem; // 14px
+	--input-font-sm: 0.875rem; // 14px — unused
 	--input-number-max-width: 5rem;
 
 	// ------- Packages-------
-	--package-card-border: var(--button-border-color) 1px solid;
+	--package-card-border: var(--button-border-color) 1px solid; // unused
 	--package-border-radius: 0.25em; //4px
-	--package-padding: var(--spacing-20);
-	--packages-gap: 0.75rem; //12px
-	--packages-card-gap: 0.25em; //4px
-	--packages-item-min-width: 4rem;
-	--packages-item-price-width: 5rem;
+	--package-padding: var(--spacing-20); // unused
+	--packages-gap: 0.75rem; //12px — unused
+	--packages-card-gap: 0.25em; //4px — unused
+	--packages-item-min-width: 4rem; // unused
+	--packages-item-price-width: 5rem; // unused
 	--package-table-padding: 0.75rem;
 
 	// ------- Tooltip -------
 	--tooltip-distance: 0.4rem;
-	--tooltip-height: 20px;
+	--tooltip-height: 20px; // unused
 	--tooltip-delay: 0.4s;
 	--tooltip-arrow-size: 4px;
 
 	// ------- Tooltip -------
-	--tooltip-background-color: var(--black);
-	--tooltip-text-color: var(--white);
+	--tooltip-background-color: var(--color-black);
+	--tooltip-text-color: var(--color-white);
 	--tooltip-font-size: 0.75rem; //12px
 	--tooltip-padding-vertical: 0.4em;
 	--tooltip-padding-horizontal: 0.6em;
@@ -175,6 +168,15 @@
 	--tabs-border-width: 1px;
 	--tabs-font-size: 0.875rem; // 14px
 	--tabs-logo-height: 1.5rem;
+	// Sort menu matches the SettingsMenu dropdown
+	--tabs-sort-min-width: 10rem; // 160px
+	--tabs-sort-offset: var(--settings-menu-offset);
+	--tabs-sort-padding: var(--settings-menu-padding);
+	--tabs-sort-gap: var(--settings-menu-gap);
+	--tabs-sort-item-padding: var(--settings-menu-item-padding);
+	--tabs-sort-item-border-radius: var(--settings-menu-item-border-radius);
+	--tabs-sort-z-index: var(--settings-menu-z-index);
+	--tabs-sort-box-shadow: var(--settings-menu-box-shadow);
 
 	// ------- Chart -------
 	--chart-line-color: var(--color-green);
@@ -185,7 +187,7 @@
 	--chart-tooltip-padding: 0.75rem;
 	--chart-tooltip-gap: 0.5rem;
 	--chart-tooltip-box-shadow: 0 0.2rem 0.6rem
-		color-mix(in srgb, var(--black) 20%, transparent);
+		color-mix(in srgb, var(--color-black) 20%, transparent);
 	--chart-tooltip-label-color: color-mix(
 		in srgb,
 		var(--text-color) 70%,
@@ -210,7 +212,7 @@
 	--toggle-small-font-size: 0.875rem;
 	--toggle-small-button-size: 1.25rem;
 	--toggle-small-padding: 0.125rem;
-	--toggle-small-icon-size: 1.5rem;
+	--toggle-small-icon-size: 1.5rem; // unused
 	--toggle-small-background-color: var(--button-border-color);
 
 	// ------- GeneratedUrls -------
@@ -226,7 +228,7 @@
 }
 
 .theme--light {
-	--bg-color: var(--white); // Header & Sidebar
+	--bg-color: var(--color-white); // Header & Sidebar
 	--bg-color-02: var(--gray-02); //Main
 	--bg-color-03: var(--gray-03); //Main
 	--text-color: var(--gray-09);
@@ -240,7 +242,7 @@
 	--bg-color: var(--gray-09);
 	--bg-color-02: var(--gray-08);
 	--bg-color-03: var(--gray-07);
-	--text-color: var(--white);
+	--text-color: var(--color-white);
 	--border-color: #1d2430;
 	--button-border-color: #4f535f;
 	--table-header-bg: var(--gray-08);
@@ -262,21 +264,21 @@
 	--color-yellow: #f5b942;
 	--color-blue: #1573e5;
 	--color-gray-02: #fafbfc;
-	--color-gray-08: #414141;
-	--color-gray-09: #b2b2b2;
-	--color-gray-10: #232622;
+	--color-gray-08: #2a2a2a;
+	--color-gray-09: #b2b2b2; // unused
+	--color-gray-10: #232622; // unused
 
-	--gray-01: #f3f4f9;
+	--gray-01: #f3f4f9; // unused
 	--gray-02: #fafbfc;
 	--gray-03: #eff1f4;
-	--gray-04: #e6e7e8;
-	--gray-05: #98999b;
+	--gray-04: #e6e7e8; // unused
+	--gray-05: #98999b; // unused
 	--gray-06: #707172;
 	--gray-07: #1a1a28;
 	--gray-08: #0c0c1e;
 	--gray-09: #000000;
 
-	--spacing-10: 0.625em; // 10px
+	--spacing-10: 0.625em; // 10px — unused
 	--spacing-14: 0.875rem; // 14px
 	--spacing-20: 1.25rem; // 20px
 
@@ -284,14 +286,14 @@
 
 	--font-size-10: 0.625em; // 10px
 	--font-size-12: 0.75em; // 12px
-	--font-size-13: 0.8125em; // 13px
+	--font-size-13: 0.8125em; // 13px — unused
 	--font-size-14: 0.875rem; // 14px
 	--font-size-18: 1.125rem; // 18px
 	--font-size-20: 1.25rem; // 20px
-	--font-size-22: 1.375rem; // 22px
+	--font-size-22: 1.375rem; // 22px — unused
 	--font-size-26: 1.625rem; // 26px
-	--font-size-32: 2rem; // 32px
-	--font-size-: 4rem;
+	--font-size-32: 2rem; // 32px — unused
+	--font-size-: 4rem; // unused
 
 	--border-radius: 0.25em; //4px
 	--transition-productive-timing: 0.3s;
@@ -303,7 +305,7 @@
 	--border-line-main: var(--border-color-main) var(--border-width)
 		var(--border-style);
 	--border-line-light: var(--border-color-light) var(--border-width)
-		var(--border-style);
+		var(--border-style); // unused
 	--icon-size: 1.25rem;
 	--icon-size-sm: 1rem;
 	--header-color: color-mix(
@@ -311,10 +313,12 @@
 		var(--text-color) 10%,
 		var(--bg-color-inverted)
 	);
+	--box-shadow: 0 0.5rem 2rem
+		color-mix(in srgb, var(--color-black) 20%, transparent);
 	--padding-md: 1em;
 	--padding-sm: 0.4em;
 	--margin-md: 1rem;
-	--margin-lg: 1.4rem;
+	--margin-lg: 1.4rem; // unused
 
 	// ------- Buttons -------
 	--button-border-radius: var(--border-radius);
@@ -334,7 +338,7 @@
 		in srgb,
 		var(--bg-color) 50%,
 		var(--bg-color-inverted)
-	);
+	); // unused
 	--button-border-color-main-hover: color-mix(
 		in srgb,
 		var(--bg-color) 10%,
@@ -349,30 +353,38 @@
 	--drawer-dialog-width: 30rem;
 	--drawer-dialog-padding: var(--padding-md);
 	--drawer-box-shadow: -0.4rem 0 1rem
-		color-mix(in srgb, var(--black) 15%, transparent);
-	--drawer-background: color-mix(in srgb, var(--black) 50%, transparent);
+		color-mix(in srgb, var(--color-black) 15%, transparent);
+	--drawer-background: color-mix(in srgb, var(--color-black) 50%, transparent);
 	--drawer-form-space: 0.5rem;
 
 	// ------- Inputs Checkbox -------
-	--label-color: var(--text-color);
+	--label-color: var(--text-color); // unused
 	--label-spacing: 0.2em;
-	--input-min-width: 7rem;
 	--input-icon-size: var(--icon-size);
 	--input-border-line: 1px solid var(--input-border-color);
 	--input-border-radius: var(--border-radius);
 	--input-padding: var(--padding-sm);
-	--input-size: 2.125rem; //34px
+	--input-size: 2.125rem; //34px — unused
 	--input-font-size: var(--font-size-14);
 	--input-gap: var(--label-spacing);
+
+	--input-min-width: 7rem;
+	--input-number-min-width: 110px;
+	--input-date-min-width: 160px;
+	--input-text-min-width: 160px;
+	--input-actions-min-width: 240px;
 
 	// ------- Panel -------
 
 	--panel-padding: var(--padding-md);
 	--panel-border-radius: var(--border-radius);
-	--panel-background-color: var(--bg-color-02);
+	--panel-background-color: var(--bg-color-02); // unused
 	--panel-border-line: var(--border-line-main);
 	--panel-header-background: var(--bg-color-03);
 	--panel-header-gap: 0.75em;
+
+	--panel-group-gap: 2rem; // unused
+	--panel-group-icon-size: 2rem; // unused
 
 	// ------- Description List -------
 	--description-list-min-width: 4rem;
@@ -390,7 +402,7 @@
 
 	// ------- Trigger -------
 	--trigger-button-size: 1.5rem; //36px
-	--trigger-button-size-sm: 1.2rem;
+	--trigger-button-size-sm: 1.2rem; // unused
 	--trigger-button-gap: 0.3rem; //4px
 
 	--dashboard-table-min-width: 30rem;
@@ -404,26 +416,62 @@
 	--input-sort-size: 12.5rem;
 	--input-sort-size-stacked: 6rem;
 	--search-admin-space: 0.5rem;
+
+	// ------- Modal -------
+	--modal-btn-min-width: 10rem;
+	--modal-padding: 1rem;
+	--modal-gap: 0.5rem;
+	--modal-width: 28rem; // 448px
+	--modal-border-radius: 0.625em; //10px
+	--modal-box-shadow: var(--box-shadow);
+
+	// ------- SettingsMenu -------
+	--settings-menu-min-width: 12rem; // 192px
+	--settings-menu-offset: 0.375rem; // 6px
+	--settings-menu-padding: 0.5rem; // 8px
+	// Items match the Sidebar links
+	--settings-menu-gap: var(--sidebar-menu-gap);
+	--settings-menu-item-padding: var(--sidebar-item-padding);
+	--settings-menu-item-gap: var(--sidebar-item-gap);
+	--settings-menu-item-border-radius: var(--sidebar-item-border-radius);
+	--settings-menu-item-icon-size: var(--sidebar-item-icon-size);
+	--settings-menu-z-index: 50;
+	--settings-menu-box-shadow: var(--box-shadow);
+
+	// ------- Filter -------
+	--filter-trigger-gap: 0.375rem; // 6px
+	--filter-offset: var(--settings-menu-offset);
+	--filter-padding: 0.75rem; // 12px
+	--filter-panel-gap: 0.75rem; // 12px
+	--filter-min-width: 14rem; // 224px
+	--filter-z-index: var(--settings-menu-z-index);
+	--filter-box-shadow: var(--box-shadow);
 }
 
 .theme--light {
 	--bg-color: var(--color-white);
+	--bg-color-03: var(--gray-03); //Main
 	--bg-color-02: var(--color-gray-02);
 	--bg-color-inverted: var(--color-black);
 	--text-color: var(--color-gray-08);
+	--table-header-bg: var(--color-gray-02);
 	--color-mix-percentage: 10%;
 	--border-color-main: #d6d7d8;
-	--border-color-light: #dbdbdb;
+	--border-color-light: #dbdbdb; // unused (only referenced by --border-line-light, which is unused)
 	--input-border-color: #cecece;
+	--green-text: color-mix(in srgb, #35c98b 70%, black);
 }
 
 .theme--dark {
 	--bg-color: var(--color-black);
 	--bg-color-02: var(--color-gray-08);
+	--bg-color-03: var(--gray-07); //Main
+	--table-header-bg: var(--color-gray-08);
 	--bg-color-inverted: var(--color-white);
 	--color-mix-percentage: 25%;
 	--text-color: #cacaca;
 	--border-color-main: #1d2430;
-	--border-color-light: #4f535f;
+	--border-color-light: #4f535f; // unused (only referenced by --border-line-light, which is unused)
 	--input-border-color: #3e3e3e;
+	--green-text: #35c98b;
 }

@@ -27,7 +27,7 @@
 		width: var(--input-inner-circle-size);
 		height: var(--input-inner-circle-size);
 		border-radius: 100%;
-		background: var(--main);
+		background: var(--color-main);
 		opacity: 0;
 		transform: translate(-50%, -50%) scale(0);
 	}
@@ -58,7 +58,7 @@
 	}
 
 	&__label {
-		@include label-styles;
+		@include label-styles("small");
 	}
 
 	&__icon {
@@ -94,9 +94,9 @@
 		}
 
 		input:checked + .InputCheckbox__indicator {
-			background: var(--main);
-			color: var(--white);
-			border-color: var(--main);
+			background: var(--color-main);
+			color: var(--color-white);
+			border-color: var(--color-main);
 
 			.InputCheckbox__icon {
 				opacity: 1;

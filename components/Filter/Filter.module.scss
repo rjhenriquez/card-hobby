@@ -1,0 +1,83 @@
+@use "@/styles/utilities/all" as *;
+
+.Filter {
+	position: relative;
+	&__trigger {
+		@include font-weight(medium);
+		@include transition(color, border-color);
+		display: flex;
+		align-items: center;
+		gap: var(--filter-trigger-gap);
+		height: var(--button-size);
+		padding-inline: var(--button-padding-main-sm);
+		font-size: var(--button-font-size);
+		color: var(--text-color);
+		background: transparent;
+		border: var(--button-border-line);
+		border-radius: var(--button-border-radius);
+		text-transform: capitalize;
+		box-sizing: border-box;
+		cursor: pointer;
+		&:hover,
+		&:focus-visible {
+			border-color: var(--button-border-color-main-hover);
+		}
+	}
+	&__label {
+		@include text-box;
+	}
+	&__icon {
+		@include transition(transform);
+		width: var(--button-icon-size-sm);
+		height: var(--button-icon-size-sm);
+	}
+	&__panel {
+		position: absolute;
+		top: calc(100% + var(--filter-offset));
+		left: 0;
+		z-index: var(--filter-z-index);
+		display: flex;
+		flex-direction: column;
+		gap: var(--filter-panel-gap);
+		min-width: var(--filter-min-width);
+		padding: var(--filter-padding);
+		background-color: var(--bg-color-02);
+		box-shadow: var(--filter-box-shadow);
+		border-radius: var(--border-radius);
+	}
+	&__clear {
+		@include font-weight(medium);
+		@include transition(color);
+		align-self: flex-end;
+		font-size: var(--font-size-12);
+		color: var(--text-color);
+		background: transparent;
+		cursor: pointer;
+		&:hover:not(:disabled),
+		&:focus-visible {
+			color: var(--color-main);
+		}
+		&:disabled {
+			color: color-mix(in srgb, var(--text-color) 30%, transparent);
+			cursor: not-allowed;
+		}
+	}
+	&--open {
+		.Filter {
+			&__trigger {
+				border-color: var(--button-border-color-main-hover);
+			}
+			&__icon {
+				transform: rotate(180deg);
+			}
+		}
+	}
+	&--active {
+		.Filter {
+			&__trigger {
+				color: var(--color-main);
+				border-color: var(--color-main);
+			}
+		}
+	}
+}

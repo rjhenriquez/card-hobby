@@ -4,11 +4,16 @@
 	position: relative;
 	z-index: 1;
 	width: 100%;
+	&__container {
+		display: flex;
+		gap: 1rem;
+		margin-bottom: var(--tabs-margin-top);
+	}
 	&__header {
 		border-bottom: var(--tabs-border-line);
 		gap: var(--tabs-gap);
-		margin-bottom: var(--tabs-margin-top);
 		display: flex;
+		flex: 1;
 	}
 
 	&__label {
@@ -22,10 +27,10 @@
 		transition: var(--transition-productive);
 		color: var(--text-color);
 		&:hover {
-			color: var(--main);
+			color: var(--color-main);
 		}
 		&--active {
-			border-bottom-color: var(--main);
+			border-bottom-color: var(--color-main);
 			&:hover {
 				color: var(--text-color);
 			}
@@ -34,5 +39,67 @@
 	&__logo {
 		width: 100%;
 		height: var(--tabs-logo-height);
+	}
+	&__sort {
+		position: relative;
+		&__list {
+			@include transition(opacity, visibility, transform);
+			position: absolute;
+			top: calc(100% + var(--tabs-sort-offset));
+			right: 0;
+			z-index: var(--tabs-sort-z-index);
+			display: flex;
+			flex-direction: column;
+			gap: var(--tabs-sort-gap);
+			background-color: var(--bg-color-02);
+			min-width: var(--tabs-sort-min-width);
+			padding: var(--tabs-sort-padding);
+			box-shadow: var(--tabs-sort-box-shadow);
+			opacity: 0;
+
+			visibility: hidden;
+			transform: translateY(calc(var(--tabs-sort-offset) * -1));
+			// Bridges the gap so the menu stays open while moving the mouse to it.
+			&::before {
+				content: "";
+				position: absolute;
+				left: 0;
+				right: 0;
+				bottom: 100%;
+				height: var(--tabs-sort-offset);
+			}
+		}
+		&:hover,
+		&:focus-within {
+			.Tabs__sort__list {
+				opacity: 1;
+				visibility: visible;
+				transform: translateY(0);
+			}
+		}
+		&__option {
+			@include font-weight(regular);
+			@include text-box;
+			@include transition(background-color, color);
+			width: 100%;
+			box-sizing: border-box;
+			text-align: left;
+			white-space: nowrap;
+			font-size: var(--font-size-14);
+			color: var(--text-color);
+			padding: var(--tabs-sort-item-padding);
+			border-radius: var(--tabs-sort-item-border-radius);
+			background-color: var(--bg-color-02);
+			justify-content: flex-start;
+			cursor: pointer;
+			&:hover,
+			&:focus-visible {
+				background-color: var(--bg-color-03);
+			}
+			&--active {
+				background-color: var(--bg-color-03);
+				color: var(--color-main);
+			}
+		}
 	}
 }

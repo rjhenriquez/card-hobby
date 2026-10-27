@@ -573,6 +573,78 @@ const ArrowLeft = ({ className }: { className?: string }) => {
 		</svg>
 	);
 };
+const Cards = ({ className }: { className?: string }) => {
+	return (
+		<svg
+			xmlns='http://www.w3.org/2000/svg'
+			className={className}
+			fill='currentColor'
+			viewBox='0 -960 960 960'
+		>
+			<path d='m580-512-60-34v-68l60-34 60 34v68l-60 34Zm0 92 140-80v-160l-140-80-140 80v160l140 80Zm-72 220h224q-7 26-24 42t-44 20L228-85q-33 5-59.5-15.5T138-154L85-591q-4-33 16-59t53-30l46-6v80l-36 5 54 437 290-36Zm-148-80q-33 0-56.5-23.5T280-360v-440q0-33 23.5-56.5T360-880h440q33 0 56.5 23.5T880-800v440q0 33-23.5 56.5T800-280H360Zm0-80h440v-440H360v440Zm220-220ZM218-164Z' />
+		</svg>
+	);
+};
+const Hash = ({ className }: { className?: string }) => {
+	return (
+		<svg
+			xmlns='http://www.w3.org/2000/svg'
+			className={className}
+			fill='currentColor'
+			viewBox='0 -960 960 960'
+		>
+			<path d='m240-160 40-160H120l20-80h160l40-160H180l20-80h160l40-160h80l-40 160h160l40-160h80l-40 160h160l-20 80H660l-40 160h160l-20 80H600l-40 160h-80l40-160H360l-40 160h-80Zm140-240h160l40-160H420l-40 160Z' />
+		</svg>
+	);
+};
+const Percent = ({ className }: { className?: string }) => {
+	return (
+		<svg
+			xmlns='http://www.w3.org/2000/svg'
+			className={className}
+			fill='currentColor'
+			viewBox='0 -960 960 960'
+		>
+			<path d='M480-80q-24 0-46-9t-39-26q-29-29-50-38t-63-9q-50 0-85-35t-35-85q0-42-9-63t-38-50q-17-17-26-39t-9-46q0-24 9-46t26-39q29-29 38-50t9-63q0-50 35-85t85-35q42 0 63-9t50-38q17-17 39-26t46-9q24 0 46 9t39 26q29 29 50 38t63 9q50 0 85 35t35 85q0 42 9 63t38 50q17 17 26 39t9 46q0 24-9 46t-26 39q-29 29-38 50t-9 63q0 50-35 85t-85 35q-42 0-63 9t-50 38q-17 17-39 26t-46 9Zm0-80q8 0 15.5-3.5T508-172q41-41 77-55.5t93-14.5q17 0 28.5-11.5T718-282q0-58 14.5-93.5T788-452q12-12 12-28t-12-28q-41-41-55.5-77T718-678q0-17-11.5-28.5T678-718q-58 0-93.5-14.5T508-788q-5-5-12.5-8.5T480-800q-8 0-15.5 3.5T452-788q-41 41-77 55.5T282-718q-17 0-28.5 11.5T242-678q0 58-14.5 93.5T172-508q-12 12-12 28t12 28q41 41 55.5 77t14.5 93q0 17 11.5 28.5T282-242q58 0 93.5 14.5T452-172q5 5 12.5 8.5T480-160Zm100-160q25 0 42.5-17.5T640-380q0-25-17.5-42.5T580-440q-25 0-42.5 17.5T520-380q0 25 17.5 42.5T580-320Zm-202-2 260-260-56-56-260 260 56 56Zm44.5-215.5Q440-555 440-580t-17.5-42.5Q405-640 380-640t-42.5 17.5Q320-605 320-580t17.5 42.5Q355-520 380-520t42.5-17.5ZM480-480Z' />
+		</svg>
+	);
+};
+const Receipt = ({ className }: { className?: string }) => {
+	return (
+		<svg
+			xmlns='http://www.w3.org/2000/svg'
+			className={className}
+			fill='currentColor'
+			viewBox='0 -960 960 960'
+		>
+			<path d='M120-80v-800l60 60 60-60 60 60 60-60 60 60 60-60 60 60 60-60 60 60 60-60 60 60 60-60v800l-60-60-60 60-60-60-60 60-60-60-60 60-60-60-60 60-60-60-60 60-60-60-60 60Zm120-200h480v-80H240v80Zm0-160h480v-80H240v80Zm0-160h480v-80H240v80Zm-40 404h560v-568H200v568Zm0-568v568-568Z' />
+		</svg>
+	);
+};
+const SearchAdmin = ({ className }: { className?: string }) => {
+	return (
+		<svg
+			xmlns='http://www.w3.org/2000/svg'
+			className={className}
+			fill='currentColor'
+			viewBox='0 -960 960 960'
+		>
+			<path d='M80-200v-80h400v80H80Zm0-200v-80h200v80H80Zm0-200v-80h200v80H80Zm744 400L670-354q-24 17-52.5 25.5T560-320q-83 0-141.5-58.5T360-520q0-83 58.5-141.5T560-720q83 0 141.5 58.5T760-520q0 29-8.5 57.5T726-410l154 154-56 56ZM560-400q50 0 85-35t35-85q0-50-35-85t-85-35q-50 0-85 35t-35 85q0 50 35 85t85 35Z' />
+		</svg>
+	);
+};
+const Sort = ({ className }: { className?: string }) => {
+	return (
+		<svg
+			xmlns='http://www.w3.org/2000/svg'
+			className={className}
+			fill='currentColor'
+			viewBox='0 -960 960 960'
+		>
+			<path d='M120-240v-80h240v80H120Zm0-200v-80h480v80H120Zm0-200v-80h720v80H120Z' />
+		</svg>
+	);
+};
 
 export const ICONS = {
 	moon: Moon,
@@ -588,6 +660,8 @@ export const ICONS = {
 	add: Add,
 	copy: Copy,
 	edit: Edit,
+	cards: Cards,
+	hash: Hash,
 	"move-up": MoveUp,
 	"move-down": MoveDown,
 	"arrow-up-down": ArrowUpDown,
@@ -607,7 +681,9 @@ export const ICONS = {
 	"plus-sign": PlusSign,
 	"circle-check": CircleCheck,
 	open: Open,
+	sort: Sort,
 	"open-all": OpenAll,
+	"search-admin": SearchAdmin,
 	settings: Settings,
 	diamond: Diamond,
 	filter: Filter,
@@ -616,7 +692,9 @@ export const ICONS = {
 	delete: Delete,
 	charts: Charts,
 	finance: Finance,
+	receipt: Receipt,
 	stacks: Stacks,
+	percent: Percent,
 	psa: PSA,
 	received: Received,
 } as const;

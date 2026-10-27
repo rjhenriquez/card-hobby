@@ -32,13 +32,13 @@
 			border-top-right-radius: var(--button-border-radius);
 		}
 		&:disabled {
-			color: color-mix(in srgb, var(--text-color) 40%, var(--white));
+			color: color-mix(in srgb, var(--text-color) 40%, var(--color-white));
 			cursor: not-allowed;
 		}
 		&:not(:disabled) {
 			&:hover,
 			&:focus-within {
-				border-color: var(--main);
+				border-color: var(--color-main);
 			}
 		}
 	}

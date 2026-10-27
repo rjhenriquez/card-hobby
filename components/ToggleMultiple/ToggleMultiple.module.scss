@@ -4,7 +4,7 @@
 	display: flex;
 	gap: 0.3rem;
 	background: var(--bg-color);
-	border: 1px solid var(--border-color);
+	border: var(--border-line-main);
 	padding: 0.3em;
 	border-radius: var(--button-border-radius);
 	&__button {
@@ -23,12 +23,12 @@
 		place-items: center;
 		&--active {
 			background: var(--button-main-background);
-			color: var(--white);
+			color: var(--color-white);
 		}
 		&:not(:disabled) {
 			&:hover,
 			&:focus-within {
-				border-color: var(--main);
+				border-color: var(--color-main);
 			}
 		}
 	}

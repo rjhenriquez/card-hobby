@@ -3,8 +3,8 @@
 .PsaSubmission {
 	@include panel;
 	&__header {
-		background-color: var(--panel-header-background);
 		padding: var(--panel-padding);
+		background: var(--bg-color-03);
 		display: flex;
 		justify-content: space-between;
 		align-items: flex-end;
@@ -28,7 +28,13 @@
 		@include label-styles;
 	}
 	&__subhead {
-		@include panel-sub-header;
+		display: flex;
+		align-items: center;
+		gap: 0.5ch;
+		svg {
+			width: 1.4rem;
+			height: auto;
+		}
 	}
 	&__trigger {
 		:global(.Button__icon) {
@@ -61,7 +67,7 @@
 		}
 	}
 	&__summary {
-		@include description-list(3);
+		@include description-list(5);
 		&__wrapper {
 			&:not(:last-of-type) {
 				border-right: var(--panel-border-line);
@@ -71,7 +77,21 @@
 			border-top: var(--panel-border-line);
 		}
 		&--top {
+			@include transition(border-color);
 			border-bottom: var(--panel-border-line);
+			border-color: transparent;
+		}
+	}
+	&--open {
+		.PsaSubmission {
+			&__summary {
+				&--top {
+					border-color: var(--border-color-main);
+				}
+			}
+		}
+		.PsaSubmissionSummary {
+			border-color: var(--border-color-main);
 		}
 	}
 }
@@ -80,18 +100,32 @@
 	padding: var(--panel-padding);
 	border: var(--panel-border-line);
 	border-radius: var(--panel-border-radius);
-	display: flex;
-	flex-direction: column;
-	gap: var(--panel-padding);
+	margin: calc(var(--panel-padding) * 2) var(--panel-padding);
 	&__fields {
-		display: grid;
+		display: flex;
+		flex-wrap: wrap;
 		gap: var(--panel-padding);
-		grid-template-columns: repeat(3, 1fr) repeat(
-				2,
-				var(--input-min-width)
-			) 200px;
 		width: 100%;
-		align-items: self-end;
+		align-items: flex-end;
+		> :first-child {
+			flex: 1 1 var(--input-text-min-width);
+			min-width: var(--input-text-min-width);
+		}
+		> :nth-child(2),
+		> :nth-child(3) {
+			flex: 0 1 var(--input-date-min-width);
+			min-width: var(--input-date-min-width);
+		}
+		> :nth-child(4),
+		> :nth-child(5),
+		> :nth-child(6) {
+			flex: 0 1 var(--input-number-min-width);
+			min-width: var(--input-number-min-width);
+		}
+		> :last-child {
+			flex: 0 1 var(--input-actions-min-width);
+			min-width: var(--input-actions-min-width);
+		}
 	}
 	&__actions {
 		display: grid;
@@ -121,7 +155,9 @@
 }
 .PsaSubmissionSummary {
 	@include description-list(9);
+	@include transition(border-color);
 	border-bottom: var(--panel-border-line);
+	border-color: transparent;
 	&__wrapper {
 		&:not(:last-of-type) {
 			border-right: var(--panel-border-line);
@@ -133,6 +169,7 @@
 	padding: var(--panel-padding);
 	border: var(--panel-border-line);
 	border-radius: var(--panel-border-radius);
+	margin: calc(var(--panel-padding) * 2) var(--panel-padding);
 	@include description-list(5);
 	&__wrapper {
 		&:not(:last-of-type) {

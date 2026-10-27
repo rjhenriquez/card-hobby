@@ -6,7 +6,7 @@
 	gap: var(--input-gap);
 	min-width: 0;
 	&__label {
-		@include label-styles;
+		@include label-styles("small");
 	}
 	&__field {
 		position: relative;
@@ -22,9 +22,10 @@
 	}
 	select {
 		appearance: none;
+		cursor: pointer;
 		@include input-styles;
 		&:focus {
-			border-color: var(--main);
+			border-color: var(--color-main);
 		}
 	}
 }

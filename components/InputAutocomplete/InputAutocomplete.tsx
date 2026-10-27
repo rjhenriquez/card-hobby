@@ -11,6 +11,7 @@ interface InputAutocompleteProps {
 	defaultValue?: string;
 	width?: "full" | "half" | "third";
 	required?: boolean;
+	placeholder?: string;
 }
 
 export function InputAutocomplete({
@@ -20,6 +21,7 @@ export function InputAutocomplete({
 	defaultValue = "",
 	width = "full",
 	required = false,
+	placeholder,
 }: InputAutocompleteProps) {
 	const [value, setValue] = useState(defaultValue);
 	const [isOpen, setIsOpen] = useState(false);
@@ -112,6 +114,7 @@ export function InputAutocomplete({
 					name={name}
 					value={value}
 					required={required}
+					placeholder={placeholder}
 					autoComplete='off'
 					onFocus={() => setIsOpen(true)}
 					onChange={(event) => {

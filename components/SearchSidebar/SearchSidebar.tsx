@@ -104,10 +104,6 @@ export function SearchSidebar({ searchTerms }: SearchSidebarProps) {
 					</section>
 				))}
 			</div>
-			<div className={styles.SearchSidebar__admin}>
-				<Icon icon='settings' className={styles.SearchSidebar__admin__icon} />
-				<Link href={`/search/admin`}>Admin</Link>
-			</div>
 		</aside>
 	);
 }
