@@ -3,24 +3,30 @@
 import Link from "next/link";
 import { Icon } from "@/components/Icons/Icons";
 import { SelectionGroup } from "@/components/SelectionGroup/SelectionGroup";
-import { useSearch } from "@/components/SearchSidebar/SearchContext";
 
 import styles from "./SearchSidebar.module.scss";
 
 type TermsByGroup = Record<string, string[]>;
-type TermsBySection = Record<string, TermsByGroup>;
+export type TermsBySection = Record<string, TermsByGroup>;
+export type SelectedValuesByGroup = Record<string, string[]>;
 
 interface SearchSidebarProps {
 	searchTerms: TermsBySection;
+	selectedValuesByGroup: SelectedValuesByGroup;
+	onSelectedValuesChange: React.Dispatch<
+		React.SetStateAction<SelectedValuesByGroup>
+	>;
 }
 
 function getGroupKey(section: string, category: string) {
 	return `${section}:${category}`;
 }
 
-export function SearchSidebar({ searchTerms }: SearchSidebarProps) {
-	const { selectedValuesByGroup, setSelectedValuesByGroup } = useSearch();
-
+export function SearchSidebar({
+	searchTerms,
+	selectedValuesByGroup,
+	onSelectedValuesChange: setSelectedValuesByGroup,
+}: SearchSidebarProps) {
 	function handleValueChange(groupKey: string, value: string) {
 		setSelectedValuesByGroup((currentValues) => {
 			const currentGroupValues = currentValues[groupKey] ?? [];
@@ -69,41 +75,31 @@ export function SearchSidebar({ searchTerms }: SearchSidebarProps) {
 
 	return (
 		<aside className={styles.SearchSidebar}>
-			<div className={styles.SearchSidebar__top}>
-				<Link href='/' className={styles.SearchSidebar__logo}>
-					CH
-				</Link>
-			</div>
+			{Object.entries(searchTerms).map(([section, categories]) => (
+				<section key={section} className={styles.SearchSidebar__section}>
+					<div className={styles.SearchSidebar__header}>
+						<h2>{section}</h2>
+					</div>
 
-			<div className={styles.SearchSidebar__bottom}>
-				{Object.entries(searchTerms).map(([section, categories]) => (
-					<section key={section} className={styles.SearchSidebar__section}>
-						<div className={styles.SearchSidebar__header}>
-							<h2>{section}</h2>
-						</div>
+					<div className={styles.SearchSidebar__groups}>
+						{Object.entries(categories).map(([category, terms]) => {
+							const groupKey = getGroupKey(section, category);
 
-						<div className={styles.SearchSidebar__groups}>
-							{Object.entries(categories).map(([category, terms]) => {
-								const groupKey = getGroupKey(section, category);
-
-								return (
-									<SelectionGroup
-										key={groupKey}
-										group={category}
-										names={terms}
-										isSingleSelect={false}
-										selectedValues={selectedValuesByGroup[groupKey] ?? []}
-										onChange={(value) => handleValueChange(groupKey, value)}
-										onChangeAll={(values) =>
-											handleGroupChange(groupKey, values)
-										}
-									/>
-								);
-							})}
-						</div>
-					</section>
-				))}
-			</div>
+							return (
+								<SelectionGroup
+									key={groupKey}
+									group={category}
+									names={terms}
+									isSingleSelect={false}
+									selectedValues={selectedValuesByGroup[groupKey] ?? []}
+									onChange={(value) => handleValueChange(groupKey, value)}
+									onChangeAll={(values) => handleGroupChange(groupKey, values)}
+								/>
+							);
+						})}
+					</div>
+				</section>
+			))}
 		</aside>
 	);
 }

@@ -23,6 +23,12 @@ export const SIDEBAR_NAVIGATION = [
 		label: "Packages",
 		href: "/packages",
 		icon: "shipping",
+		divider: true,
+	},
+	{
+		label: "Auctions",
+		href: "/auctions",
+		icon: "auction",
 	},
 ] as const;
 

@@ -12,8 +12,8 @@ import styles from "./SettingsMenu.module.scss";
 
 const settingsItems = [
 	{
-		label: "Search Admin",
-		href: "/search/admin",
+		label: "Auctions Admin",
+		href: "/auctions/admin",
 		icon: "search-admin",
 	},
 	{

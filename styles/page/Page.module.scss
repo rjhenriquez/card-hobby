@@ -1,6 +1,7 @@
 @use "@/styles/utilities/all" as *;
 
-.Page {
+.Page,
+.Page--search {
 	padding: var(--page-padding);
 	&__header {
 		display: flex;
@@ -43,5 +44,8 @@
 		display: flex;
 		flex-direction: column;
 		gap: var(--page-padding);
+	}
+	&--search {
+		padding: 0;
 	}
 }

@@ -163,6 +163,33 @@
 		}
 	}
 
+	&__selectionActions {
+		display: flex;
+		align-items: center;
+		gap: var(--table-actions-gap);
+		position: fixed;
+		bottom: var(--table-selection-actions-offset);
+		left: 50%;
+		padding: var(--modal-padding);
+		background: var(--bg-color);
+		border-radius: var(--modal-border-radius);
+		box-shadow: var(--modal-box-shadow);
+		z-index: var(--table-selection-actions-z-index);
+		transform: translate(
+			-50%,
+			calc(100% + var(--table-selection-actions-offset))
+		);
+		width: fit-content;
+		opacity: 0;
+		visibility: hidden;
+		@include transition-expressive(transform, opacity, visibility);
+		&--visible {
+			transform: translate(-50%, 0);
+			opacity: 1;
+			visibility: visible;
+		}
+	}
+
 	&__cell {
 		&--selectable {
 			cursor: pointer;

@@ -60,6 +60,8 @@ import {
 	filterFn_includesAnyString,
 } from "@/lib/filterFns";
 import { Table } from "@/components/Table/Table";
+import { BROWSER_WIDTH_RANGES } from "@/constants";
+import { useDimensions } from "@/hooks/useDimensions";
 import type { TableColumn, TableSortDirection } from "@/components/Table/Table";
 import cn from "classnames";
 
@@ -170,7 +172,7 @@ export function CardTable({
 	const [isTopSticky, setIsTopSticky] = useState(false);
 
 	const topSentinelRef = useRef<HTMLDivElement>(null);
-
+	const showTooltip = useDimensions() <= BROWSER_WIDTH_RANGES.medium.max;
 	const selectedCardCount = Object.values(rowSelection).filter(Boolean).length;
 	const selectedCards = cards.filter((card) => rowSelection[String(card.id)]);
 	const selectedCard = selectedCards.length === 1 ? selectedCards[0] : null;
@@ -933,80 +935,6 @@ export function CardTable({
 				className={styles.CardTable__table}
 				top={
 					<div className={styles.CardTable__actions}>
-						{/* <div className={styles.CardTable__actions__group}>
-							<Button
-								type='icon'
-								htmlType='button'
-								leadingIcon='edit'
-								tooltip={selectedCardCount > 1 ? "Edit Cards" : "Edit Card"}
-								tooltipPosition={isTopSticky ? "bottom" : "top"}
-								disabled={selectedCards.length === 0}
-								onClick={() => onEditCards(selectedCards)}
-							/>
-
-							<Button
-								type='icon'
-								htmlType='button'
-								leadingIcon='copy'
-								tooltip='Copy Card'
-								tooltipPosition={isTopSticky ? "bottom" : "top"}
-								disabled={selectedCard === null}
-								onClick={() => {
-									if (!selectedCard) {
-										return;
-									}
-
-									onCopyCard(selectedCard);
-								}}
-							/>
-
-							<span className={styles.CardTable__actions__separator} />
-
-							<Button
-								type='icon'
-								htmlType='button'
-								leadingIcon='add-sub'
-								tooltip='Add to sub'
-								tooltipPosition={isTopSticky ? "bottom" : "top"}
-								disabled={selectedCardCount === 0}
-								onClick={onCreateSubmission}
-							/>
-
-							<Button
-								type='icon'
-								htmlType='button'
-								leadingIcon='package'
-								tooltip='Add to package'
-								tooltipPosition={isTopSticky ? "bottom" : "top"}
-								disabled={selectedCardCount === 0}
-								onClick={onCreatePurchasePackage}
-							/>
-
-							<span className={styles.CardTable__actions__separator} />
-
-							<Button
-								type='icon'
-								htmlType='button'
-								leadingIcon={
-									portfolio === "investment" ? "move-down" : "move-up"
-								}
-								tooltip={
-									portfolio === "investment"
-										? "Move to Collection"
-										: "Move to Investment"
-								}
-								tooltipPosition={isTopSticky ? "bottom" : "top"}
-								disabled={selectedCard === null}
-								onClick={() => {
-									if (!selectedCard) {
-										return;
-									}
-
-									onMoveCard(selectedCard);
-								}}
-							/>
-						</div> */}
-
 						<div className={styles.CardTable__actions__group}>
 							{visibleListFilters.map((filter) => {
 								const listProps = {
@@ -1275,6 +1203,101 @@ export function CardTable({
 					</tr>
 				}
 			/>
+
+			<div
+				className={cn(styles.CardTable__selectionActions, {
+					[styles["CardTable__selectionActions--visible"]]:
+						selectedCardCount > 0,
+				})}
+				inert={selectedCardCount === 0}
+			>
+				<Button
+					type='main-sm'
+					htmlType='button'
+					leadingIcon='edit'
+					label={selectedCardCount > 1 ? "Edit Cards" : "Edit Card"}
+					tooltip={
+						showTooltip
+							? selectedCardCount > 1
+								? "Edit Cards"
+								: "Edit Card"
+							: undefined
+					}
+					tooltipPosition='top'
+					disabled={selectedCards.length === 0}
+					onClick={() => onEditCards(selectedCards)}
+				/>
+
+				<Button
+					type='main-sm'
+					htmlType='button'
+					leadingIcon='copy'
+					tooltipPosition='top'
+					label='Copy Card'
+					tooltip={showTooltip ? "Copy Card" : undefined}
+					disabled={selectedCard === null}
+					onClick={() => {
+						if (!selectedCard) {
+							return;
+						}
+
+						onCopyCard(selectedCard);
+					}}
+				/>
+
+				<span className={styles.CardTable__actions__separator} />
+
+				<Button
+					type='main-sm'
+					htmlType='button'
+					leadingIcon='add-sub'
+					label='Add to sub'
+					tooltip={showTooltip ? "Add to sub" : undefined}
+					disabled={selectedCardCount === 0}
+					onClick={onCreateSubmission}
+				/>
+
+				<Button
+					type='main-sm'
+					htmlType='button'
+					leadingIcon='package'
+					label='Add to package'
+					tooltip={showTooltip ? "Add to package" : undefined}
+					disabled={selectedCardCount === 0}
+					onClick={onCreatePurchasePackage}
+				/>
+
+				<span className={styles.CardTable__actions__separator} />
+
+				<Button
+					type='main-sm'
+					htmlType='button'
+					leadingIcon={portfolio === "investment" ? "move-down" : "move-up"}
+
+					label={
+						portfolio === "investment"
+							? "Move to Collection"
+							: "Move to Investment"
+					}
+					tooltip={
+						showTooltip
+							? portfolio === "investment"
+								? "Move to Collection"
+								: "Move to Investment"
+							: undefined
+					}
+
+					tooltipPosition='top'
+					disabled={selectedCard === null}
+					onClick={() => {
+						if (!selectedCard) {
+							return;
+						}
+
+						onMoveCard(selectedCard);
+					}}
+				/>
+			</div>
 		</div>
 	);
 }

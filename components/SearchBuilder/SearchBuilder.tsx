@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 
 import {
 	SearchFilters,
@@ -10,14 +11,22 @@ import {
 	type AltType,
 } from "@/components/SearchFilters/SearchFilters";
 import { SearchGeneratedUrls } from "@/components/SearchGeneratedUrls/SearchGeneratedUrls";
-import { useSearch } from "@/components/SearchSidebar/SearchContext";
+import {
+	SearchSidebar,
+	type SelectedValuesByGroup,
+	type TermsBySection,
+} from "@/components/SearchSidebar/SearchSidebar";
 import { buildSearchUrl } from "@/lib/searchUrls";
-import { useSearchParams } from "next/navigation";
 
-import styles from "@/styles/page/Page.module.scss";
+import styles from "./SearchBuilder.module.scss";
 
-export default function SearchPage() {
-	const { selectedValuesByGroup } = useSearch();
+interface SearchBuilderProps {
+	searchTerms: TermsBySection;
+}
+
+export function SearchBuilder({ searchTerms }: SearchBuilderProps) {
+	const [selectedValuesByGroup, setSelectedValuesByGroup] =
+		useState<SelectedValuesByGroup>({});
 	const [fanaticsCollectType, setFanaticsCollectType] =
 		useState<FanaticsCollectType>("weekly");
 	const [altType, setAltType] = useState<AltType>("auctions");
@@ -88,35 +97,43 @@ export default function SearchPage() {
 					.filter((url): url is string => url !== null);
 
 	return (
-		<div className={`${styles.Page}`}>
-			<SearchFilters
-				fanaticsCollectType={fanaticsCollectType}
-				altType={altType}
-				ebaySort={ebaySort}
-				groupEbaySearches={groupEbaySearches}
-				includeCategory={includeCategory}
-				auctionsOnly={auctionsOnly}
-				minPrice={minPrice}
-				sportsCardsOnly={sportsCardsOnly}
-				hasBids={hasBids}
-				onFanaticsCollectTypeChange={setFanaticsCollectType}
-				onAltTypeChange={setAltType}
-				onEbaySortChange={setEbaySort}
-				onGroupEbaySearchesChange={() =>
-					setGroupEbaySearches((current) => !current)
-				}
-				onIncludeCategoryChange={() =>
-					setIncludeCategory((current) => !current)
-				}
-				onAuctionsOnlyChange={() => setAuctionsOnly((current) => !current)}
-				onMinPriceChange={setMinPrice}
-				onSportsCardsOnlyChange={() =>
-					setSportsCardsOnly((current) => !current)
-				}
-				onHasBidsChange={() => setHasBids((current) => !current)}
+		<div className={styles.SearchBuilder}>
+			<SearchSidebar
+				searchTerms={searchTerms}
+				selectedValuesByGroup={selectedValuesByGroup}
+				onSelectedValuesChange={setSelectedValuesByGroup}
 			/>
 
-			<SearchGeneratedUrls urls={urls} />
+			<div className={styles.SearchBuilder__content}>
+				<SearchFilters
+					fanaticsCollectType={fanaticsCollectType}
+					altType={altType}
+					ebaySort={ebaySort}
+					groupEbaySearches={groupEbaySearches}
+					includeCategory={includeCategory}
+					auctionsOnly={auctionsOnly}
+					minPrice={minPrice}
+					sportsCardsOnly={sportsCardsOnly}
+					hasBids={hasBids}
+					onFanaticsCollectTypeChange={setFanaticsCollectType}
+					onAltTypeChange={setAltType}
+					onEbaySortChange={setEbaySort}
+					onGroupEbaySearchesChange={() =>
+						setGroupEbaySearches((current) => !current)
+					}
+					onIncludeCategoryChange={() =>
+						setIncludeCategory((current) => !current)
+					}
+					onAuctionsOnlyChange={() => setAuctionsOnly((current) => !current)}
+					onMinPriceChange={setMinPrice}
+					onSportsCardsOnlyChange={() =>
+						setSportsCardsOnly((current) => !current)
+					}
+					onHasBidsChange={() => setHasBids((current) => !current)}
+				/>
+
+				<SearchGeneratedUrls urls={urls} />
+			</div>
 		</div>
 	);
 }

@@ -3,14 +3,18 @@
 .SearchSidebar {
 	--search-sidebar-font-size: 0.875rem;
 	background-color: var(--bg-color-02);
+	padding: var(--sidebar-padding);
 	position: relative;
+	border-right: var(--header-border-line);
 	width: var(--sidebar-search-width);
 	flex: 0 0 auto;
 	display: flex;
 	flex-direction: column;
 	transition: var(--sidebar-transition);
 	overflow: hidden;
-	min-height: 100vh;
+	height: 100%;
+	height: calc(100vh - var(--header-height));
+	overflow-y: scroll;
 	&--closed {
 		width: var(--sidebar-width-closed);
 	}
@@ -22,25 +26,10 @@
 			text-transform: uppercase;
 		}
 	}
-	&__top {
-		min-height: var(--header-height);
-		border-bottom: var(--header-border-line);
-		border-right: var(--header-border-line);
-		display: flex;
-		align-items: center;
-		padding-inline: calc(var(--header-padding) + var(--sidebar-item-padding));
-	}
-	&__bottom {
-		border-right: var(--header-border-line);
-		padding: var(--sidebar-padding);
-		flex: 1;
-		overflow-y: scroll;
-	}
+
 	&__logo {
 		@include font-weight(bold);
 	}
-
-	// FROM HERE DOWN ---------
 
 	&__groups {
 		display: flex;

@@ -93,4 +93,11 @@
 			}
 		}
 	}
+	&__divider {
+		display: block;
+		margin-block: calc(var(--sidebar-menu-gap) * 2) var(--sidebar-menu-gap);
+		height: 1px;
+		width: 100%;
+		background: var(--border-color);
+	}
 }

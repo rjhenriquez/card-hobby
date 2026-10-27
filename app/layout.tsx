@@ -1,5 +1,9 @@
 import type { Metadata } from "next";
 
+import { Header } from "@/components/Header/Header";
+import { Sidebar } from "@/components/Sidebar/Sidebar";
+import { SidebarProvider } from "@/components/Sidebar/SidebarContext";
+
 import "@/styles/styles.scss";
 
 export const metadata: Metadata = {
@@ -14,7 +18,16 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang='en' className='theme--light'>
-			<body>{children}</body>
+			<body>
+				<SidebarProvider>
+					<Sidebar />
+
+					<div className='layout'>
+						<Header />
+						<main className='main'>{children}</main>
+					</div>
+				</SidebarProvider>
+			</body>
 		</html>
 	);
 }

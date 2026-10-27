@@ -64,7 +64,7 @@
 
 	// ------- Sidebar Component -------
 	--sidebar-width: 14.375rem; //230px
-	--sidebar-search-width: 17rem; //230px
+	--sidebar-search-width: 14rem; //230px
 	--sidebar-width-closed: 100px; //230px
 	--sidebar-width-closed: calc(
 		(var(--sidebar-padding) * 2) + var(--sidebar-item-icon-size) +
@@ -93,6 +93,8 @@
 	--table-bg-color-hover: var(--table-header-bg);
 	--table-bg-color-selected: var(--table-header-bg);
 	--table-icon-size: 20px;
+	--table-selection-actions-offset: 0.5rem; // 24px
+	--table-selection-actions-z-index: 10;
 
 	--table-cell-min-width: 7.5em;
 	--table-cell-padding: 0.5em 0.4em;

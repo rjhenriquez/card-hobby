@@ -45,6 +45,7 @@ export function Sidebar() {
 					<ul className={styles.Sidebar__list}>
 						{SIDEBAR_NAVIGATION.map((item) => {
 							const isActive = pathname === item.href;
+							const hasDivider = "divider" in item && item.divider === true;
 
 							const content = (
 								<>
@@ -69,6 +70,10 @@ export function Sidebar() {
 										<Link className={styles.Sidebar__link} href={item.href}>
 											{content}
 										</Link>
+									)}
+
+									{hasDivider && (
+										<span className={styles.Sidebar__divider} aria-hidden />
 									)}
 								</li>
 							);

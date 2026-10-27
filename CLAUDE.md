@@ -32,11 +32,11 @@ Formatting: Prettier with tabs, double quotes, single quotes in JSX, trailing co
 
 ## Architecture
 
-**Data flow.** Server pages (`app/(main)/**/page.tsx`) load data from `db/queries/*` (often in `Promise.all`) and pass it to client interaction components. Mutations go through server actions in `app/actions/*` (`"use server"`, take `FormData`, validate, write via Drizzle, then `revalidatePath()` the affected routes). Database access never happens in client components.
+**Data flow.** Server pages (`app/**/page.tsx`) load data from `db/queries/*` (often in `Promise.all`) and pass it to client interaction components. Mutations go through server actions in `app/actions/*` (`"use server"`, take `FormData`, validate, write via Drizzle, then `revalidatePath()` the affected routes). Database access never happens in client components.
 
-**Route groups.**
-- `app/(main)` — the card app with `Sidebar` + `Header`. `/` is the **Investments** page (there is no `/investment` route despite older docs/revalidate calls); also `/collection`, `/dashboard`, `/psa-submissions`, `/psa-submissions/[submissionNumber]`, `/packages`, `/psa-gem-rate`. Nav items are defined in `SIDEBAR_NAVIGATION` in `constants.ts`.
-- `app/(tools)` — a separate search-URL builder tool (`/search`, `/search/admin`) with its own `SearchSidebar`/`SearchContext`, backed by `search_sections` / `search_categories` / `search_terms` tables and `lib/searchUrls.ts`.
+**Routes.** `app/layout.tsx` is the single layout (`Sidebar` + `Header`) for every page.
+- Card app pages live directly in `app/`. `/` is the **Investments** page (there is no `/investment` route despite older docs/revalidate calls); also `/collection`, `/dashboard`, `/psa-submissions`, `/psa-submissions/[submissionNumber]`, `/packages`, `/psa-gem-rate`. Nav items are defined in `SIDEBAR_NAVIGATION` in `constants.ts`.
+- `app/search` — a search-URL builder tool (`/search`, `/search/admin`) where the server page loads terms and the client `SearchBuilder` holds the selection state for `SearchSidebar`, backed by `search_sections` / `search_categories` / `search_terms` tables and `lib/searchUrls.ts`.
 
 **Card read model (`db/queries/cards.ts`, `getCardsByPortfolio`).** Investment and Collection are the same `cards` table filtered by `portfolio`. The query joins PSA history and purchase-package data and derives values that are *not stored*: `effectiveStatus`, `psaSubmissionNumbers`, `gradingCost`, `price`, `totalCost`, `profit`, `roi` (types in `types/types.ts`). Key rules:
 - A card in an active PSA submission (`completed_date IS NULL`) displays `PSA Grading - {stage}` as its status without overwriting its stored status. Only one active submission per card (enforced in app code, not DB).

@@ -1,0 +1,10 @@
+@use "@/styles/utilities/all" as *;
+
+.SearchBuilder {
+	display: flex;
+	&__content {
+		padding: var(--page-padding);
+		flex: 1;
+		min-width: 0;
+	}
+}

@@ -50,6 +50,7 @@
 		font-size: var(--font-size-12);
 		gap: var(--button-padding-main-sm);
 		padding-inline: var(--button-padding-main-sm);
+		white-space: nowrap;
 		.Button__icon {
 			width: var(--button-icon-size);
 			height: var(--button-icon-size);

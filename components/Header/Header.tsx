@@ -12,10 +12,6 @@ const navigation = [
 		label: "Cards",
 		href: "/",
 	},
-	{
-		label: "Search",
-		href: "/search",
-	},
 ];
 
 export function Header() {
