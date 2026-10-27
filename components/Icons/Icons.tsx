@@ -289,6 +289,18 @@ const Calendar = ({ className }: { className?: string }) => {
 		</svg>
 	);
 };
+const CalendarSold = ({ className }: { className?: string }) => {
+	return (
+		<svg
+			xmlns='http://www.w3.org/2000/svg'
+			className={className}
+			fill='currentColor'
+			viewBox='0 -960 960 960'
+		>
+			<path d='M438-226 296-368l58-58 84 84 168-168 58 58-226 226ZM200-80q-33 0-56.5-23.5T120-160v-560q0-33 23.5-56.5T200-800h40v-80h80v80h320v-80h80v80h40q33 0 56.5 23.5T840-720v560q0 33-23.5 56.5T760-80H200Zm0-80h560v-400H200v400Zm0-480h560v-80H200v80Zm0 0v-80 80Z' />
+		</svg>
+	);
+};
 const DollarSign = ({ className }: { className?: string }) => {
 	return (
 		<svg
@@ -645,10 +657,96 @@ const Sort = ({ className }: { className?: string }) => {
 		</svg>
 	);
 };
+const Shield = ({ className }: { className?: string }) => {
+	return (
+		<svg
+			xmlns='http://www.w3.org/2000/svg'
+			className={className}
+			fill='currentColor'
+			viewBox='0 -960 960 960'
+		>
+			<path d='M480-80q-139-35-229.5-159.5T160-516v-244l320-120 320 120v244q0 152-90.5 276.5T480-80Zm0-84q104-33 172-132t68-220v-189l-240-90-240 90v189q0 121 68 220t172 132Zm0-316Z' />
+		</svg>
+	);
+};
+const Player = ({ className }: { className?: string }) => {
+	return (
+		<svg
+			xmlns='http://www.w3.org/2000/svg'
+			className={className}
+			fill='currentColor'
+			viewBox='0 -960 960 960'
+		>
+			<path d='M234-276q51-39 114-61.5T480-360q69 0 132 22.5T726-276q35-41 54.5-93T800-480q0-133-93.5-226.5T480-800q-133 0-226.5 93.5T160-480q0 59 19.5 111t54.5 93Zm146.5-204.5Q340-521 340-580t40.5-99.5Q421-720 480-720t99.5 40.5Q620-639 620-580t-40.5 99.5Q539-440 480-440t-99.5-40.5ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm100-95.5q47-15.5 86-44.5-39-29-86-44.5T480-280q-53 0-100 15.5T294-220q39 29 86 44.5T480-160q53 0 100-15.5ZM523-537q17-17 17-43t-17-43q-17-17-43-17t-43 17q-17 17-17 43t17 43q17 17 43 17t43-17Zm-43-43Zm0 360Z' />
+		</svg>
+	);
+};
+const Trophy = ({ className }: { className?: string }) => {
+	return (
+		<svg
+			xmlns='http://www.w3.org/2000/svg'
+			className={className}
+			fill='currentColor'
+			viewBox='0 -960 960 960'
+		>
+			<path d='M280-120v-80h160v-124q-49-11-87.5-41.5T296-442q-75-9-125.5-65.5T120-640v-40q0-33 23.5-56.5T200-760h80v-80h400v80h80q33 0 56.5 23.5T840-680v40q0 76-50.5 132.5T664-442q-18 46-56.5 76.5T520-324v124h160v80H280Zm0-408v-152h-80v40q0 38 22 68.5t58 43.5Zm285 93q35-35 35-85v-240H360v240q0 50 35 85t85 35q50 0 85-35Zm115-93q36-13 58-43.5t22-68.5v-40h-80v152Zm-200-52Z' />
+		</svg>
+	);
+};
+const Sell = ({ className }: { className?: string }) => {
+	return (
+		<svg
+			xmlns='http://www.w3.org/2000/svg'
+			className={className}
+			fill='currentColor'
+			viewBox='0 -960 960 960'
+		>
+			<path d='M856-390 570-104q-12 12-27 18t-30 6q-15 0-30-6t-27-18L103-457q-11-11-17-25.5T80-513v-287q0-33 23.5-56.5T160-880h287q16 0 31 6.5t26 17.5l352 353q12 12 17.5 27t5.5 30q0 15-5.5 29.5T856-390ZM513-160l286-286-353-354H160v286l353 354ZM260-640q25 0 42.5-17.5T320-700q0-25-17.5-42.5T260-760q-25 0-42.5 17.5T200-700q0 25 17.5 42.5T260-640Zm220 160Z' />
+		</svg>
+	);
+};
+const Auction = ({ className }: { className?: string }) => {
+	return (
+		<svg
+			xmlns='http://www.w3.org/2000/svg'
+			className={className}
+			fill='currentColor'
+			viewBox='0 -960 960 960'
+		>
+			<path d='M160-120v-80h480v80H160Zm226-194L160-540l84-86 228 226-86 86Zm254-254L414-796l86-84 226 226-86 86Zm184 408L302-682l56-56 522 522-56 56Z' />
+		</svg>
+	);
+};
+const Ebay = ({ className }: { className?: string }) => {
+	return (
+		<svg
+			xmlns='http://www.w3.org/2000/svg'
+			className={className}
+			viewBox='0 0 17.86 20'
+			aria-hidden='true'
+		>
+			<path
+				fill='#414141'
+				d='M10.8,9.56c2.52-1.13,3.64-4.1,2.5-6.61C12.17.43,9.21-.69,6.69.44c-2.52,1.13-3.64,4.1-2.5,6.61.55,1.21,1.55,2.15,2.79,2.62l.48-1.28c-1.88-.71-2.82-2.81-2.11-4.69s2.81-2.82,4.69-2.11c1.88.71,2.82,2.81,2.11,4.69-.34.9-1.03,1.63-1.91,2.03l.56,1.24Z'
+			/>
+			<path
+				fill='#6a6a6a'
+				d='M0,5.38h4.06v14.62H1.28C.57,20,0,19.43,0,18.72V5.38Z'
+			/>
+			<path
+				fill='#979797'
+				d='M17.86,5.38h-4.06v14.62h2.78c.71,0,1.28-.57,1.28-1.28V5.38Z'
+			/>
+			<path fill='#b0b0b0' d='M13.8,5.38h-4.87v14.62h4.87V5.38Z' />
+			<path fill='#535353' d='M8.93,5.38h-4.87v14.62h4.87V5.38Z' />
+		</svg>
+	);
+};
 
 export const ICONS = {
 	moon: Moon,
 	sun: Sun,
+	auction: Auction,
 	dashboard: Dashboard,
 	investments: Investments,
 	collection: Collection,
@@ -675,26 +773,32 @@ export const ICONS = {
 	clear: Clear,
 	"circle-close": CircleClose,
 	calendar: Calendar,
+	"calendar-sold": CalendarSold,
 	"dollar-sign": DollarSign,
 	loading: Loading,
 	checkmark: Checkmark,
 	"plus-sign": PlusSign,
 	"circle-check": CircleCheck,
 	open: Open,
+	player: Player,
 	sort: Sort,
 	"open-all": OpenAll,
 	"search-admin": SearchAdmin,
 	settings: Settings,
 	diamond: Diamond,
+	ebay: Ebay,
 	filter: Filter,
 	hamburger: Hamburger,
 	save: Save,
+	trophy: Trophy,
+	sell: Sell,
 	delete: Delete,
 	charts: Charts,
 	finance: Finance,
 	receipt: Receipt,
 	stacks: Stacks,
 	percent: Percent,
+	shield: Shield,
 	psa: PSA,
 	received: Received,
 } as const;

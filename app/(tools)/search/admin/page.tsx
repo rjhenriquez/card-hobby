@@ -221,7 +221,6 @@ export default async function SearchAdminPage() {
 												type='main'
 												variant='delete'
 												htmlType='submit'
-
 												label='Delete Section'
 											/>
 										</form>

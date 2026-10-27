@@ -7,7 +7,14 @@ import styles from "./Button.module.scss";
 
 export interface ButtonProps {
 	onClick?: React.MouseEventHandler<HTMLButtonElement>;
-	type?: "icon" | "main" | "number-add" | "main-lg" | "icon-sm" | "panel";
+	type?:
+		| "icon"
+		| "main"
+		| "main-sm"
+		| "number-add"
+		| "main-lg"
+		| "icon-sm"
+		| "panel";
 	variant?: "primary" | "delete";
 	htmlType?: "button" | "submit" | "reset";
 	className?: string;
@@ -19,6 +26,10 @@ export interface ButtonProps {
 	ariaLabel?: string;
 	tooltip?: string;
 	tooltipPosition?: "left" | "right" | "top" | "bottom";
+	ref?: React.Ref<HTMLButtonElement>;
+	// For buttons that open a menu or panel.
+	ariaExpanded?: boolean;
+	ariaControls?: string;
 }
 
 export const Button = ({
@@ -35,9 +46,13 @@ export const Button = ({
 	tooltip,
 	form,
 	tooltipPosition = "top",
+	ref,
+	ariaExpanded,
+	ariaControls,
 }: ButtonProps) => {
 	return (
 		<button
+			ref={ref}
 			type={htmlType}
 			onClick={onClick}
 			className={`Button ${styles.Button} ${styles[`Button--${type}`]} ${
@@ -46,6 +61,8 @@ export const Button = ({
 			disabled={disabled}
 			form={form}
 			aria-label={tooltip || ariaLabel}
+			aria-expanded={ariaExpanded}
+			aria-controls={ariaControls}
 		>
 			{leadingIcon && (
 				<Icon

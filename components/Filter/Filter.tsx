@@ -3,12 +3,19 @@
 import { ReactNode, useEffect, useId, useRef, useState } from "react";
 import cn from "classnames";
 
-import { Icon } from "@/components/Icons/Icons";
+import { Button } from "@/components/Button/Button";
+import { BROWSER_WIDTH_RANGES } from "@/constants";
+import { useDimensions } from "@/hooks/useDimensions";
 
 import styles from "./Filter.module.scss";
 
 interface FilterProps {
+	// Names the filter; used for the default tooltip, and shown on the button if there's no icon.
 	label: string;
+	// Icon name for the button (see ICONS in components/Icons).
+	icon?: string;
+	// Hover text for the button. Defaults to "Filter <label>".
+	tooltip?: string;
 	// Highlights the button while this filter is narrowing the results.
 	isActive?: boolean;
 	// When given, the dropdown shows a Clear button.
@@ -19,6 +26,8 @@ interface FilterProps {
 
 export function Filter({
 	label,
+	icon,
+	tooltip = `Filter ${label}`,
 	isActive = false,
 	onClear,
 	children,
@@ -26,7 +35,10 @@ export function Filter({
 }: FilterProps) {
 	const [isOpen, setIsOpen] = useState(false);
 	const rootRef = useRef<HTMLDivElement>(null);
+	const triggerRef = useRef<HTMLButtonElement>(null);
 	const panelId = useId();
+	// Tooltips are only needed on smaller screens.
+	const showTooltip = useDimensions() <= BROWSER_WIDTH_RANGES.medium.max;
 
 	// Close on outside click or Escape.
 	useEffect(() => {
@@ -71,19 +83,34 @@ export function Filter({
 				className,
 			)}
 		>
-			<button
-				type='button'
+			<Button
+				ref={triggerRef}
+				type='main-sm'
 				className={styles.Filter__trigger}
-				aria-expanded={isOpen}
-				aria-controls={panelId}
+				leadingIcon={icon}
+				label={label}
+				tooltip={showTooltip ? tooltip : undefined}
+				ariaExpanded={isOpen}
+				ariaControls={panelId}
 				onClick={() => setIsOpen((current) => !current)}
-			>
-				<span className={styles.Filter__label}>{label}</span>
-				<Icon icon='arrow-down' className={styles.Filter__icon} />
-			</button>
+			/>
 
 			{isOpen && (
-				<div id={panelId} className={styles.Filter__panel}>
+				<div
+					id={panelId}
+					className={styles.Filter__panel}
+					// Filters apply as you type, so Enter in any input just closes the panel.
+					onKeyDown={(event) => {
+						if (
+							event.key === "Enter" &&
+							event.target instanceof HTMLInputElement
+						) {
+							event.preventDefault();
+							setIsOpen(false);
+							triggerRef.current?.focus();
+						}
+					}}
+				>
 					{children}
 
 					{onClear && (

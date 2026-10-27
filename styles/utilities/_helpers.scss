@@ -84,6 +84,16 @@
 		var(--bg-color)
 	);
 }
+@mixin filter-active {
+	$color: VAR(--color-main);
+	color: color-mix(in srgb, #{$color} 70%, var(--bg-color-inverted));
+	border-color: color-mix(in srgb, #{$color} 70%, var(--bg-color-inverted));
+	background-color: color-mix(
+		in srgb,
+		#{$color} var(--color-mix-percentage-light),
+		transparent
+	);
+}
 
 @mixin button-hover($color) {
 	color: color-mix(in srgb, #{$color} 70%, var(--bg-color-inverted));

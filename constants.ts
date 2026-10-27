@@ -64,6 +64,16 @@ export const CARD_TABLE_VALUE_COLUMNS = [
 	"roi",
 ] as const;
 
+// Quick selections for the card table's Cost filter, in dollars.
+// Use `null` for an open end: { min: 500, max: null } means "$500 and up".
+export const FILTER_COST_RANGES: { min: number | null; max: number | null }[] =
+	[
+		{ min: 0, max: 100 },
+		{ min: 100, max: 200 },
+		{ min: 200, max: 500 },
+		{ min: 500, max: null },
+	];
+
 export const CHART_MARGIN = {
 	top: 16,
 	right: 32,
@@ -102,3 +112,13 @@ export const STATUS_CLASSES = [
 	{ term: "Redemption", className: "status--gray" },
 	{ term: "DCSports", className: "status--blue-light" },
 ];
+
+// Browser width ranges in px, matching the SCSS ranges in
+// styles/utilities/_mixin-media-queries.scss. Use with useDimensions():
+// const isLargeWidth = useDimensions() >= BROWSER_WIDTH_RANGES.large.min;
+export const BROWSER_WIDTH_RANGES = {
+	tiny: { min: 0, max: 400 },
+	small: { min: 401, max: 768 },
+	medium: { min: 769, max: 1140 },
+	large: { min: 1141, max: Infinity },
+} as const;

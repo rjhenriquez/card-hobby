@@ -16,6 +16,7 @@ import {
 	columnFilteringFeature,
 	createFilteredRowModel,
 	createSortedRowModel,
+	filterFn_inDateRange,
 	filterFn_inNumberRange,
 	filterFn_includesString,
 	globalFilteringFeature,
@@ -29,6 +30,7 @@ import {
 	CARD_TABLE_COLUMN_WIDTHS,
 	CARD_TABLE_HIDDEN_COLUMNS,
 	CARD_TABLE_VALUE_COLUMNS,
+	FILTER_COST_RANGES,
 	PSA_GRADE_DEFINITIONS,
 	STATUS_CLASSES,
 } from "@/constants";
@@ -48,6 +50,15 @@ import { ButtonGroup } from "@/components/ButtonGroup/ButtonGroup";
 import { InputCheckbox } from "@/components/InputCheckbox/InputCheckbox";
 import { Icon } from "@/components/Icons/Icons";
 import { InputText } from "@/components/InputText/InputText";
+import { InputDate } from "@/components/InputDate/InputDate";
+import { FilterTextList } from "@/components/FilterTextList/FilterTextList";
+import { FilterSelectList } from "@/components/FilterSelectList/FilterSelectList";
+import type { CardFormOptions } from "@/db/queries/cardFormOptions";
+import {
+	filterFn_equalsAnyString,
+	filterFn_hasAnyWord,
+	filterFn_includesAnyString,
+} from "@/lib/filterFns";
 import { Table } from "@/components/Table/Table";
 import type { TableColumn, TableSortDirection } from "@/components/Table/Table";
 import cn from "classnames";
@@ -64,6 +75,44 @@ interface CardTableProps {
 	onMoveCard: (card: Card) => void;
 	onEditCards: (cards: Card[]) => void;
 	onCopyCard: (card: Card) => void;
+	// Every player / seller name in the database, for the filters' autocomplete.
+	filterOptions: CardFormOptions;
+}
+
+// [min, max] as typed; an empty side means no limit.
+type FilterRange = [string, string];
+
+// "A – B", or "From A" / "Up to B" (or "A+" with `openMinSuffix`) when only one side is set.
+function formatRangeLabel(
+	[min, max]: FilterRange,
+	format: (value: string) => string,
+	{ openMinSuffix = false } = {},
+) {
+	if (min && max) {
+		return `${format(min)} – ${format(max)}`;
+	}
+
+	if (min) {
+		return openMinSuffix ? `${format(min)} +` : `From ${format(min)}`;
+	}
+
+	return `Up to ${format(max)}`;
+}
+
+function formatCostRangeLabel(range: FilterRange) {
+	return formatRangeLabel(
+		range,
+		(value) =>
+			formatCurrency(Number(value), {
+				minimumFractionDigits: 0,
+				maximumFractionDigits: 2,
+			}),
+		{ openMinSuffix: true },
+	);
+}
+
+function formatDateRangeLabel(range: FilterRange) {
+	return formatRangeLabel(range, formatShortDate);
 }
 
 const features = tableFeatures({
@@ -79,6 +128,10 @@ const features = tableFeatures({
 	filterFns: {
 		includesString: filterFn_includesString,
 		inNumberRange: filterFn_inNumberRange,
+		inDateRange: filterFn_inDateRange,
+		includesAnyString: filterFn_includesAnyString,
+		equalsAnyString: filterFn_equalsAnyString,
+		hasAnyWord: filterFn_hasAnyWord,
 	},
 });
 
@@ -106,10 +159,10 @@ export function CardTable({
 	onMoveCard,
 	onEditCards,
 	onCopyCard,
+	filterOptions,
 }: CardTableProps) {
 	const [sorting, setSorting] = useState<SortingState>([]);
 	const [isExpanded, setIsExpanded] = useState(false);
-	const [isSearchOpen, setIsSearchOpen] = useState(false);
 	const [globalFilter, setGlobalFilter] = useState("");
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 	const [fontSize, setFontSize] = useState(12);
@@ -188,10 +241,12 @@ export function CardTable({
 		{
 			accessorKey: "player",
 			header: "Player",
+			filterFn: "includesAnyString",
 		},
 		{
 			accessorKey: "category",
 			header: "Category",
+			filterFn: "equalsAnyString",
 		},
 		{
 			accessorKey: "year",
@@ -212,6 +267,7 @@ export function CardTable({
 		{
 			accessorKey: "purchaseDate",
 			header: "Date",
+			filterFn: "inDateRange",
 			cell: ({ getValue }) => {
 				const value = getValue() as string | null;
 
@@ -244,6 +300,7 @@ export function CardTable({
 		{
 			accessorKey: "purchasedFrom",
 			header: "Seller",
+			filterFn: "equalsAnyString",
 			cell: ({ row }) => {
 				const card = row.original;
 				if (card.acquisitionType === "pulled") {
@@ -258,6 +315,7 @@ export function CardTable({
 		{
 			accessorKey: "ebaySeller",
 			header: "eBay Seller",
+			filterFn: "includesAnyString",
 			cell: ({ row }) => {
 				const card = row.original;
 
@@ -272,6 +330,7 @@ export function CardTable({
 			id: "psaSubmissionNumbers",
 			accessorFn: (card) => card.psaSubmissionNumbers.join(" "),
 			header: "PSA Sub",
+			filterFn: "hasAnyWord",
 			cell: ({ row }) => {
 				const submissionNumbers = row.original.psaSubmissionNumbers;
 
@@ -366,6 +425,7 @@ export function CardTable({
 		{
 			accessorKey: "soldDate",
 			header: "Sold Date",
+			filterFn: "inDateRange",
 			cell: ({ getValue }) => {
 				const value = getValue() as string | null;
 
@@ -488,17 +548,186 @@ export function CardTable({
 	});
 
 	// [min, max] as typed; an empty side means no limit.
-	const costRange = (columnFilters.find((filter) => filter.id === "totalCost")
-		?.value as [string, string] | undefined) ?? ["", ""];
+	function getRangeFilter(columnId: string): FilterRange {
+		return (
+			(columnFilters.find((filter) => filter.id === columnId)?.value as
+				FilterRange | undefined) ?? ["", ""]
+		);
+	}
 
-	function setCostRange(nextRange: [string, string] | null) {
+	function setRangeFilter(columnId: string, nextRange: FilterRange | null) {
 		setColumnFilters((current) => {
-			const others = current.filter((filter) => filter.id !== "totalCost");
+			const others = current.filter((filter) => filter.id !== columnId);
 			const isEmpty = !nextRange || (!nextRange[0] && !nextRange[1]);
 
-			return isEmpty
-				? others
-				: [...others, { id: "totalCost", value: nextRange }];
+			return isEmpty ? others : [...others, { id: columnId, value: nextRange }];
+		});
+	}
+
+	function hasRange([min, max]: FilterRange) {
+		return Boolean(min || max);
+	}
+
+	const costRange = getRangeFilter("totalCost");
+	const setCostRange = (nextRange: FilterRange | null) =>
+		setRangeFilter("totalCost", nextRange);
+
+	const purchaseDateRange = getRangeFilter("purchaseDate");
+	const soldDateRange = getRangeFilter("soldDate");
+
+	// Filters only show for columns this portfolio displays (e.g. no Sold Date in Collection).
+	function isColumnShown(columnId: string) {
+		return !CARD_TABLE_HIDDEN_COLUMNS[portfolio].includes(columnId);
+	}
+
+	const showSoldDateFilter = isColumnShown("soldDate");
+
+	// Multi-value text filters: a row matches if it contains any of the values.
+	function getListFilter(columnId: string): string[] {
+		return (
+			(columnFilters.find((filter) => filter.id === columnId)?.value as
+				string[] | undefined) ?? []
+		);
+	}
+
+	function setListFilter(columnId: string, nextValues: string[]) {
+		setColumnFilters((current) => {
+			const others = current.filter((filter) => filter.id !== columnId);
+			const values = nextValues.filter((value) => value.trim());
+
+			return values.length
+				? [...others, { id: columnId, value: values }]
+				: others;
+		});
+	}
+
+	// Dropdown options come from the cards in this view, so there are no dead choices.
+	const sellerOptions = Array.from(
+		new Set(
+			cards
+				.map((card) => card.purchasedFrom?.trim())
+				.filter((seller): seller is string => Boolean(seller)),
+		),
+	).sort((a, b) => a.localeCompare(b));
+
+	const categoryOptions = Array.from(
+		new Set(
+			cards
+				.map((card) => card.category?.trim())
+				.filter((category): category is string => Boolean(category)),
+		),
+	).sort((a, b) => a.localeCompare(b));
+
+	const psaSubmissionOptions = Array.from(
+		new Set(cards.flatMap((card) => card.psaSubmissionNumbers)),
+	).sort((a, b) => b.localeCompare(a, undefined, { numeric: true }));
+
+	// Multi-value filters. To add one, set the column's filterFn and add an entry:
+	// - input "text": autocomplete fields, filterFn "includesAnyString" (contains any value)
+	// - input "select": dropdown of fixed options, filterFn "equalsAnyString"
+	//   (or "hasAnyWord" for space-separated lists like PSA Sub)
+	const listFilters: {
+		columnId: string;
+		label: string;
+		itemLabel: string;
+		tagPrefix: string;
+		icon: string;
+		input: "text" | "select";
+		options: string[];
+	}[] = [
+		{
+			columnId: "player",
+			icon: "player",
+			label: "Player",
+			itemLabel: "player",
+			tagPrefix: "",
+			input: "text",
+			options: filterOptions.players,
+		},
+		{
+			columnId: "category",
+			icon: "trophy",
+			label: "Category",
+			itemLabel: "category",
+			tagPrefix: "Category: ",
+			input: "select",
+			options: categoryOptions,
+		},
+		{
+			columnId: "purchasedFrom",
+			icon: "sell",
+			label: "Seller",
+			itemLabel: "seller",
+			tagPrefix: "From: ",
+			input: "select",
+			options: sellerOptions,
+		},
+		{
+			columnId: "ebaySeller",
+			icon: "ebay",
+			label: "eBay Seller",
+			itemLabel: "seller",
+			tagPrefix: "eBay: ",
+			input: "text",
+			options: filterOptions.ebaySellers,
+		},
+		{
+			columnId: "psaSubmissionNumbers",
+			icon: "psa",
+			label: "PSA Sub",
+			itemLabel: "submission",
+			tagPrefix: "PSA #",
+			input: "select",
+			options: psaSubmissionOptions,
+		},
+	];
+
+	const visibleListFilters = listFilters
+		.filter((filter) => isColumnShown(filter.columnId))
+		.map((filter) => ({ ...filter, values: getListFilter(filter.columnId) }));
+
+	// One removable tag per applied filter, shown next to the filter buttons.
+	const activeFilterTags: {
+		id: string;
+		label: string;
+		onRemove: () => void;
+	}[] = [];
+
+	for (const filter of visibleListFilters) {
+		filter.values.forEach((value, index) => {
+			activeFilterTags.push({
+				id: `${filter.columnId}:${index}`,
+				label: `${filter.tagPrefix}${value.trim()}`,
+				onRemove: () =>
+					setListFilter(
+						filter.columnId,
+						filter.values.filter((_, i) => i !== index),
+					),
+			});
+		});
+	}
+
+	if (hasRange(purchaseDateRange)) {
+		activeFilterTags.push({
+			id: "purchaseDate",
+			label: `Date: ${formatDateRangeLabel(purchaseDateRange)}`,
+			onRemove: () => setRangeFilter("purchaseDate", null),
+		});
+	}
+
+	if (showSoldDateFilter && hasRange(soldDateRange)) {
+		activeFilterTags.push({
+			id: "soldDate",
+			label: `Sold: ${formatDateRangeLabel(soldDateRange)}`,
+			onRemove: () => setRangeFilter("soldDate", null),
+		});
+	}
+
+	if (hasRange(costRange)) {
+		activeFilterTags.push({
+			id: "totalCost",
+			label: formatCostRangeLabel(costRange),
+			onRemove: () => setCostRange(null),
 		});
 	}
 
@@ -779,9 +1008,114 @@ export function CardTable({
 						</div> */}
 
 						<div className={styles.CardTable__actions__group}>
+							{visibleListFilters.map((filter) => {
+								const listProps = {
+									name: `${filter.columnId}Filter`,
+									label: filter.label,
+									itemLabel: filter.itemLabel,
+									options: filter.options,
+									values: filter.values,
+									onChange: (values: string[]) =>
+										setListFilter(filter.columnId, values),
+								};
+
+								return (
+									<Filter
+										key={filter.columnId}
+										label={filter.label}
+										icon={filter.icon}
+										isActive={filter.values.length > 0}
+										onClear={() => setListFilter(filter.columnId, [])}
+									>
+										{filter.input === "select" ? (
+											<FilterSelectList {...listProps} />
+										) : (
+											<FilterTextList {...listProps} />
+										)}
+									</Filter>
+								);
+							})}
+
+							<Filter
+								label='Date'
+								icon='calendar'
+								isActive={hasRange(purchaseDateRange)}
+								onClear={() => setRangeFilter("purchaseDate", null)}
+							>
+								<div
+									className={cn(
+										styles.CardTable__filter__range,
+										styles["CardTable__filter__range--dates"],
+									)}
+								>
+									<InputDate
+										name='purchaseDateMin'
+										label='From'
+										value={purchaseDateRange[0]}
+										onChange={(event) =>
+											setRangeFilter("purchaseDate", [
+												event.target.value,
+												purchaseDateRange[1],
+											])
+										}
+									/>
+									<InputDate
+										name='purchaseDateMax'
+										label='To'
+										value={purchaseDateRange[1]}
+										onChange={(event) =>
+											setRangeFilter("purchaseDate", [
+												purchaseDateRange[0],
+												event.target.value,
+											])
+										}
+									/>
+								</div>
+							</Filter>
+
+							{showSoldDateFilter && (
+								<Filter
+									label='Sold Date'
+									icon='calendar-sold'
+									isActive={hasRange(soldDateRange)}
+									onClear={() => setRangeFilter("soldDate", null)}
+								>
+									<div
+										className={cn(
+											styles.CardTable__filter__range,
+											styles["CardTable__filter__range--dates"],
+										)}
+									>
+										<InputDate
+											name='soldDateMin'
+											label='From'
+											value={soldDateRange[0]}
+											onChange={(event) =>
+												setRangeFilter("soldDate", [
+													event.target.value,
+													soldDateRange[1],
+												])
+											}
+										/>
+										<InputDate
+											name='soldDateMax'
+											label='To'
+											value={soldDateRange[1]}
+											onChange={(event) =>
+												setRangeFilter("soldDate", [
+													soldDateRange[0],
+													event.target.value,
+												])
+											}
+										/>
+									</div>
+								</Filter>
+							)}
+
 							<Filter
 								label='Cost'
-								isActive={Boolean(costRange[0] || costRange[1])}
+								icon='investments'
+								isActive={hasRange(costRange)}
 								onClear={() => setCostRange(null)}
 							>
 								<div className={styles.CardTable__filter__range}>
@@ -810,50 +1144,41 @@ export function CardTable({
 										}
 									/>
 								</div>
+
+								<div className={styles.CardTable__filter__presets}>
+									{FILTER_COST_RANGES.map(({ min, max }) => {
+										// A null end becomes "" (no limit), same as an empty input.
+										const presetRange: FilterRange = [
+											min === null ? "" : String(min),
+											max === null ? "" : String(max),
+										];
+										const isSelected =
+											costRange[0] === presetRange[0] &&
+											costRange[1] === presetRange[1];
+										const rangeLabel = formatCostRangeLabel(presetRange);
+
+										return (
+											<button
+												key={presetRange.join("-")}
+												type='button'
+												className={cn(styles.CardTable__filter__preset, {
+													[styles["CardTable__filter__preset--active"]]:
+														isSelected,
+												})}
+												aria-pressed={isSelected}
+												onClick={() =>
+													setCostRange(isSelected ? null : presetRange)
+												}
+											>
+												{rangeLabel}
+											</button>
+										);
+									})}
+								</div>
 							</Filter>
 						</div>
 
 						<div className={styles.CardTable__actions__group}>
-							<div
-								className={cn(styles.CardTable__actions__filter, {
-									[styles["CardTable__actions__filter--open"]]: isSearchOpen,
-								})}
-							>
-								<Button
-									type='icon'
-									htmlType='button'
-									leadingIcon='filter'
-									tooltip='Filter cards'
-									tooltipPosition={isTopSticky ? "bottom" : "top"}
-									className={styles.CardTable__actions__filter__btn}
-									onClick={() => {
-										setIsSearchOpen((current) => {
-											if (current) {
-												setGlobalFilter("");
-											}
-
-											return !current;
-										});
-									}}
-								/>
-
-								{isSearchOpen && (
-									<InputText
-										type='search'
-										name='cardFilter'
-										placeholder='Filter cards...'
-										value={globalFilter}
-										autoFocus
-										onChange={(event) => {
-											setGlobalFilter(event.target.value);
-										}}
-										className={styles.CardTable__actions__input}
-									/>
-								)}
-							</div>
-
-							<span className={styles.CardTable__actions__separator} />
-
 							<ButtonGroup
 								leftIcon='arrow-down'
 								rightIcon='arrow-up'
@@ -901,6 +1226,43 @@ export function CardTable({
 								}}
 							/>
 						</div>
+						{activeFilterTags.length > 0 && (
+							<div className={styles["CardTable__actions__group--large"]}>
+								<div className={styles.CardTable__filter__tags}>
+									{activeFilterTags.map((tag) => (
+										<span
+											key={tag.id}
+											className={styles.CardTable__filter__tag}
+										>
+											<span className={styles.CardTable__filter__tag__label}>
+												{tag.label}
+											</span>
+											<button
+												type='button'
+												className={styles.CardTable__filter__tag__remove}
+												aria-label={`Remove ${tag.label} filter`}
+												onClick={tag.onRemove}
+											>
+												<Icon
+													icon='close'
+													className={styles.CardTable__filter__tag__icon}
+												/>
+											</button>
+										</span>
+									))}
+
+									{activeFilterTags.length > 1 && (
+										<button
+											type='button'
+											className={styles.CardTable__filter__clearAll}
+											onClick={() => setColumnFilters([])}
+										>
+											Clear all
+										</button>
+									)}
+								</div>
+							</div>
+						)}
 					</div>
 				}
 				footer={

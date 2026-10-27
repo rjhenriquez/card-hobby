@@ -19,8 +19,7 @@
 		}
 	}
 	&--main,
-	&--main-lg,
-	&--main-sm {
+	&--main-lg {
 		gap: var(--button-gap);
 		.Button__icon {
 			width: var(--button-icon-size-sm);
@@ -46,11 +45,23 @@
 		}
 	}
 	&--main-sm {
-		height: var(--button-icon-size-sm);
-		font-size: var(--button-font-size-sm);
+		@include font-weight(regular);
+		height: var(--button-size);
+		font-size: var(--font-size-12);
+		gap: var(--button-padding-main-sm);
+		padding-inline: var(--button-padding-main-sm);
 		.Button__icon {
 			width: var(--button-icon-size);
 			height: var(--button-icon-size);
+		}
+		.Button__label {
+			display: none;
+		}
+		&:not(:disabled) {
+			&:hover,
+			&:focus-within {
+				border-color: var(--button-border-color-main-hover);
+			}
 		}
 	}
 	&--panel {
@@ -126,8 +137,14 @@
 			}
 		}
 	}
+	@include media-query(large-up) {
+		&--main-sm {
+			.Button__label {
+				display: block;
+			}
+		}
+	}
 }
-
 @keyframes button-icon-spin {
 	from {
 		transform: rotate(0deg);

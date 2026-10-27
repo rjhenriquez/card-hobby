@@ -16,6 +16,11 @@ const settingsItems = [
 		href: "/search/admin",
 		icon: "search-admin",
 	},
+	{
+		label: "Icons",
+		href: "/icons",
+		icon: "shield",
+	},
 ];
 
 export function SettingsMenu() {

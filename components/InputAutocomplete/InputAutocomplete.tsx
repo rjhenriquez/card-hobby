@@ -12,6 +12,10 @@ interface InputAutocompleteProps {
 	width?: "full" | "half" | "third";
 	required?: boolean;
 	placeholder?: string;
+	// Controlled mode: pass both to drive the value from the parent (e.g. a filter).
+	value?: string;
+	onChange?: (value: string) => void;
+	autoFocus?: boolean;
 }
 
 export function InputAutocomplete({
@@ -22,8 +26,17 @@ export function InputAutocomplete({
 	width = "full",
 	required = false,
 	placeholder,
+	value: controlledValue,
+	onChange,
+	autoFocus = false,
 }: InputAutocompleteProps) {
-	const [value, setValue] = useState(defaultValue);
+	const [internalValue, setInternalValue] = useState(defaultValue);
+	const value = controlledValue ?? internalValue;
+
+	function setValue(nextValue: string) {
+		setInternalValue(nextValue);
+		onChange?.(nextValue);
+	}
 	const [isOpen, setIsOpen] = useState(false);
 	const [activeIndex, setActiveIndex] = useState(-1);
 
@@ -116,6 +129,7 @@ export function InputAutocomplete({
 					required={required}
 					placeholder={placeholder}
 					autoComplete='off'
+					autoFocus={autoFocus}
 					onFocus={() => setIsOpen(true)}
 					onChange={(event) => {
 						setValue(event.target.value);

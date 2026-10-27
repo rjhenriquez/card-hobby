@@ -1,0 +1,41 @@
+@use "@/styles/utilities/all" as *;
+
+.FilterTextList {
+	display: flex;
+	flex-direction: column;
+	gap: var(--filter-text-list-gap);
+	&__row {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) auto;
+		align-items: end;
+		gap: var(--filter-text-list-row-gap);
+	}
+
+	&__icon {
+		width: var(--filter-text-list-icon-size);
+		height: var(--filter-text-list-icon-size);
+	}
+	&__add {
+		@include font-weight(medium);
+		@include transition(color);
+		display: flex;
+		align-items: center;
+		gap: var(--filter-text-list-add-gap);
+		align-self: flex-start;
+		font-size: var(--font-size-12);
+		color: var(--text-color);
+		background: transparent;
+		cursor: pointer;
+		&:hover:not(:disabled),
+		&:focus-visible {
+			color: var(--color-main);
+		}
+		&:disabled {
+			color: color-mix(in srgb, var(--text-color) 30%, transparent);
+			cursor: not-allowed;
+		}
+		&__label {
+			@include text-box;
+		}
+	}
+}

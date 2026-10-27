@@ -2,34 +2,9 @@
 
 .Filter {
 	position: relative;
+	// The trigger is a <Button>; only open/active states are styled here.
 	&__trigger {
-		@include font-weight(medium);
 		@include transition(color, border-color);
-		display: flex;
-		align-items: center;
-		gap: var(--filter-trigger-gap);
-		height: var(--button-size);
-		padding-inline: var(--button-padding-main-sm);
-		font-size: var(--button-font-size);
-		color: var(--text-color);
-		background: transparent;
-		border: var(--button-border-line);
-		border-radius: var(--button-border-radius);
-		text-transform: capitalize;
-		box-sizing: border-box;
-		cursor: pointer;
-		&:hover,
-		&:focus-visible {
-			border-color: var(--button-border-color-main-hover);
-		}
-	}
-	&__label {
-		@include text-box;
-	}
-	&__icon {
-		@include transition(transform);
-		width: var(--button-icon-size-sm);
-		height: var(--button-icon-size-sm);
 	}
 	&__panel {
 		position: absolute;
@@ -67,16 +42,12 @@
 			&__trigger {
 				border-color: var(--button-border-color-main-hover);
 			}
-			&__icon {
-				transform: rotate(180deg);
-			}
 		}
 	}
 	&--active {
 		.Filter {
 			&__trigger {
-				color: var(--color-main);
-				border-color: var(--color-main);
+				@include filter-active;
 			}
 		}
 	}

@@ -215,6 +215,7 @@ export function CardPortfolio({
 				onMoveCard={setCardToMove}
 				onEditCards={setEditingCards}
 				onCopyCard={setCopyingCard}
+				filterOptions={options}
 			/>
 
 			{editingCards && (
