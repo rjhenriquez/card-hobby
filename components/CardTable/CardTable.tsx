@@ -23,6 +23,9 @@ import {
 	rowSelectionFeature,
 	rowSortingFeature,
 	sortFn_alphanumeric,
+	sortFn_basic,
+	sortFn_datetime,
+	sortFn_text,
 	tableFeatures,
 	useTable,
 } from "@tanstack/react-table";
@@ -126,6 +129,10 @@ const features = tableFeatures({
 	filteredRowModel: createFilteredRowModel(),
 	sortFns: {
 		alphanumeric: sortFn_alphanumeric,
+		// Built-ins that "auto" sorting can pick for a column
+		text: sortFn_text,
+		basic: sortFn_basic,
+		datetime: sortFn_datetime,
 	},
 	filterFns: {
 		includesString: filterFn_includesString,
@@ -279,6 +286,7 @@ export function CardTable({
 		{
 			accessorKey: "effectiveStatus",
 			header: "Status",
+			filterFn: "equalsAnyString",
 			cell: ({ getValue }) => {
 				const value = getValue() as string | null;
 				if (!value) {
@@ -620,6 +628,15 @@ export function CardTable({
 		),
 	).sort((a, b) => a.localeCompare(b));
 
+	// Uses the displayed status, so cards in an active submission show as "PSA Grading - {stage}".
+	const statusOptions = Array.from(
+		new Set(
+			cards
+				.map((card) => card.effectiveStatus?.trim())
+				.filter((status): status is string => Boolean(status)),
+		),
+	).sort((a, b) => a.localeCompare(b));
+
 	const psaSubmissionOptions = Array.from(
 		new Set(cards.flatMap((card) => card.psaSubmissionNumbers)),
 	).sort((a, b) => b.localeCompare(a, undefined, { numeric: true }));
@@ -656,6 +673,15 @@ export function CardTable({
 			options: categoryOptions,
 		},
 		{
+			columnId: "effectiveStatus",
+			icon: "circle-check",
+			label: "Status",
+			itemLabel: "status",
+			tagPrefix: "Status: ",
+			input: "select",
+			options: statusOptions,
+		},
+		{
 			columnId: "purchasedFrom",
 			icon: "sell",
 			label: "Seller",
@@ -676,7 +702,7 @@ export function CardTable({
 		{
 			columnId: "psaSubmissionNumbers",
 			icon: "psa",
-			label: "PSA Sub",
+			label: "Submission",
 			itemLabel: "submission",
 			tagPrefix: "PSA #",
 			input: "select",
@@ -688,15 +714,56 @@ export function CardTable({
 		.filter((filter) => isColumnShown(filter.columnId))
 		.map((filter) => ({ ...filter, values: getListFilter(filter.columnId) }));
 
-	// One removable tag per applied filter, shown next to the filter buttons.
+	// Returns the filter button for a list filter, or null when its column is hidden.
+	// Button order is set where these are called in the JSX below.
+	function renderListFilter(columnId: string) {
+		const filter = visibleListFilters.find(
+			(listFilter) => listFilter.columnId === columnId,
+		);
+
+		if (!filter) {
+			return null;
+		}
+
+		const listProps = {
+			name: `${filter.columnId}Filter`,
+			label: filter.label,
+			itemLabel: filter.itemLabel,
+			options: filter.options,
+			values: filter.values,
+			onChange: (values: string[]) => setListFilter(filter.columnId, values),
+		};
+
+		return (
+			<Filter
+				label={filter.label}
+				icon={filter.icon}
+				isActive={filter.values.length > 0}
+				onClear={() => setListFilter(filter.columnId, [])}
+			>
+				{filter.input === "select" ? (
+					<FilterSelectList {...listProps} />
+				) : (
+					<FilterTextList {...listProps} />
+				)}
+			</Filter>
+		);
+	}
+
+	// One removable tag per applied filter, shown next to the filter buttons,
+	// in the same order as the buttons.
 	const activeFilterTags: {
 		id: string;
 		label: string;
 		onRemove: () => void;
 	}[] = [];
 
-	for (const filter of visibleListFilters) {
-		filter.values.forEach((value, index) => {
+	function addListFilterTags(columnId: string) {
+		const filter = visibleListFilters.find(
+			(listFilter) => listFilter.columnId === columnId,
+		);
+
+		filter?.values.forEach((value, index) => {
 			activeFilterTags.push({
 				id: `${filter.columnId}:${index}`,
 				label: `${filter.tagPrefix}${value.trim()}`,
@@ -709,6 +776,9 @@ export function CardTable({
 		});
 	}
 
+	addListFilterTags("player");
+	addListFilterTags("category");
+
 	if (hasRange(purchaseDateRange)) {
 		activeFilterTags.push({
 			id: "purchaseDate",
@@ -717,19 +787,24 @@ export function CardTable({
 		});
 	}
 
-	if (showSoldDateFilter && hasRange(soldDateRange)) {
-		activeFilterTags.push({
-			id: "soldDate",
-			label: `Sold: ${formatDateRangeLabel(soldDateRange)}`,
-			onRemove: () => setRangeFilter("soldDate", null),
-		});
-	}
+	addListFilterTags("effectiveStatus");
+	addListFilterTags("purchasedFrom");
+	addListFilterTags("ebaySeller");
+	addListFilterTags("psaSubmissionNumbers");
 
 	if (hasRange(costRange)) {
 		activeFilterTags.push({
 			id: "totalCost",
 			label: formatCostRangeLabel(costRange),
 			onRemove: () => setCostRange(null),
+		});
+	}
+
+	if (showSoldDateFilter && hasRange(soldDateRange)) {
+		activeFilterTags.push({
+			id: "soldDate",
+			label: `Sold: ${formatDateRangeLabel(soldDateRange)}`,
+			onRemove: () => setRangeFilter("soldDate", null),
 		});
 	}
 
@@ -936,33 +1011,8 @@ export function CardTable({
 				top={
 					<div className={styles.CardTable__actions}>
 						<div className={styles.CardTable__actions__group}>
-							{visibleListFilters.map((filter) => {
-								const listProps = {
-									name: `${filter.columnId}Filter`,
-									label: filter.label,
-									itemLabel: filter.itemLabel,
-									options: filter.options,
-									values: filter.values,
-									onChange: (values: string[]) =>
-										setListFilter(filter.columnId, values),
-								};
-
-								return (
-									<Filter
-										key={filter.columnId}
-										label={filter.label}
-										icon={filter.icon}
-										isActive={filter.values.length > 0}
-										onClear={() => setListFilter(filter.columnId, [])}
-									>
-										{filter.input === "select" ? (
-											<FilterSelectList {...listProps} />
-										) : (
-											<FilterTextList {...listProps} />
-										)}
-									</Filter>
-								);
-							})}
+							{renderListFilter("player")}
+							{renderListFilter("category")}
 
 							<Filter
 								label='Date'
@@ -1001,44 +1051,10 @@ export function CardTable({
 								</div>
 							</Filter>
 
-							{showSoldDateFilter && (
-								<Filter
-									label='Sold Date'
-									icon='calendar-sold'
-									isActive={hasRange(soldDateRange)}
-									onClear={() => setRangeFilter("soldDate", null)}
-								>
-									<div
-										className={cn(
-											styles.CardTable__filter__range,
-											styles["CardTable__filter__range--dates"],
-										)}
-									>
-										<InputDate
-											name='soldDateMin'
-											label='From'
-											value={soldDateRange[0]}
-											onChange={(event) =>
-												setRangeFilter("soldDate", [
-													event.target.value,
-													soldDateRange[1],
-												])
-											}
-										/>
-										<InputDate
-											name='soldDateMax'
-											label='To'
-											value={soldDateRange[1]}
-											onChange={(event) =>
-												setRangeFilter("soldDate", [
-													soldDateRange[0],
-													event.target.value,
-												])
-											}
-										/>
-									</div>
-								</Filter>
-							)}
+							{renderListFilter("effectiveStatus")}
+							{renderListFilter("purchasedFrom")}
+							{renderListFilter("ebaySeller")}
+							{renderListFilter("psaSubmissionNumbers")}
 
 							<Filter
 								label='Cost'
@@ -1104,6 +1120,45 @@ export function CardTable({
 									})}
 								</div>
 							</Filter>
+
+							{showSoldDateFilter && (
+								<Filter
+									label='Sold Date'
+									icon='calendar-sold'
+									isActive={hasRange(soldDateRange)}
+									onClear={() => setRangeFilter("soldDate", null)}
+								>
+									<div
+										className={cn(
+											styles.CardTable__filter__range,
+											styles["CardTable__filter__range--dates"],
+										)}
+									>
+										<InputDate
+											name='soldDateMin'
+											label='From'
+											value={soldDateRange[0]}
+											onChange={(event) =>
+												setRangeFilter("soldDate", [
+													event.target.value,
+													soldDateRange[1],
+												])
+											}
+										/>
+										<InputDate
+											name='soldDateMax'
+											label='To'
+											value={soldDateRange[1]}
+											onChange={(event) =>
+												setRangeFilter("soldDate", [
+													soldDateRange[0],
+													event.target.value,
+												])
+											}
+										/>
+									</div>
+								</Filter>
+							)}
 						</div>
 
 						<div className={styles.CardTable__actions__group}>

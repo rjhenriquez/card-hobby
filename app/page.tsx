@@ -72,6 +72,20 @@ export default async function InvestmentPage({
 				/>
 			),
 		})),
+
+		{
+			label: "All",
+			value: "all",
+			children: (
+				<CardPortfolio
+					cards={cards}
+					statuses={statuses}
+					psaSubmissions={psaSubmissions}
+					portfolio='investment'
+					options={cardFormOptions}
+				/>
+			),
+		},
 	];
 
 	const activeTab = tabs.some((item) => item.value === tab) ? tab! : "active";

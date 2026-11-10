@@ -5,7 +5,6 @@
 	--group-header-size: 1.6rem;
 	--toggle-button-size: 1.25rem;
 	--responsive-space-lg: 1rem;
-	--gray-08: #383838;
 	--selection-group-cat-font-size: 0.875rem;
 	&__header {
 		height: var(--group-header-size);
@@ -35,7 +34,7 @@
 			margin-right: 0.5rem;
 		}
 		svg {
-			color: var(--gray-06);
+			color: var(--color-gray-06);
 			@include transition(transform, color);
 			line {
 				@include transition(transform);
@@ -45,7 +44,7 @@
 		}
 		&:hover {
 			svg {
-				color: var(--gray-08);
+				color: var(--color-gray-08);
 			}
 		}
 		&--open {

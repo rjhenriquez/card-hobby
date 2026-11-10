@@ -36,9 +36,23 @@ export function Filter({
 	const [isOpen, setIsOpen] = useState(false);
 	const rootRef = useRef<HTMLDivElement>(null);
 	const triggerRef = useRef<HTMLButtonElement>(null);
+	const panelRef = useRef<HTMLDivElement>(null);
 	const panelId = useId();
 	// Tooltips are only needed on smaller screens.
 	const showTooltip = useDimensions() <= BROWSER_WIDTH_RANGES.medium.max;
+
+	// When the panel opens, move focus to its first field (if it has one).
+	useEffect(() => {
+		if (!isOpen) {
+			return;
+		}
+
+		panelRef.current
+			?.querySelector<HTMLElement>(
+				"input:not([type='hidden']):not(:disabled), select:not(:disabled), textarea:not(:disabled)",
+			)
+			?.focus();
+	}, [isOpen]);
 
 	// Close on outside click or Escape.
 	useEffect(() => {
@@ -97,6 +111,7 @@ export function Filter({
 
 			{isOpen && (
 				<div
+					ref={panelRef}
 					id={panelId}
 					className={styles.Filter__panel}
 					// Filters apply as you type, so Enter in any input just closes the panel.

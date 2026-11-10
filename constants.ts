@@ -2,7 +2,7 @@ export const SIDEBAR_NAVIGATION = [
 	{
 		label: "Investments",
 		href: "/",
-		icon: "investments",
+		icon: "dollar-sign-2",
 	},
 	{
 		label: "Collection",
@@ -12,12 +12,12 @@ export const SIDEBAR_NAVIGATION = [
 	{
 		label: "Dashboard",
 		href: "/dashboard",
-		icon: "charts",
+		icon: "dashboard",
 	},
 	{
 		label: "PSA Submissions",
 		href: "/psa-submissions",
-		icon: "psa",
+		icon: "grading",
 	},
 	{
 		label: "Packages",
@@ -109,6 +109,8 @@ export const PSA_GRADE_DEFINITIONS = {
 
 export const STATUS_CLASSES = [
 	{ term: "Transit", className: "status--yellow" },
+	{ term: "PSA - Ebay", className: "status--green-light" },
+	{ term: "PSA - Next", className: "status--orange" },
 	{ term: "Ebay", className: "status--green" },
 	{ term: "PSA", className: "status--red" },
 	{ term: "Received", className: "status--blue" },
@@ -117,6 +119,7 @@ export const STATUS_CLASSES = [
 	{ term: "Pending", className: "status--yellow" },
 	{ term: "Redemption", className: "status--gray" },
 	{ term: "DCSports", className: "status--blue-light" },
+	{ term: "Sold", className: "status--black" },
 ];
 
 // Browser width ranges in px, matching the SCSS ranges in

@@ -46,14 +46,15 @@
 	}
 	&--main-sm {
 		@include font-weight(regular);
+		background: var(--bg-color);
 		height: var(--button-size);
-		font-size: var(--font-size-12);
-		gap: var(--button-padding-main-sm);
+		font-size: var(--font-size-14);
+		gap: calc(var(--button-padding-main-sm) / 2);
 		padding-inline: var(--button-padding-main-sm);
 		white-space: nowrap;
 		.Button__icon {
-			width: var(--button-icon-size);
-			height: var(--button-icon-size);
+			width: var(--button-icon-size-sm);
+			height: var(--button-icon-size-sm);
 		}
 		.Button__label {
 			display: none;
@@ -143,6 +144,9 @@
 			.Button__label {
 				display: block;
 			}
+			// .Button__icon {
+			// 	display: none;
+			// }
 		}
 	}
 }

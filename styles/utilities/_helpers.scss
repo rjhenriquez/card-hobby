@@ -55,10 +55,12 @@
 
 @mixin label-styles($size: "default") {
 	@include font-weight(semibold);
-	font-size: if($size == "small", var(--font-size-10), var(--font-size-12));
 	text-transform: uppercase;
 	@if $size == "small" {
+		font-size: var(--font-size-10);
 		letter-spacing: 0.05em;
+	} @else {
+		font-size: var(--font-size-12);
 	}
 }
 
@@ -251,7 +253,10 @@
 }
 
 @mixin trigger-styles($class-base, $size: "Regular") {
-	$size-suffix: if($size == small, "-sm", "");
+	$size-suffix: "";
+	@if $size == small {
+		$size-suffix: "-sm";
+	}
 	@include transition(color);
 	cursor: pointer;
 	align-items: center;

@@ -8,6 +8,7 @@ const statuses = [
 	"Lost In Transit",
 	"Raw Pile",
 	"DCSports Submission",
+	"PSA - Next Submission",
 	"Pending Payment",
 	"Sold",
 	"Available - Raw",

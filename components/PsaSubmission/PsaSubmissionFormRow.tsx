@@ -8,6 +8,7 @@ import { InputSelect } from "@/components/InputSelect/InputSelect";
 import {
 	removeCardFromPsaSubmission,
 	updatePsaSubmissionCard,
+	type PsaSubmissionCardUpdate,
 } from "@/app/actions/psaSubmissions";
 import { PSA_GRADE_DEFINITIONS } from "@/constants";
 
@@ -32,6 +33,11 @@ interface PsaSubmissionFormRowProps {
 	sharedCost: number;
 	isCompleted: boolean;
 	isEditing: boolean;
+	// Reports this row's unsaved changes (or null when it has none).
+	onEditChange: (
+		submissionCardId: number,
+		update: PsaSubmissionCardUpdate | null,
+	) => void;
 }
 
 const GRADE_OPTIONS = [
@@ -59,12 +65,24 @@ function getGradeValue(card: PsaSubmissionCard) {
 	return card.gradeStatus;
 }
 
+function getGradeFields(gradeValue: string): {
+	gradeStatus: PsaSubmissionCardUpdate["gradeStatus"];
+	grade: string | null;
+} {
+	if (gradeValue === "pending" || gradeValue === "no_grade") {
+		return { gradeStatus: gradeValue, grade: null };
+	}
+
+	return { gradeStatus: "graded", grade: gradeValue };
+}
+
 export function PsaSubmissionFormRow({
 	card,
 	submissionNumber,
 	sharedCost,
 	isCompleted,
 	isEditing,
+	onEditChange,
 }: PsaSubmissionFormRowProps) {
 	const [gradeValue, setGradeValue] = useState(getGradeValue(card));
 	const [baseGradingFee, setBaseGradingFee] = useState(card.baseGradingFee);
@@ -78,25 +96,41 @@ export function PsaSubmissionFormRow({
 		setBaseGradingFee(card.baseGradingFee);
 		setGradingAdjustment(card.gradingAdjustment);
 	}, [card.baseGradingFee, card.gradingAdjustment]);
+
+	const isDirty =
+		Number(baseGradingFee) !== Number(card.baseGradingFee) ||
+		Number(gradingAdjustment) !== Number(card.gradingAdjustment) ||
+		gradeValue !== getGradeValue(card);
+
+	useEffect(() => {
+		onEditChange(
+			card.submissionCardId,
+			isDirty
+				? {
+						submissionCardId: card.submissionCardId,
+						baseGradingFee,
+						gradingAdjustment,
+						...getGradeFields(gradeValue),
+					}
+				: null,
+		);
+	}, [
+		onEditChange,
+		card.submissionCardId,
+		isDirty,
+		baseGradingFee,
+		gradingAdjustment,
+		gradeValue,
+	]);
+
 	const router = useRouter();
 	function handleSubmit(event: FormEvent<HTMLFormElement>) {
 		event.preventDefault();
 
 		const formData = new FormData(event.currentTarget);
-		console.log("Base Fee:", formData.get("baseGradingFee"));
-
-		console.log("Adjustment:", formData.get("gradingAdjustment"));
-
-		if (gradeValue === "pending") {
-			formData.set("gradeStatus", "pending");
-			formData.set("grade", "");
-		} else if (gradeValue === "no_grade") {
-			formData.set("gradeStatus", "no_grade");
-			formData.set("grade", "");
-		} else {
-			formData.set("gradeStatus", "graded");
-			formData.set("grade", gradeValue);
-		}
+		const { gradeStatus, grade } = getGradeFields(gradeValue);
+		formData.set("gradeStatus", gradeStatus);
+		formData.set("grade", grade ?? "");
 
 		startSavingTransition(async () => {
 			await updatePsaSubmissionCard(formData);

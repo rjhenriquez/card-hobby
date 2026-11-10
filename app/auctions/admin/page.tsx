@@ -443,43 +443,43 @@ export default async function SearchAdminPage() {
 																			</li>
 																		))}
 																	</ul>
-																	<form
-																		action={createSearchTermAction}
-																		className={`${adminStyles["SearchAdmin__terms__form--add"]} ${adminStyles["SearchAdmin__terms__form"]}`}
-																	>
-																		<input
-																			type='hidden'
-																			name='categoryId'
-																			value={category.id}
-																		/>
-
-																		<InputText
-																			name='value'
-																			label='Add Search Term'
-																			placeholder='Enter search term'
-																			required
-																		/>
-
-																		<InputText
-																			label='Sort Order'
-																			className={
-																				adminStyles.SearchAdmin__input__sort
-																			}
-																			type='number'
-																			name='sortOrder'
-																			min={0}
-																			required
-																			defaultValue={0}
-																		/>
-																		<Button
-																			type='main'
-																			variant='primary'
-																			htmlType='submit'
-																			label='Add Term'
-																		/>
-																	</form>
 																</>
 															)}
+															<form
+																action={createSearchTermAction}
+																className={`${adminStyles["SearchAdmin__terms__form--add"]} ${adminStyles["SearchAdmin__terms__form"]}`}
+															>
+																<input
+																	type='hidden'
+																	name='categoryId'
+																	value={category.id}
+																/>
+
+																<InputText
+																	name='value'
+																	label='Add Search Term'
+																	placeholder='Enter search term'
+																	required
+																/>
+
+																<InputText
+																	label='Sort Order'
+																	className={
+																		adminStyles.SearchAdmin__input__sort
+																	}
+																	type='number'
+																	name='sortOrder'
+																	min={0}
+																	required
+																	defaultValue={0}
+																/>
+																<Button
+																	type='main'
+																	variant='primary'
+																	htmlType='submit'
+																	label='Add Term'
+																/>
+															</form>
 														</div>
 													</div>
 												);

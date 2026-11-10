@@ -38,7 +38,7 @@
 		&:not(:disabled) {
 			&:hover,
 			&:focus-within {
-				border-color: var(--color-main);
+				border-color: var(--button-border-color-main-hover);
 			}
 		}
 	}

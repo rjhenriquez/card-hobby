@@ -270,6 +270,9 @@
 		&--green {
 			@include status-color(var(--color-green));
 		}
+		&--green-light {
+			@include status-color(var(--color-green-light));
+		}
 		&--red {
 			@include status-color(var(--color-red));
 		}
@@ -279,8 +282,14 @@
 		&--blue-light {
 			@include status-color(var(--color-blue));
 		}
+		&--orange {
+			@include status-color(var(--color-orange));
+		}
 		&--gray {
 			@include status-color(var(--text-color));
+		}
+		&--black {
+			@include status-color(var(--bg-color-inverted));
 		}
 	}
 

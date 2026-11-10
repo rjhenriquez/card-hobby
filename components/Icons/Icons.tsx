@@ -69,6 +69,14 @@ const Collection = ({ className }: { className?: string }) => {
 		</svg>
 	);
 };
+const Grading = ({ className }: { className?: string }) => {
+	return (
+		<svg className={className} fill='currentColor' viewBox='0 -960 960 960'>
+			<path d='m590-160 80 80H240q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h480q33 0 56.5 23.5T800-800v640q0 20-8.5 36.5T768-96L560-302q-17 11-37 16.5t-43 5.5q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 23-5.5 43T618-360l102 104v-544H240v640h350Zm-53.5-223.5Q560-407 560-440t-23.5-56.5Q513-520 480-520t-56.5 23.5Q400-473 400-440t23.5 56.5Q447-360 480-360t56.5-23.5ZM480-440Zm0 0Z' />
+		</svg>
+	);
+};
+
 const Submissions = ({ className }: { className?: string }) => {
 	return (
 		<svg
@@ -313,6 +321,19 @@ const DollarSign = ({ className }: { className?: string }) => {
 		</svg>
 	);
 };
+const DollarSign2 = ({ className }: { className?: string }) => {
+	return (
+		<svg
+			xmlns='http://www.w3.org/2000/svg'
+			className={className}
+			fill='currentColor'
+			viewBox='0 -960 960 960'
+		>
+			<path d='M480-40q-112 0-206-51T120-227v107H40v-240h240v80h-99q48 72 126.5 116T480-120q75 0 140.5-28.5t114-77q48.5-48.5 77-114T840-480h80q0 91-34.5 171T791-169q-60 60-140 94.5T480-40Zm-36-160v-52q-47-11-76.5-40.5T324-370l66-26q12 41 37.5 61.5T486-314q33 0 56.5-15.5T566-378q0-29-24.5-47T454-466q-59-21-86.5-50T340-592q0-41 28.5-74.5T446-710v-50h70v50q36 3 65.5 29t40.5 61l-64 26q-8-23-26-38.5T482-648q-35 0-53.5 15T410-592q0 26 23 41t83 35q72 26 96 61t24 77q0 29-10 51t-26.5 37.5Q583-274 561-264.5T514-250v50h-70ZM40-480q0-91 34.5-171T169-791q60-60 140-94.5T480-920q112 0 206 51t154 136v-107h80v240H680v-80h99q-48-72-126.5-116T480-840q-75 0-140.5 28.5t-114 77q-48.5 48.5-77 114T120-480H40Z' />
+		</svg>
+	);
+};
+
 const Loading = ({ className }: { className?: string }) => {
 	return (
 		<svg
@@ -722,23 +743,10 @@ const Ebay = ({ className }: { className?: string }) => {
 		<svg
 			xmlns='http://www.w3.org/2000/svg'
 			className={className}
-			viewBox='0 0 17.86 20'
-			aria-hidden='true'
+			fill='currentColor'
+			viewBox='0 -960 960 960'
 		>
-			<path
-				fill='#414141'
-				d='M10.8,9.56c2.52-1.13,3.64-4.1,2.5-6.61C12.17.43,9.21-.69,6.69.44c-2.52,1.13-3.64,4.1-2.5,6.61.55,1.21,1.55,2.15,2.79,2.62l.48-1.28c-1.88-.71-2.82-2.81-2.11-4.69s2.81-2.82,4.69-2.11c1.88.71,2.82,2.81,2.11,4.69-.34.9-1.03,1.63-1.91,2.03l.56,1.24Z'
-			/>
-			<path
-				fill='#6a6a6a'
-				d='M0,5.38h4.06v14.62H1.28C.57,20,0,19.43,0,18.72V5.38Z'
-			/>
-			<path
-				fill='#979797'
-				d='M17.86,5.38h-4.06v14.62h2.78c.71,0,1.28-.57,1.28-1.28V5.38Z'
-			/>
-			<path fill='#b0b0b0' d='M13.8,5.38h-4.87v14.62h4.87V5.38Z' />
-			<path fill='#535353' d='M8.93,5.38h-4.87v14.62h4.87V5.38Z' />
+			<path d='M200-80q-33 0-56.5-23.5T120-160v-480q0-33 23.5-56.5T200-720h80q0-83 58.5-141.5T480-920q83 0 141.5 58.5T680-720h80q33 0 56.5 23.5T840-640v480q0 33-23.5 56.5T760-80H200Zm0-80h560v-480H200v480Zm421.5-298.5Q680-517 680-600h-80q0 50-35 85t-85 35q-50 0-85-35t-35-85h-80q0 83 58.5 141.5T480-400q83 0 141.5-58.5ZM360-720h240q0-50-35-85t-85-35q-50 0-85 35t-35 85ZM200-160v-480 480Z' />
 		</svg>
 	);
 };
@@ -771,10 +779,12 @@ export const ICONS = {
 	"font-size": FontSize,
 	close: Close,
 	clear: Clear,
+	grading: Grading,
 	"circle-close": CircleClose,
 	calendar: Calendar,
 	"calendar-sold": CalendarSold,
 	"dollar-sign": DollarSign,
+	"dollar-sign-2": DollarSign2,
 	loading: Loading,
 	checkmark: Checkmark,
 	"plus-sign": PlusSign,

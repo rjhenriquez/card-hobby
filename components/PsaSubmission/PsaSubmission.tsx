@@ -1,6 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
+import {
+	updatePsaSubmissionCards,
+	type PsaSubmissionCardUpdate,
+} from "@/app/actions/psaSubmissions";
 import { PsaSubmissionStats } from "./PsaSubmissionStats";
 import { PsaSubmissionFormRow } from "./PsaSubmissionFormRow";
 import { PsaSubmissionForm } from "./PsaSubmissionForm";
@@ -66,6 +71,45 @@ export function PsaSubmission({
 	const isCompleted = submission.completedDate !== null;
 	const [isEditing, setIsEditing] = useState(!isCompleted);
 	const [isOpen, setIsOpen] = useState(false);
+	const [cardEdits, setCardEdits] = useState<
+		Record<number, PsaSubmissionCardUpdate>
+	>({});
+	const [isSavingAll, startSavingAllTransition] = useTransition();
+	const router = useRouter();
+
+	const handleCardEditChange = useCallback(
+		(submissionCardId: number, update: PsaSubmissionCardUpdate | null) => {
+			setCardEdits((current) => {
+				if (update) {
+					return { ...current, [submissionCardId]: update };
+				}
+
+				if (!(submissionCardId in current)) {
+					return current;
+				}
+
+				const next = { ...current };
+				delete next[submissionCardId];
+				return next;
+			});
+		},
+		[],
+	);
+
+	// Ignore edits for cards that were removed from the submission.
+	const pendingUpdates = cards
+		.map((card) => cardEdits[card.submissionCardId])
+		.filter((update): update is PsaSubmissionCardUpdate => Boolean(update));
+
+	function handleSaveAll() {
+		startSavingAllTransition(async () => {
+			await updatePsaSubmissionCards(
+				submission.submissionNumber,
+				pendingUpdates,
+			);
+			router.refresh();
+		});
+	}
 
 	const isContentOpen = alwaysOpen || isOpen;
 	const cardsInvestment = cards.reduce((total, card) => {
@@ -95,10 +139,6 @@ export function PsaSubmission({
 			}`}
 		>
 			<div className={styles.PsaSubmission__summary__wrapper}>
-				{/* <Icon
-								className={styles.PsaSubmission__data__group__icon}
-								icon='investments'
-							/> */}
 				<dt>Acquisition Costs</dt>
 				<dd className={styles.PsaSubmission__data__group__value}>
 					{formattedTotalInvestment}
@@ -106,10 +146,6 @@ export function PsaSubmission({
 			</div>
 
 			<div className={styles.PsaSubmission__summary__wrapper}>
-				{/* <Icon
-								className={styles.PsaSubmission__data__group__icon}
-								icon='hash'
-							/> */}
 				<dt>Number of Cards</dt>
 				<dd className={styles.PsaSubmission__data__group__value}>
 					{`${cards.length} ${cards.length === 1 ? "card" : "cards"}`}
@@ -117,10 +153,6 @@ export function PsaSubmission({
 			</div>
 
 			<div className={styles.PsaSubmission__summary__wrapper}>
-				{/* <Icon
-								className={styles.PsaSubmission__data__group__icon}
-								icon='percent'
-							/> */}
 				<dt className={styles.PsaSubmission__data__group__label}>
 					Average per Card
 				</dt>
@@ -130,10 +162,6 @@ export function PsaSubmission({
 			</div>
 
 			<div className={styles.PsaSubmission__summary__wrapper}>
-				{/* <Icon
-								className={styles.PsaSubmission__data__group__icon}
-								icon='calendar'
-							/> */}
 				<dt>
 					{submission.receivedDate ? "Days in Submission" : "Days Since Sent"}
 				</dt>
@@ -145,10 +173,6 @@ export function PsaSubmission({
 			</div>
 
 			<div className={styles.PsaSubmission__summary__wrapper}>
-				{/* <Icon
-								className={styles.PsaSubmission__data__group__icon}
-								icon='receipt'
-							/> */}
 				<dt>Submission Costs</dt>
 				<dd className={styles.PsaSubmission__data__group__value}>
 					{`$${totalSubmissionCost.toLocaleString("en-US", {
@@ -163,7 +187,7 @@ export function PsaSubmission({
 	return (
 		<div
 			className={cn(styles.PsaSubmission, {
-				[styles["PsaSubmission--open"]]: isOpen,
+				[styles["PsaSubmission--open"]]: isOpen || alwaysOpen,
 			})}
 		>
 			<header className={styles.PsaSubmission__header}>
@@ -250,9 +274,29 @@ export function PsaSubmission({
 										sharedCost={sharedCost}
 										isCompleted={isCompleted}
 										isEditing={isEditing}
+										onEditChange={handleCardEditChange}
 									/>
 								))}
 							</TableInfo>
+						)}
+
+						{isEditing && cards.length > 1 && (
+							<div className={styles.PsaSubmission__save}>
+								<Button
+									type='main'
+									htmlType='button'
+									variant='primary'
+									disabled={pendingUpdates.length < 2 || isSavingAll}
+									onClick={handleSaveAll}
+									label={
+										isSavingAll
+											? "Saving..."
+											: pendingUpdates.length > 1
+												? `Save All (${pendingUpdates.length})`
+												: "Save All"
+									}
+								/>
+							</div>
 						)}
 					</div>
 

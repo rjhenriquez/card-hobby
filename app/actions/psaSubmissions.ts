@@ -168,6 +168,56 @@ export async function updatePsaSubmissionCard(formData: FormData) {
 	revalidatePath("/dashboard");
 }
 
+export interface PsaSubmissionCardUpdate {
+	submissionCardId: number;
+	baseGradingFee: string;
+	gradingAdjustment: string;
+	gradeStatus: "pending" | "graded" | "no_grade";
+	grade: string | null;
+}
+
+export async function updatePsaSubmissionCards(
+	submissionNumber: string,
+	updates: PsaSubmissionCardUpdate[],
+) {
+	const trimmedSubmissionNumber = submissionNumber.trim();
+
+	if (!trimmedSubmissionNumber) {
+		throw new Error("Invalid submission number");
+	}
+
+	for (const update of updates) {
+		if (!Number.isInteger(update.submissionCardId)) {
+			throw new Error("Invalid submission card ID");
+		}
+	}
+
+	await Promise.all(
+		updates.map((update) => {
+			const gradeStatus =
+				update.gradeStatus === "graded" || update.gradeStatus === "no_grade"
+					? update.gradeStatus
+					: "pending";
+
+			return db
+				.update(psaSubmissionCards)
+				.set({
+					baseGradingFee: update.baseGradingFee.trim() || "0",
+					gradingAdjustment: update.gradingAdjustment.trim() || "0",
+					gradeStatus,
+					grade: gradeStatus === "graded" ? update.grade?.trim() || null : null,
+				})
+				.where(eq(psaSubmissionCards.id, update.submissionCardId));
+		}),
+	);
+
+	revalidatePath("/psa-submissions");
+	revalidatePath(`/psa-submissions/${trimmedSubmissionNumber}`);
+	revalidatePath("/investment");
+	revalidatePath("/collection");
+	revalidatePath("/dashboard");
+}
+
 export async function finishPsaSubmission(
 	submissionId: number,
 	submissionNumber: string,
