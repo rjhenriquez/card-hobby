@@ -46,7 +46,6 @@ interface PsaSubmissionCard {
 	gradingAdjustment: string;
 	grade: string | null;
 	gradeStatus: "pending" | "graded" | "no_grade";
-	totalCost: number;
 }
 
 interface PsaSubmissionProps {
@@ -112,11 +111,6 @@ export function PsaSubmission({
 	}
 
 	const isContentOpen = alwaysOpen || isOpen;
-	const cardsInvestment = cards.reduce((total, card) => {
-		const cost = Number(card.totalCost);
-		return total + (Number.isFinite(cost) ? cost : 0);
-	}, 0);
-
 	const formattedTotalInvestment = totalInvestment.toLocaleString("en-US", {
 		style: "currency",
 		currency: "USD",

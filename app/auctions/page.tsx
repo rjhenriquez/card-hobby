@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { SearchBuilder } from "@/components/SearchBuilder/SearchBuilder";
 import { getSearchTermsBySection } from "@/db/queries/searches";
 import cn from "classnames";
@@ -9,7 +10,10 @@ export default async function SearchPage() {
 
 	return (
 		<div className={cn(styles.Page, styles["Page--search"])}>
-			<SearchBuilder searchTerms={searchTerms} />
+			{/* SearchBuilder reads useSearchParams(), which needs a Suspense boundary to build. */}
+			<Suspense>
+				<SearchBuilder searchTerms={searchTerms} />
+			</Suspense>
 		</div>
 	);
 }
